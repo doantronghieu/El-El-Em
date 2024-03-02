@@ -1,0 +1,69 @@
+Presight | Self-service BI for Business Teams
+About
+Get Presight
+PRIVACY POLICY
+Last updated 15 Sep 2023
+At Presight, we are committed to protecting the privacy of our customers and visitors to our website. This Privacy Policy explains how we collect, use, and disclose information about our customers and visitors.
+Information Collection and Use
+We collect several different types of information for various purposes to provide and improve our Service to you.
+Types of Data Collected
+Personal Data
+While using our Service, we may ask you to provide us with certain personally identifiable information that can be used to contact or identify you ("Personal Data"). Personally identifiable information may include, but is not limited to:
+Email address
+First name and last name
+Phone number
+Address, State, Province, ZIP/Postal code, City
+Cookies and Usage Data
+Usage Data
+We may also collect information that your browser sends whenever you visit our Service or when you access the Service by or through a mobile device ("Usage Data"). This Usage Data may include information such as your computer's Internet Protocol address (e.g. IP address), browser type, browser version, the pages of our Service that you visit, the time and date of your visit, the time spent on those pages, unique device identifiers, and other diagnostic data.
+Use of Data
+Presight uses the collected data for various purposes:
+To provide and maintain our Service
+To notify you about changes to our Service
+To allow you to participate in interactive features of our Service when you choose to do so
+To provide customer support
+To gather analysis or valuable information so that we can improve our Service
+To monitor the usage of our Service
+To detect, prevent and address technical issues
+Consent
+As personal information is collected, you will be asked to confirm that your information is correct prior to submitting it to Presight.
+Access to Personal Information
+Accessing Your Personal Information
+You have the right to access all of your personal information that we hold. Through the application, you can correct, amend, or append your personal information by logging into the application and navigating to your settings and profile.
+Automated Edit Checks
+Presight employs automated edit checks to ensure that data entry fields are completed properly when collecting personal information. These edit checks help maintain data integrity and accuracy. You are encouraged to provide complete and valid information to ensure the smooth processing of their personal data.
+Disclosure of Information
+We may disclose your information to third-party service providers who help us to provide our services such as Datadog, AWS and Google Workspace. We may also disclose your information in response to a legal request, such as a subpoena or court order, or to protect our rights or the rights of others.
+Data Security:
+All data is encrypted both in transit and at rest, using industry-standard encryption methods.
+We regularly perform security audits and vulnerability assessments to ensure the safety of our platform and the data stored within it.
+Our employees are trained on best practices for data security, and access to customer data is restricted on a need-to-know basis.
+Data Retention & Disposal
+Customer data is retained for as long as the account is in active status. Data enters an “expired” state when the account is voluntarily closed. Expired account data will be retained for 60 days. After this period, the account and related data will be removed.
+Quality, Including Data Subjects' Responsibilities for Quality
+We are committed to maintaining the quality and accuracy of the personal information we collect and process.
+We rely on data subjects to provide accurate and up-to-date information.
+Data subjects have the responsibility to inform us of any changes or inaccuracies in their personal data.
+If you believe that any information we hold about you is inaccurate, incomplete, or outdated, please contact us promptly to rectify the information.
+Monitoring and Enforcement
+We regularly monitor its data processing activities to ensure compliance with this privacy policy and applicable data protection laws.
+In the event of a data breach or any unauthorized access to your personal information, we will notify you and the appropriate authorities as required by law.
+We committed to cooperating with data protection authorities and complying with their advice and decisions regarding data protection and privacy matters.
+Cookies
+We use cookies to enhance your experience on our website. You can control the use of cookies through your web browser settings.
+Third-Party Websites
+Our website may contain links to third-party websites. We are not responsible for the privacy practices or content of those websites.
+Changes to Privacy Policy
+We may update this Privacy Policy from time to time. The updated Privacy Policy will be posted on our website.
+Contact Us
+If you have any questions about this Privacy Policy, please contact us through the customer portal or by email at
+presight@presight.io.
+Purposeful Use Only
+We commit to only use personal information for the purposes identified in the entity's privacy policy.
+Terms of Use
+Privacy Policy
+Limited Use Disclosure
+Presight.io 2022 All Rights Reserved
+Ho Chi Minh City, Vietnam
+Singapore
+Seattle, WA, USA

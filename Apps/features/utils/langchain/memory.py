@@ -1,0 +1,3 @@
+from langchain.memory import ConversationBufferMemory
+
+conversation_buffer_memory = ConversationBufferMemory()
