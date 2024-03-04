@@ -1,3 +1,5 @@
+mypy
+
 langchain
 langchain-community
 langchain-core
