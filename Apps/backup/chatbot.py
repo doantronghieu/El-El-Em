@@ -65,6 +65,8 @@ def user(human_msg, chat_history):
 
 
 def bot(chat_history):
+    # print(chat_history)
+    # [['hello', 'How are you?'], ['hi', None]]
     """
     updates the chatbot's history. The None message is replaced with 
     the bot's response character by character. Gradio automatically converts any
