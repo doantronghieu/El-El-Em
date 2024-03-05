@@ -43,7 +43,7 @@ with gr.Blocks() as demo:
             )
 
             chat_app.clear.click(
-                fn=lambda: None, inputs=None, outputs=chat_app.chatbot, queue=False
+                fn=lambda: None, inputs=None, outputs=None, queue=False
             )
 
             chat_app.chatbot.like(chatbot_utils.vote, None, None)
@@ -54,7 +54,7 @@ with gr.Blocks() as demo:
 if __name__ == "__main__":
     # Enable queuing to facilitate streaming intermediate outputs.
     demo.queue()
-    demo.launch()
+    demo.launch(share=True)
     # pass
 
-# gradio main.py
+# gradio app.py
