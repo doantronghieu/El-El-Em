@@ -1,10 +1,9 @@
+from use_cases import general_chat
+import my_gradio.chatbot as chatbot_utils
+import uuid
+import gradio as gr
 import warnings
 warnings.filterwarnings("ignore")
-
-import gradio as gr
-import uuid
-import my_gradio.chatbot as chatbot_utils
-from use_cases import general_chat
 
 
 with gr.Blocks() as demo:
@@ -54,7 +53,7 @@ with gr.Blocks() as demo:
 if __name__ == "__main__":
     # Enable queuing to facilitate streaming intermediate outputs.
     demo.queue()
-    demo.launch(share=True)
+    demo.launch(share=False)
     # pass
 
 # gradio app.py

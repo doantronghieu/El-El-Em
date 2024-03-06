@@ -1,1 +1,3 @@
-# This is a placeholder for the text_splitters.py file.
+from langchain.text_splitter import CharacterTextSplitter
+
+character_text_splitter = CharacterTextSplitter

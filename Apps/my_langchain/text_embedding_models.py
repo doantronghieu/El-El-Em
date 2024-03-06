@@ -1,1 +1,3 @@
-# This is a placeholder for the text_embedding_models.py file.
+from langchain_openai import OpenAIEmbeddings
+
+openai_embeddings = OpenAIEmbeddings
