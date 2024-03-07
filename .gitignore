@@ -1,4 +1,4 @@
 **/config.py
 **/.env
 **/cache
-
+**/__pycache__/

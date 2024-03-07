@@ -3,7 +3,7 @@ from langchain.chains import ConversationChain
 
 
 def create_conversation_chain(
-    prompt=prompts.prompt_general,
+    prompt=prompts.general_prompt,
     llm=llms.llm_openai,
     memory=memory.conversation_buffer_memory(ai_prefix="AI Assistant"),
     verbose=False,

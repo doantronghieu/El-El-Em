@@ -1,5 +1,8 @@
+# General
 mypy
+loguru
 
+# LangChain
 langchain
 langchain-community
 langchain-core

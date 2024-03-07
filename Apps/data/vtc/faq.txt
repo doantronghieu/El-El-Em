@@ -1,0 +1,45 @@
+# CÂU HỎI THƯỜNG GẶP, FAQ, Frequently Asked Question
+
+## Tài khoản Onlinica
+
+- Làm cách nào để đăng ký tài khoản Onlinica?
+  - Để đăng ký tài khoản Onlinica, bạn vui lòng chọn “Đăng nhập” trên thanh menu trên cùng, và chọn mục “ĐĂNG KÝ” tại form pop-up, hoặc xem chi tiết hơn [tại đây](https://onlinica.com/shop/huong-dan-tham-gia-khoa-hoc).
+
+- Có mấy loại tài khoản Onlinica?
+  - Onlinica hiện đang có 2 loại tài khoản là Onlinica và Onlinica VIP.
+  - Tài khoản Onlinica: Miễn phí, có thể truy cập vào các khoá học "FREE", có thể đăng ký gói Onlinica VIP và mua các khóa học khác.
+  - Tài khoản Onlinica VIP: Có đăng ký gói Onlinica VIP, có thể truy cập vào các khoá học "FREE" và "VIP", cũng có thể mua các khóa học khác.
+
+- Các khoá học ở Onlinica có mất phí không?
+  - Onlinica có khoá học miễn phí ("FREE") và có phí (VIP và các loại khoá học khác).
+  - Đối với khoá học miễn phí, có thể tham gia bằng cả tài khoản Onlinica và Onlinica VIP.
+  - Đối với khoá học có phí, có thể tham gia bằng tài khoản Onlinica VIP hoặc mua lẻ bằng cả tài khoản Onlinica và Onlinica VIP.
+
+- Các khoá học của tôi tại Onlinica có thời hạn sử dụng bao lâu?
+  - Khoá học miễn phí ("FREE") không có thời hạn sử dụng.
+  - Đối với khoá học có phí (VIP và các loại khác):
+    - Khi truy cập bằng tài khoản Onlinica VIP, thời hạn sử dụng là bằng với tài khoản Onlinica VIP.
+    - Khi mua lẻ, sở hữu vĩnh viễn.
+
+- Tôi có thể xoá tài khoản Onlinica không? Và làm như thế nào?
+  - Bạn có thể xóa tài khoản trên Onlinica. Việc xóa là vĩnh viễn và không thể hoàn tác. Onlinica sẽ không khôi phục tài khoản hoặc dữ liệu đã xóa.
+
+- Tôi có bị mất phí khi hết thời gian trải nghiệm Onlinica VIP không?
+  - Gói Onlinica VIP dùng thử 30 ngày sẽ không tự động gia hạn. Sau khi hết thời gian, có thể truy cập khoá học "FREE", nâng cấp tài khoản VIP hoặc mua khóa học khác.
+  - Thời gian trải nghiệm Onlinica VIP là 30 ngày.
+
+## Quá trình học tập
+
+- Onlinica hiện đang có các khóa học nào?
+  - Onlinica cung cấp khóa học đa lĩnh vực như Thiết kế, Lập trình, Trí tuệ nhân tạo, Tiếp thị kỹ thuật số, Phát triển bản thân.
+
+- Tôi sẽ nhận được chứng chỉ hoàn thành khóa học chứ? Và sẽ nhận qua hình thức nào?
+  - Nhận Chứng chỉ trong vòng 24h sau khi hoàn tất khóa học. Onlinica sẽ cấp Chứng chỉ tự động và gửi qua email đã đăng ký.
+
+- Vì sao tôi chưa nhận được chứng chỉ hoàn thành khi đã học xong?
+  - Có thể là do quá trình nâng cấp chức năng. Sau khi hoàn thành, bạn sẽ nhận được Chứng chỉ tại trang Quản lý Chứng chỉ.
+
+## Thanh toán
+
+- Onlinica có mấy hình thức thanh toán?
+  - Hỗ trợ chuyển khoản ngân hàng, thanh toán trực tuyến qua Visa/Mastercard, và cổng thanh toán ONEPAY tích hợp ví điện tử khác nhau.

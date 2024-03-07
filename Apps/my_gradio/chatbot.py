@@ -1,9 +1,9 @@
-import add_package_file
+import add_packages
 import config
 import gradio as gr
 import time
 import uuid
-from use_cases import general_chat
+from use_cases import general_chat, VTC
 
 
 ##########
@@ -119,4 +119,11 @@ def bot_general_chat(chat_history, human_msg):
         yield chat_history
 
 
+def bot_onlinica(chat_history, human_msg):
+    ai_msg = VTC.agent_executor.invoke({"input": human_msg})["output"]
+    chat_history[-1][1] = ""
 
+    for character in ai_msg:
+        chat_history[-1][1] += character
+        time.sleep(0.01)
+        yield chat_history
