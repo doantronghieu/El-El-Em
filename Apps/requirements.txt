@@ -44,7 +44,6 @@ tavily-python
 docarray
 tiktoken
 nltk
-chromadb
 unstructured
 jq
 markdown
