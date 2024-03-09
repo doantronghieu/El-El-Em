@@ -1,6 +1,7 @@
 # General
 mypy
 loguru
+email-validator
 
 # LangChain
 langchain
