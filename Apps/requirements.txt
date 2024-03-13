@@ -30,6 +30,7 @@ langchain-pinecone
 langchain-anthropic
 pydantic==1.10.9
 grandalf
+wikipedia
 
 # Llama Index
 llama-index
