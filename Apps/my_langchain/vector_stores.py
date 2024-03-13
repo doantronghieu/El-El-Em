@@ -1,6 +1,8 @@
 from loguru import logger
 
-from langchain_community.vectorstores import (faiss, qdrant, chroma)
+from langchain_community.vectorstores import (
+  faiss, qdrant, chroma, docarray
+)
 from langchain_openai import OpenAIEmbeddings
 from langchain.tools.retriever import create_retriever_tool
 from langchain_core.documents import Document
@@ -10,6 +12,10 @@ from qdrant_client.http import models
 
 from pprint import pprint
 from tqdm import tqdm
+
+# -------------------------------------------------------------------------------
+doc_array_in_memory_search = docarray.DocArrayInMemorySearch
+
 # -------------------------------------------------------------------------------
 
 faiss_store = faiss.FAISS

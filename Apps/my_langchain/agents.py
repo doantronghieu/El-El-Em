@@ -1,5 +1,7 @@
 from langchain.agents import (
-  create_openai_tools_agent, AgentExecutor
+  create_openai_tools_agent, create_openai_functions_agent, 
+  create_openapi_agent,
+  AgentExecutor
 )
 
 
