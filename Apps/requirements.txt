@@ -15,6 +15,9 @@ sqlalchemy[asyncio,mypy]
 asyncpg
 aiomysql
 
+# Message Broker
+broadcaster[redis]
+
 # LangChain
 langchain
 langchain-community
