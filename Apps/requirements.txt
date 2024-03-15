@@ -1,5 +1,6 @@
 # General
 mypy
+python-dotenv
 loguru
 email-validator
 tqdm
