@@ -65,3 +65,5 @@ class MyAgent:
     def invoke_agent(self, input_message):
         config = {"configurable": {"session_id": self.session_id}}
         return self.agent_with_chat_history.invoke({"input": input_message}, config=config)['output']
+
+

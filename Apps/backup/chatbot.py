@@ -1,8 +1,18 @@
+import add_packages
+import config
 import gradio as gr
-import random
 import time
 import uuid
+from use_cases import general_chat, VTC
 
+
+##########
+# CHAINS #
+##########
+
+conversation_chain = general_chat.create_conversation_chain()
+
+###############################################################################
 
 class ChatbotApp:
     def __init__(self, elem_id=None):
@@ -61,10 +71,25 @@ def user(human_msg, chat_history):
     indicating an unanswered bot response.
     """
     chat_history = chat_history + [[human_msg, None]]
-    return gr.Textbox(value="", interactive=False), chat_history
+    return gr.Textbox(value=human_msg, interactive=False), chat_history
 
 
-def bot(chat_history):
+def clean_human_msg(human_msg):
+    return gr.Textbox(value="", interactive=True)
+
+# Function to create chat app
+
+
+def create_chat_app(elem_id=None):
+    return ChatbotApp(elem_id)
+
+###############################################################################
+
+#######
+# BOT #
+#######
+
+def bot(chat_history, human_msg, fn):
     # print(chat_history)
     # [['hello', 'How are you?'], ['hi', None]]
     """
@@ -72,7 +97,8 @@ def bot(chat_history):
     the bot's response character by character. Gradio automatically converts any
     function with the yield keyword into a streaming output interface.
     """
-    ai_msg = random.choice(["How are you?", "I love you", "I'm very hungry"])
+    
+    ai_msg = human_msg
     chat_history[-1][1] = ""
 
     for character in ai_msg:
@@ -80,6 +106,24 @@ def bot(chat_history):
         time.sleep(0.05)
         yield chat_history
 
-# Function to create chat app
-def create_chat_app(elem_id=None):
-    return ChatbotApp(elem_id)
+
+def bot_general_chat(chat_history, human_msg):
+    ai_msg = general_chat.get_conversation_chain_response(
+        human_msg=human_msg, conversation_chain=conversation_chain,
+    )
+    chat_history[-1][1] = ""
+
+    for character in ai_msg:
+        chat_history[-1][1] += character
+        time.sleep(0.01)
+        yield chat_history
+
+
+def bot_onlinica(chat_history, human_msg):
+    ai_msg = VTC.agent_executor.invoke({"input": human_msg})["output"]
+    chat_history[-1][1] = ""
+
+    for character in ai_msg:
+        chat_history[-1][1] += character
+        time.sleep(0.01)
+        yield chat_history

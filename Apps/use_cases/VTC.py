@@ -15,7 +15,7 @@ from langchain_core.prompts import (
 )
 
 qdrant_instance_lectures_content = vector_stores.QdrantWrapper(
-    collection_name="vtc-lectures-content",
+    collection_name="vtc-lectures-content-new",
     qdrant_host=os.getenv("QDRANT_HOST"),
     qdrant_api_key=os.getenv("QDRANT_API_KEY"),
     default_search_type="similarity",
@@ -39,7 +39,7 @@ qdrant_instance_faq = vector_stores.QdrantWrapper(
 )
 
 qdrant_instance_courses_information = vector_stores.QdrantWrapper(
-    collection_name="vtc-courses-information",
+    collection_name="vtc-courses-information-new",
     qdrant_host=os.getenv("QDRANT_HOST"),
     qdrant_api_key=os.getenv("QDRANT_API_KEY"),
     default_search_type="similarity",
@@ -80,11 +80,5 @@ tools = [
     qdrant_instance_courses_information.retriever_tool,
 ]
 
-agent_prompt = prompts.openai_tools_agent_prompt
-
-agent = agents.create_openai_tools_agent(
-    llm=chat_models.chat_openai,
-    tools=tools,
-    prompt=onlinica_prompt,
-)
-agent_executor = agents.AgentExecutor(agent=agent, tools=tools, verbose=True)
+llm = chat_models.chat_openai
+agent = agents.MyAgent(prompt=onlinica_prompt, tools=tools, agent_type="openai_tools", llm=llm)

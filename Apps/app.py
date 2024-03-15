@@ -91,16 +91,26 @@ with gr.Blocks() as demo:
 
             gr.Examples(
                 examples=[
-                    "Typography là gì?",
-                    "Procreate là gì?",
-                    "Cách thiết kế CV ấn tượng với phần mềm Adobe Illustrator",
-                    "Làm cách nào để đăng ký tài khoản Onlinica?",
-                    "Có mấy loại tài khoản Onlinica?",
-                    "Các khoá học của tôi tại Onlinica có thời hạn sử dụng bao lâu?",
-                    "Onlinica có mấy hình thức thanh toán?",
-                    "Tôi có thể xoá tài khoản Onlinica không?",
-                    "Các khóa học về Digital Marketing",
-                    "Các khóa học về lập trình",
+                    "xin chào. Tên tôi là Bob.",
+                    "bạn có nhớ tên tôi là gì không",
+
+                    "digital marketing là gì",
+
+                    "làm cách nào để đăng ký tài khoản onlinica",
+                    "có mấy loại tài khoản onlinica",
+                    "các khoá học tại onlinica có thời hạn sử dụng bao lâu",
+                    "onlinica có mấy hình thức thanh toán",
+                    "có thể thanh toán bằng momo được không",
+
+                    "các khóa học về design",
+                    "các khóa học về trí tuệ nhân tạo",
+                    "các khóa học về  ai",
+                    "các khóa học của nguyễn ngọc tú uyên",
+                    "các khóa học của tú uyên",
+                    "các khóa học thầy trần anh tuấn dạy",
+
+                    "cách quản lý thời gian",
+                    "nguyên lý phối màu",
                 ],
                 inputs=[chat_app.human_msg],
             )
@@ -108,7 +118,7 @@ with gr.Blocks() as demo:
 if __name__ == "__main__":
     # Enable queuing to facilitate streaming intermediate outputs.
     demo.queue()
-    demo.launch(share=False)
+    demo.launch(share=True)
     # pass
 
 # gradio app.py
