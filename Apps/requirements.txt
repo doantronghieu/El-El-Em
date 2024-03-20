@@ -10,14 +10,25 @@ alembic
 passlib
 argon2_cffi
 starlette-csrf
+prometheus_fastapi_instrumentator
 
 # Database
 sqlalchemy[asyncio,mypy]
 asyncpg
 aiomysql
 
+# Storage
+minio
+
 # Message Broker
 broadcaster[redis]
+dramatiq[redis]
+
+# HuggingFace
+accelerate
+diffusers
+replicate
+
 
 # LangChain
 langchain
@@ -42,7 +53,6 @@ llama-index-readers-file
 llama-index-llms-huggingface
 llama-index-embeddings-langchain
 
-accelerate
 bitsandbytes
 gradio
 pdf2image
