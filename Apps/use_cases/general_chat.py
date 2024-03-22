@@ -1,14 +1,14 @@
-from my_langchain import llms, memory, chains, prompts
+from my_langchain import llms, memories, chains, prompts
 from langchain.chains import ConversationChain
 
 
 def create_conversation_chain(
     prompt=prompts.general_prompt,
     llm=llms.llm_openai,
-    memory=memory.conversation_buffer_memory(ai_prefix="AI Assistant"),
+    memory=memories.ConversationBufferMemory(ai_prefix="AI Assistant"),
     verbose=False,
 ):
-    return chains.conversation_chain(
+    return chains.ConversationChain(
         prompt=prompt,
         llm=llm,
         memory=memory,

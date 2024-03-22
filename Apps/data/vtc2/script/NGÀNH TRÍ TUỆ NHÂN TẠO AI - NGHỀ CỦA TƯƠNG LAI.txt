@@ -1,0 +1,40 @@
+# Course: NGÀNH TRÍ TUỆ NHÂN TẠO AI - NGHỀ CỦA TƯƠNG LAI
+## Section 1: Sự ra đời của ngành trí tuệ nhân tạo
+### Subsection 1: Sự ra đời của ngành trí tuệ nhân tạo
+Chào các bạn. Tôi là Trần Anh Tuấn, chào mừng bạn đến với khóa học của tôi ngày hôm nay.
+Đây là một khóa học rất phù hợp với những bạn đam mê ngành trí tuệ nhân tạo, muốn tìm hiểu tổng quan về ngành trí tuệ nhân tạo, cũng như là các ứng dụng tuyệt vời của nó mang lại cho cuộc sống của chúng ta. 
+Trí tuệ nhân tạo là chúng ta dạy cho máy tính những kinh nghiệm của con người, cung cấp cho nó những dữ liệu và từ đó nó sẽ quay lại phục vụ cho chúng ta nâng cao chất lượng sản phẩm, tiết kiệm chi phí tối ưu hóa năng suất và phục vụ con người tốt hơn. 
+Trí tuệ nhân tạo được xuất hiện đầu tiên vào những năm thập niên 1950 bởi 2 nhà khoa học là Allen Newell và Herbert tại phòng thí nghiệm của trường đại học Carnegie Mellon. Tại phòng thí nghiệm, họ cố gắng xây dựng chương trình có khả năng giải một bài toán logic như con người. Cũng trong năm đó, nhà khoa học Alan Turing đã xây dựng một thí nghiệm để kiểm tra máy học có khả năng suy nghĩ như con người hay không bằng cách là thực hiện một bài kiểm tra trong đó có một vị giám khảo và một máy học cũng như là một con người. Và vị giám khảo này sau một vài câu hỏi không thể nào nhận biết đâu là con người, đâu là máy móc. Điều đó chứng tỏ là máy móc có thể hoàn toàn thay thế con người trong tương lai. 
+Từ đó đến nay ngành trí tuệ nhân tạo đã có những ứng dụng tuyệt vời và chúng ta có thể thấy, ví dụ như khả năng tìm kiếm thông tin, lưu trữ thông tin của Google, ví dụ như khả năng chia sẻ video, hình ảnh dựa trên youtube, và ví dụ như khả năng kết nối bạn bè trên Facebook. Bên cạnh đó trong lĩnh vực game, ngành trí tuệ nhân tạo cũng phát triển rất là mạnh. Các game thông minh ngày nay có thể chiến thắng được con người ví dụ như đánh cờ, WorldCraft, StarCraft. Và đặc biệt trong các lĩnh vực y tế, sản xuất, xe tự hành ngành trí tuệ nhân tạo cũng không thể thiếu. 
+Bây giờ chúng ta sẽ đi qua các lĩnh vực cụ thể cùng các giải pháp mà trí tuệ nhân tạo mang lại cho chúng ta như sau: 
+Thứ nhất: Trong lĩnh vực sức khoẻ, nhờ trí tuệ nhân tạo bạn có thể dễ dàng phân tích đánh giá mức độ bệnh của bệnh nhân từ đó đề xuất giúp bác sĩ các hình thức điều trị phù hợp, hỗ trợ bác sĩ nhanh chóng khám và chữa bệnh cho hàng ngàn bệnh nhân.
+Thứ hai: Trong lĩnh vực kinh doanh như thương mai điện tử, trí tuệ nhân tạo nhanh chóng giúp bạn hiểu nhu cầu mua hàng của khách hàng để đề xuất chính xác các sản phẩm mà khách hàng quan tâm từ đó giúp tăng nhanh doanh thu và thu hút thêm nhiều khách hàng tiềm năng.
+Thứ ba: Trong lĩnh vực giáo dục, khi các học viên đi học sẽ có trí tuệ nhân tạo tự động điểm danh và thống kê những vấn đề trong quá trình học tập của học viên từ đó có những đề xuất phù hợp để người học nâng cao các kỹ năng của mình.
+Thứ tư: Trong lĩnh vực sản xuất, các robot tự động hoá được trang bị trí tuệ nhân tạo sẽ thay thế con người làm việc ngày đêm trong các môi trường khắc nghiệt để mang lại hiệu suất cao nhất.
+Thứ năm: Trong lĩnh vực tài chính ngân hàng, với trí tuệ nhân tạo các ngân hàng sẽ an tâm hơn cho việc phục vụ khách hàng và cung cấp các dịch vụ tốt nhất trong đó có cả việc tính toán các khoản cho vay phù hợp.
+Đến đây chắc các bạn có thắc mắc là có bao nhiêu loại trí tuệ nhân tạo phải không? Tôi xin giới thiệu các bạn có 3 loại trí tuệ nhân tạo.
+Thứ nhất là trí tuệ nhân tạo hẹp. Trí tuệ nhân tạo hẹp có nghĩa là khả năng máy tính có thể làm chính xác một công việc mà bạn đưa ra.
+Thứ hai là trí tuệ nhân tạo mạnh. Trí tuệ nhân tạo mạnh là khả năng máy tính có thể làm mọi công việc mà con người có thể làm.
+Thứ ba là siêu trí tuệ nhân tạo. Siêu trí tuệ nhân tạo là khả năng máy tính có thể sáng tạo và làm những công việc mà con người có thể làm, điều đó có nghĩa là trí tuệ nhân tạo có thể làm những việc vượt khả năng con người.
+## Section 2: Vấn đề việc làm của ngành Trí tuệ nhân tạo
+### Subsection 1: Vấn đề việc làm của ngành Trí tuệ nhân tạo
+Ngày nay ngành trí tuệ nhân tạo là ngành được quan tâm nhất trong xã hội. Các doanh nghiệp chuyển đổi số đều hướng đến trí tuệ nhân tạo để giảm chi phí sản xuất, tăng năng suất, cũng như tăng trải nghiệm khách hàng. Do vậy cơ hội nghề nghiệp của các bạn kỹ sư trí tuệ nhân tạo cũng như kỹ sư phân tích dữ liệu là rất nhiều nếu các bạn có tư duy tốt và cũng như vận dụng trí tuệ nhân tạo thành thạo.
+Để trở thành một kỹ sư trí tuệ nhân tạo, bạn cần thành thạo các kỹ năng sau:
+- Kỹ năng lập trình: Khả năng sử dụng ngôn ngữ lập trình thành thạo, mà quan trọng nhất là ngôn ngữ Python
+- Kỹ năng toán học: Khả năng tư duy về toán học để hiểu các quy tắc vận hành trong trí tuệ nhân tạo
+- Kỹ năng về kỹ thuật xử lý dữ liệu lớn: Biết cách áp dụng các công nghệ xây dựng quy trình xử lý dữ liệu hiệu quả
+- Kỹ năng xây dựng các thuật toán trí tuệ nhân tạo: Biết cách xây dựng các thuật toán từ một yêu cầu cụ thể
+- Kỹ năng giao tiếp và giải quyết vấn đề: Biết cách truyền đạt các ý tưởng trí tuệ nhân tạo và áp dụng mang lại giá trị hiệu quả kinh doanh cao.
+Để theo đuổi ngành trí tuệ nhân tạo cần các yếu tố sau từ người học. 
+Thứ nhất là khả năng về tư duy dữ liệu, thứ hai là khả năng yêu thích sử dụng các công nghệ. Nếu bạn có đầy đủ hai yếu tố này bạn có thể tự tin để đi lâu dài và phát triển theo con đường trí tuệ nhân tạo.
+Các vị trí công việc sau trong lĩnh vực trí tuệ nhân tạo:
+- Kỹ sư Trí tuệ nhân tạo
+- Kỹ sư Khoa học dữ liệu
+- Kỹ sư Phân tích dữ liệu
+- Kỹ sư Xây dựng quy trình dữ liệu
+- Kỹ sư Phân tích và Kinh doanh thông minh
+ 
+Mức lương quy chung từ 1 đến 3 năm đầu tiên trong khoảng từ 12 đến 30 triệu. Sau đó từ 3 đến 5 năm có thể từ 30 triệu đến 50 triệu hoặc cao hơn tuỳ công ty và môi trường làm việc
+## Section 2: Lời kết & Final Test
+### Subsection 1: Lời kết & Final Test
+Tôi là Trần Anh Tuấn, chúng ta đang cùng học tại Onlinica

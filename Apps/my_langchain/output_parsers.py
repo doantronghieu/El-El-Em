@@ -1,3 +1,7 @@
-from langchain_core.output_parsers import StrOutputParser
+from langchain_core.output_parsers import (
+  StrOutputParser, JsonOutputParser
+)
 
-str_output_parser = StrOutputParser
+from langchain.output_parsers import (
+  JsonOutputToolsParser,
+)

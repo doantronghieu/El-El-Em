@@ -1,10 +1,10 @@
 from langchain_core.prompts import (
     ChatPromptTemplate, PromptTemplate, MessagesPlaceholder,
-    SystemMessagePromptTemplate, AIMessagePromptTemplate, 
+    SystemMessagePromptTemplate, AIMessagePromptTemplate,
     HumanMessagePromptTemplate
 )
 from langchain_core.messages import (
-  SystemMessage, AIMessage, HumanMessage,
+    SystemMessage, AIMessage, HumanMessage,
 )
 from langchain import hub
 # *-----------------------------------------------------------------------------
@@ -54,9 +54,9 @@ needed and otherwise return as is.\
 """
 
 contextualize_q_prompt = ChatPromptTemplate.from_messages([
-  ("system", contextualize_q_system_prompt),
-  MessagesPlaceholder(variable_name="chat_history"),
-  ("human", "{question}"),
+    ("system", contextualize_q_system_prompt),
+    MessagesPlaceholder(variable_name="chat_history"),
+    ("human", "{question}"),
 ])
 
 qa_system_prompt = """\
@@ -69,9 +69,9 @@ three sentences maximum and keep the answer as concise as possible.
 """
 
 qa_prompt = ChatPromptTemplate.from_messages([
-  ("system", qa_system_prompt),
-  MessagesPlaceholder(variable_name="chat_history"),
-  ("human", "{question}"),
+    ("system", qa_system_prompt),
+    MessagesPlaceholder(variable_name="chat_history"),
+    ("human", "{question}"),
 ])
 
 # *-----------------------------------------------------------------------------
@@ -81,24 +81,25 @@ qa_prompt = ChatPromptTemplate.from_messages([
 #########
 
 # hwchase17/openai-tools-agent
-# openai_tools_agent_prompt = hub.pull("hwchase17/openai-tools-agent")
-openai_tools_agent_prompt = ChatPromptTemplate.from_messages(
+# prompt_agent_openai_tools = hub.pull("hwchase17/openai-tools-agent")
+prompt_agent_openai_tools = ChatPromptTemplate.from_messages(
     [
         ("system", "You are a helpful assistant"),
-        MessagesPlaceholder("chat_history", optional=True),
+        MessagesPlaceholder("chat_history"),
         ("human", "{input}"),
         MessagesPlaceholder("agent_scratchpad"),
     ]
 )
 
-def create_openai_tools_agent_custom_prompt(system_message: str):
-  openai_tools_agent_custom_prompt = ChatPromptTemplate.from_messages(
-    [
-        ("system", system_message),
-        MessagesPlaceholder("chat_history", optional=True),
-        ("human", "{input}"),
-        MessagesPlaceholder("agent_scratchpad"),
-    ]
-  )
-  
-  return openai_tools_agent_custom_prompt
+
+def create_prompt_custom_agent_openai_tools(system_message: str):
+    prompt_custom_agent_openai_tools = ChatPromptTemplate.from_messages(
+        [
+            ("system", system_message),
+            MessagesPlaceholder("chat_history"),
+            ("human", "{input}"),
+            MessagesPlaceholder("agent_scratchpad"),
+        ]
+    )
+
+    return prompt_custom_agent_openai_tools

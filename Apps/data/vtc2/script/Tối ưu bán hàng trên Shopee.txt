@@ -1,0 +1,155 @@
+# Course: Tối ưu bán hàng trên Shopee
+## Section 1: Giới thiệu tổng quan
+### Subsection 1.1: Giới thiệu khóa học 
+Xin chào các bạn, tôi là giảng viên của Onlinica. Chào mừng các bạn đến với khoá học của tôi ngày hôm nay.
+Như các bạn đã biết việc mua bán online đang là xu hướng hiện nay, đặc biệt là sau đại dịch COVID-19 vừa qua, các sàn thương mại điện tử đã có những thành quả phát triển vượt bậc. Trong đó, sàn thương mại điện tử Shopee là một trong những sàn được biết đến và tin dùng nhiều nhất. 
+Bạn đã bao giờ tự hỏi về bí mật của những nhà bán hàng thành công trên Shopee hay chưa? Đằng sau sự nổi tiếng và doanh số bán hàng ấn tượng đó, là những chiến lược và kỹ thuật đặc biệt mà họ áp dụng để tối ưu hóa trải nghiệm mua sắm trực tuyến và đạt được sự tin tưởng từ khách hàng.
+Và với số lượng gian hàng cũng như sản phẩm khổng lồ hiện có trên Shopee, làm thế nào để gian hàng của bạn trở nên nổi bật, thu hút khách hàng hơn? Nếu bạn cũng đang có những thắc mắc trên vậy thì hãy cùng tôi tìm hiểu kiến thức về việc bán hàng và tối ưu việc bán hàng của bạn trên Shopee trong khoá học này nhé. 
+Trong khóa học này tôi sẽ chia sẻ với các bạn các nội dung sau đây:
+- Đầu tiên, chúng ta sẽ tìm hiểu tổng quan về nền tảng Shopee, để hiểu hơn về nền tảng này và vai trò của nó trong thị trường thương mại điện tử tại Việt Nam
+- Tiếp theo, tôi sẽ giới thiệu cho các bạn cách để xây dựng một gian hàng trên Shopee 
+- Và cuối cùng là cách tối ưu bán hàng trên Shopee
+Ngay bây giờ, chúng ta sẽ cùng nhau khám phá những bước quan trọng để xây dựng và phát triển cửa hàng trực tuyến thành công trên nền tảng thương mại điện tử năng động này nha.
+Khoá học Tối ưu bán hàng trên Shopee ngày hôm nay được thiết kế đặc biệt cho các cá nhân và doanh nghiệp đang hoạt động hoặc chuẩn bị bước chân vào thế giới thương mại điện tử qua sàn thương mại điện tử Shopee. 
+Cụ thể hơn thì khóa học này dành cho những người mới bắt đầu bán hàng trên Shopee.
+Bạn đang muốn kinh doanh trên nền tảng Shopee và muốn hiểu rõ về cơ hội mà Shopee mang lại cho những người bán hàng mới. Hoặc việc tối ưu hóa trải nghiệm mua sắm cho khách hàng sẽ phải làm như thế nào?
+Thứ hai là những người đã hoạt động trên Shopee nhưng muốn nâng cao hiệu quả bán hàng.
+Như, bạn đã có cửa hàng trên Shopee nhưng muốn tối ưu hóa chiến lược bán hàng và tăng cường hiệu suất nhưng chưa biết bắt đầu từ đâu. Hay bạn quan tâm đến các chiến lược marketing mới và cách sử dụng dữ liệu để đưa ra quyết định thông minh.
+Thứ 3, bạn là chủ doanh nghiệp và muốn mở rộng mạng lưới bán hàng trực tuyến để nắm bắt cơ hội cũng như thúc đẩy doanh số bán hàng và xây dựng thương hiệu trên nền tảng này.
+Thứ 4, khóa học này dành cho những ai quan tâm đến thương mại điện tử và xu hướng thị trường. Các sàn thương mại điện tử đã và đang là xu hướng mua sắm của rất nhiều khách hàng, đi cùng với đó là thách thức trong lĩnh vực này. Khóa học này sẽ giúp bạn có những kiến thức và kỹ năng để duy trì sự linh hoạt trong môi trường kinh doanh trực tuyến đang thay đổi nhanh chóng này.
+Khi mới bắt đầu một công việc mới đôi khi có những sự khó khăn nhất định nhưng hãy cùng tôi từng bước tìm hiểu chúng nhé!
+## Section 2: Tổng quan về nền tảng Shopee
+### Subsection 2.1: Tìm hiểu về Shopee
+Đầu tiên trong khóa học này chúng ta sẽ cùng nhau tìm hiểu về nguồn gốc của Shopee nha.
+Shopee là sàn giao dịch thương mại điện tử thuộc sở hữu của tập đoàn SEA Ltd, lần đầu ra mắt vào năm 2015 tại Singapore. Sea Limited - một tập đoàn công nghệ đa quốc gia có trụ sở tại Singapore. Được thành lập vào năm 2009 bởi Forrest Li, một doanh nhân người Trung Quốc. Sea Limited hiện đang là công ty niêm yết trên sàn chứng khoán New York với giá trị vốn hóa thị trường hơn 100 tỷ USD.
+Đến nay, sàn thương mại điện tử này đã trở thành ứng dụng mua bán hàng đầu tại 7 quốc gia: Singapore, Malaysia, Indonesia, Thái Lan, Việt Nam, Philippines và Đài Loan. Sự tăng trưởng của Shopee ngay từ khi ra mắt đã làm nhiều đối thủ khác phải dè chừng. 
+Ra mắt với phiên bản thử nghiệm vào tháng 6/2015. Shopee được định hướng là sàn thương mại điện tử phát triển chủ yếu trên thiết bị di động. Hoạt động như một mạng xã hội phục vụ nhu cầu mua bán mọi lúc, mọi nơi cho người dùng. 
+Các bạn hãy cùng tôi điểm qua một số đặc điểm nổi bật của trang thương mại điện tử Shopee so với các nền tảng khác nha. Đó là: 
+- Shopee cho phép người dùng liên hệ với người bán trực tiếp thông qua hộp chat. Ngay khi bạn có thắc mắc hay câu hỏi bạn có thể nhắn tin cho người bán hàng để họ giải quyết vấn đề của bạn. 
+- Shopee tăng cường nâng cấp app dành cho điện thoại. Đặc điểm này của Shopee giúp người dùng có trải nghiệm mua sắm nhanh và có tính trực quan cao hơn. 
+- Shopee đảm bảo đơn hàng cho người bán và đảm bảo quyền lợi cho người mua. Người dùng có thể nhận hàng, kiểm tra và thanh toán. Ngoài ra, người mua cũng có quyền trả hàng, nhận hoàn tiền với những đơn hàng sai hoặc không đúng mẫu mã.
+- Shopee có hệ thống vận chuyển tích hợp. Với giải pháp này, người mua có thể lựa chọn nhà cung cấp dịch vụ giao hàng theo ý muốn. 
+- Shopee miễn phí sử dụng cho người dùng. Tức là người dùng có thể truy cập thoả thích vào ứng dụng hay trang web mà không giới hạn hay phải mua tài khoản vip như một số ứng dụng khác. 
+Shopee chính thức ra mắt tại thị trường thương mại điện tử Việt Nam vào ngày 8/8/2016. 
+Sau 5 năm ra mắt ở thị trường Việt, dù đi sau đối thủ nhưng Shopee đã chiếm được lòng tin của rất nhiều người dùng. Mới đây, trong một cuộc khảo sát ở Thành phố Hồ Chí Minh và Hà Nội, khi lựa chọn nền tảng thương mại điện tử để mua sắm trực tuyến thì có tới 80% người được hỏi đã chọn Shopee. Với lượng truy cập dẫn đầu 11 quý liên tiếp, Shopee ngày càng khẳng định sự thống trị của mình trên thị trường mua sắm trực tuyến.
+Với sự thay đổi nhanh chóng của người tiêu dùng trong thói quen mua sắm trực tuyến sau đại dịch Covid, thương mại điện tử tiếp tục tiến bước vững chắc và duy trì được sự phát triển nhanh và bền vững. Theo đánh giá của Bộ Công thương, năm 2022, quy mô thị trường thương mại điện tử ngành bán lẻ Việt Nam ước đạt 16,4 tỷ USD, chiếm 7,5% doanh thu hàng hóa và dịch vụ tiêu dùng của cả nước.
+Và cho tới quý I năm 2023 vừa qua, gã khổng lồ Shopee vẫn tiếp tục dẫn đầu trong thị trường thương mại điện tử ở Việt Nam 
+Mới đây, nền tảng số liệu thương mại điện tử Metric đã công bố Báo cáo thị trường thương mại điện tử quý I năm 2023. Theo đó, tổng doanh thu bán hàng của 5 sàn thương mại điện tử lớn nhất Việt Nam hiện nay, gồm: Shopee, Lazada, Tiki, Sendo, TikTok Shop đạt 39.000 tỷ đồng trong 3 tháng đầu năm nay.
+So với cùng kỳ năm ngoái, tỷ lệ tăng trưởng doanh thu toàn thị trường tăng 21,8%, trong đó có 412.769 người bán phát sinh đơn hàng với hơn 390 triệu sản phẩm được giao thành công.
+Shopee đứng đầu thị trường khi chiếm tới 63,1% thị phần tổng doanh thu của 5 sàn thương mại điện tử. Trong đó doanh thu bán hàng trên nền tảng này vượt 24.700 tỷ đồng với 289,7 triệu sản phẩm được giao thành công từ 211.609 người bán. Chúng ta có thể thấy, số lượng vượt xa so với sàn đứng hạng hai 
+Vậy tại sao Shopee thống lĩnh thị trường thương mại điện tử Việt Nam.
+Đầu tiên, Shopee đã rất nhạy bén khi xác định ứng dụng di động là “đấu trường” chính ngay từ
+Đầu tiên, Shopee đã rất nhạy bén khi xác định ứng dụng di động là “đấu trường” chính ngay theo nghiên cứu của Google và Temasek, thời gian sử dụng Internet trên các thiết bị di động tại Đông Nam Á là cao nhất trên khu vực, lên tới 3,6 giờ/ngày/người. Hơn nữa, người dùng ứng dụng có xu hướng trung thành hơn và chi nhiều tiền hơn cho mỗi đơn hàng so với người dùng web.
+Thứ hai, Shopee có những chiến lược truyền thông rất đáng học hỏi. 
+Shopee tập trung truyền thông trên các nền tảng lớn và phổ biến ở Việt Nam như trên trạng mạng xã hội hàng đầu Facebook, trên nền tảng chia sẻ video trực tuyến phổ biến nhất như Youtube. Cùng với đó là xuất hiện nhiều trên các phương tiện giao thông công cộng, TV đẩy mạnh 3 chiến dịch chủ lực là: chiến lược sử dụng người nổi tiếng; miễn phí vận chuyển; slogan ngắn gọn, dễ nhớ nhưng nghe rất bắt tai thay đổi mới mẻ liên tục mang về cho shopee danh hiệu Thánh Bắt Trend. Ngoài ra những chiến dịch sale vào những dịp lễ quan trọng, dịp cuối năm cũng được Shopee triển khai thường xuyên và đều đặn giúp gia tăng lượng khách hàng.
+Thứ ba, Đa dạng về chất lượng và giá cả.
+Sự tham gia nhiều của người bán cùng các nguồn hàng khác nhau, chất lượng sản phẩm trên Shopee cũng rất đa dạng. Tạo nên nhiều sự lựa chọn cho các đối tượng khách hàng khác nhau. Đặc biệt với Shopee Mall thì người mua có thể an tâm tuyệt đối về chất lượng, bởi đây là sân chơi của các thương hiệu chính hãng
+Đây cũng là những ưu điểm khi bạn lựa chọn bán sản phẩm của mình trên một sàn thương mại đã có sẵn một lượng khách hàng khổng lồ như vậy. Tuy nhiên, mức độ canh tranh khi Shopee vô cùng đa dạng cũng rất cao. Nên chúng ta cần có đủ kiến thức để trở nên nổi bật 
+## Section 3: Bán hàng trên Shopee
+### Subsection 3.1: Các bước để xây dựng một gian hàng trên Shopee
+Nội dung thứ 2 trong khóa học này các bạn hãy cùng tôi lần lượt tìm hiểu các bước để có thể đăng ký bán hàng và thiết lập cho gian hàng của mình trên sàn thương mại điện tử Shopee nha. 
+Tuy shopee dành cho người mua hàng chủ yếu là trên app điện thoại nhưng để dễ dàng cài đặt thiết lập và tối ưu việc bán sản phẩm thì người bán nên sử dụng web Shopee trên máy tính, laptop vào Kênh Người Bán để thao tác. Sau khi đã hoàn thành các bước như khoá học ngày hôm nay tôi chia sẻ, bạn có thể dùng điện thoại để vào xem lại gian hàng cùng các sản phẩm mình đăng bán đã trở nên hấp dẫn hơn chưa nhé.
+Việc đầu tiên để có thể bán các sản phẩm của mình trên shopee thì chúng ta cần phải đăng ký gian hàng. Những bước đầu tiên trong việc bắt đầu bán hàng trên Shopee bạn cũng nên cẩn thận, tỉ mỉ bởi đây cũng là một trong những yếu tố giúp bạn tối ưu được gian hàng của mình.
+Như đã nói trên, các bước thiết để tạo một gian bán hàng sau đây chúng ta sẽ truy cập vào Kênh Người Bán của shopee. Chúng ta sẽ truy cập web shopee bằng máy tính với địa chỉ web là banhang.shopee.vn 
+Bước 1: Chúng ta vào kênh người bán 
+Nếu không muốn tìm địa chỉ web như trên thì bạn có thể chọn cách khác đó là sau khi đã có tài khoản Shopee, tại giao diện của trang web mua hàng, bạn hãy click chọn mục kênh người bán ở trên cùng góc bên phải của màn hình. 
+Bước 2: Đăng ký gian hàng
+Sau khi chúng ta đã truy cập vào kênh người bán, nếu bạn chưa có gian hàng trên Shopee, thì ngay lập tức hệ thống sẽ hiển thị cho bạn giao diện như hình. Bạn hãy ấn nút “Đăng ký” để bắt đầu tiến hành đăng ký gian hàng nhé
+Bước 3: Bước cuối cùng này là cung cấp thông tin cửa hàng
+Tới bước này, bạn nên cẩn thận trong việc đặt thông tin cửa hàng: 
+Đầu tiên là tên shop thì bạn nên đặt tên shop sao cho đúng với quy định của Shopee. Bên cạnh đó, đặt tên nổi bật, dễ nhớ và đúng với sản phẩm muốn bán là những yếu tố cần thiết khi đặt tên đồng thời cũng gây ấn tượng với khách hàng của bạn 
+Tiếp theo là địa chỉ lấy hàng: Bạn hãy nhập đúng địa chỉ cửa hàng hay kho bán hàng của bạn. Đây là nơi mà bạn sẽ tập kết hàng hóa và đóng đơn, giao sản phẩm cho khách hàng. 
+Với Email thì Để tiếp nhận thông tin khi bán hàng và giải quyết các vấn đề khi xảy ra một cách thuận tiện hơn. Bạn hãy lập một email riêng dành cho shop để phục vụ công việc bán hàng. 
+Cuối cùng là Số điện thoại: Bạn có thể sử dụng số điện thoại cá nhân. Tuy nhiên, để tạo điều kiện thuận lợi nhất cho việc tiếp nhận và xử lý các vấn đề khi bán hàng, bạn cũng có thể dùng số điện thoại riêng cho gian hàng shopee của bạn 
+Sau khi chúng ta đã hoàn thành tất cả các thông tin cần thiết, hãy bấm “Lưu” ở góc dưới của màn hình phía bên phải và chọn “Tiếp tục” để đi tới bước tiếp theo nhé
+Bạn có thể cập nhật thông tin cửa hàng, xem xét chỉnh sửa tên cho phù hợp nếu muốn đổi sang lĩnh vực kinh doanh khác.
+Ở mục tiếp theo, chúng ta nên lưu ý là khi thêm ảnh đại diện và ảnh bìa cho shop của mình thì hình ảnh đó cần mô tả đúng và khái quát về mặt hàng bạn đang kinh doanh. Nên cân nhắc làm sao để giúp khách hàng có thể nhận ra được loại sản phẩm bạn đang bán là gì nhé.
+Sau khi đã đăng ký một cửa hàng riêng cho mình và cập nhật thông tin cơ bản, chúng ta đi vào giai đoạn tiếp theo đó là tìm hiểu chi tiết những thiết lập quan trọng cho cửa hàng Shopee nhé. 
+Về Thiết lập địa chỉ lấy, trả hàng thì đây là địa chỉ để người giao hàng bên đối tác Shopee đến lấy hàng đi giao cho khách của bạn hoặc là trả hàng lại cho bạn trong trường hợp khách không nhận hàng 
+Tiếp theo bạn nên bật chế độ Cho phép khách hàng gọi trực tiếp để có thể nhanh chóng giải quyết thắc mắc hoặc vấn đề cho khách hàng của mình. Từ đó dễ dàng hơn trong việc giữ lại một số lượng khách quen 
+Ở chế độ Bảo vệ tài khoản chúng ta cũng nên Bật chế độ này lên để bảo mật cửa hàng của bạn tốt hơn. Tránh những trường hợp sau này đã có số lượng khách hàng nhất định mà lại bị mất tài khoản thì rất đáng tiếc
+Về Chế độ tạm nghỉ này thì Hãy hạn chế áp dụng chế độ , vì bây giờ rất nhiều doanh nghiệp chăm sóc khách hàng 24/24, mình nên tối ưu nhất có thể mảng chăm sóc khách hàng. 
+Ở trong Thiết lập trợ lý chat Shopee trả lời tự động thì tính năng trợ lý chat của Shopee để trả lời khi bạn không có mặt trực tuyến và bạn sẽ phản hồi sau. Đây là tính năng rất thông minh của Shopee, chúng ta có thể cài đặt sẵn câu trả lời kèm thông tin liên lạc gấp như địa chỉ bán trực tiếp, số điện thoại để khách hàng có thể liên lạc khi cần thiết. Chúng ta có thể chèn những icon để đoạn chat thú vị hơn, dãn cách dòng để rõ ràng từng thông tin. Ví dụ như đoạn chat đang hiện trên màn hình. 
+Song song đó, chúng ta có thể thiết lập Tin nhắn tự động ví dụ như “Chào mừng khách hàng đã ghé thăm shop”, “Chương trình khuyến mãi”... để nhắc nhở khách hàng mỗi đợt khuyến mãi. Tăng phần trăm quay lại mua hàng của khách hàng
+Phần thiết lập Hỏi - Đáp Vẫn trong phần chat, chúng ta có thể đề phòng bằng cách thiết lập trước những câu hỏi thường gặp và đưa sẵn câu trả lời mẫu để rút ngắn thời gian chăm sóc khách hàng 
+Khi đã có những tin nhắn sẵn, chúng ta thiết lập thêm Phím tắt tin nhắn để có thể trả lời khách hàng nhanh nhất.
+Thiết lập quyền riêng tư thì chúng ta có thể Bật/tắt tính năng ẩn lượt thích và bình luận tuỳ vào trường hợp bạn muốn
+Chế độ cho phép khách hàng trả giá: Đây là tính năng các cửa hàng thường tắt, bạn nên cân nhắc chế độ này né .
+Về phần cài đặt vận chuyển thì sàn thương mại điện tử Shopee có liên kết với khá nhiều các đối tác vận chuyển để người mua chọn đơn vị thích hợp. Bạn có thể chọn 1 hoặc nhiều đơn vị vận chuyển cho cửa hàng của mình và bạn cũng có thể cài đặt giao hàng hoả tốc cho những khách hàng ở trong khu vực nếu sản phẩm của bạn phù hợp. 
+Cuối cùng là Thiết lập thanh toán: Chúng ta có thanh toán qua tài khoản ngân hàng, ví điện tử, thẻ tín dụng... để Shopee thanh toán về tài khoản của chủ gian hàng. Bạn có thể rút tiền từ doanh thu đơn hàng trên Shopee qua tài khoản đã đăng ký.
+Chúng ta đã điểm qua tất cả những thiết lập cần thiết ở trên, các bạn có thể mở phần thiết lập trên cửa hàng của mình để kiểm tra lại và làm theo tôi đã hướng dẫn. Ở phần thiết lập cho trả lời tin nhắn từ tin nhắn trả lời khách hàng đến tin nhắn tự động thì đều là yếu tố tương tác trực tiếp giữa gian hàng chúng ta với khách hàng nên chúng ta cần cẩn thận đồng thời sáng tạo để thu hút, giữ chân khách hàng 
+Sau khi đã đăng thiết lập cơ bản cho gian hàng của mình. Tiếp đó, để thu hút người mua đến với từng sản phẩm của chúng ta thì Shopee đã có chức năng trang trí gian hàng giúp người bán hàng có thể tuỳ chỉnh thiết kế, sắp xếp và trang trí gian hàng của mình. Điều này khiến gian hàng cho đến mỗi sản phẩm đều đẹp hơn, nổi bật và giới thiệu sản phẩm một cách ấn tượng nhất với khách hàng. Đây cũng là những lợi thế từ việc bán hàng online trên sàn thương mại. 
+Trước hết, chúng ta hãy đăng tất cả sản phẩm của mình lên và chia chúng thành từng danh mục sản phẩm thích hợp. Việc tạo danh mục sản phẩm sẽ giúp khách hàng dễ dàng tìm kiếm sản phẩm đang tìm mua, tổng quan được những loại sản phẩm mà gian hàng mình có, làm nổi bật những sản phẩm chủ lực và thuận tiện cho việc trang trí gian hàng
+Sau khi hoàn thành bạn hãy cũng tôi thiết kế giao diện trang chủ cửa hàng Shopee để khách hàng có ấn tượng với cửa hàng hơn của mình nhé. 
+Để có thể thao tác thiết kế thì chúng ta tiếp tục sử dụng máy tính vào Kênh người bán trên web sau đó chọn Quản lý Shop rồi lướt xuống dưới ấn vào mục Trang trí Shop. Chọn Trang Trí Shop trong Kênh Người Bán sau đó Chọn Chỉnh sửa trang trí để bắt đầu thiết kế trang chủ Shop. 
+Sau khi ấn thì giao diện trang trí shop sẽ hiện ra với 5 phần chính là Bảng thiết kế, Bản mẫu, Bản phác thảo, Bảng chi tiết, Thanh điều hướng.
+Vị trí được đánh dấu số 1 trên hình là bảng thiết kế 
+Khung đánh dấu số 2 mà chúng ta thấy là Bản Mẫu ở đây là một số mẫu thiết kế để bạn áp dụng cho trang chủ của Shop.
+Số 3 này là Bảng phác thảo. Chúng ta có thể xem hiển thị các thiết kế trong Shop và thao tác thiết kể diễn ra ở ở đây.
+Những nút ở ô số 4 là thanh điều hướng giúp chúng ta chỉnh sửa và sắp xếp thứ tự hiển thị hình ảnh.
+Còn ở số 5 là Bảng chi tiết giúp chúng ta tùy chỉnh từng mục thiết kế bằng cách thêm hình ảnh, sản phẩm và những yếu tố khác 
+Khi bạn thêm thiết kế mới thì hãy chọn 1 mục trong bảng thiết kế để thêm vào bảng phác thảo. Rồi thao tác như hình minh hoạ trên 
+Để chỉnh sửa thiết kế bạn hãy chọn một mục trong bảng phác thảo để mở bảng chi tiết của mục đó. Rồi thêm hình ảnh, đường dẫn từ trang sản phẩm hoặc Danh mục trong Shop. Sau khi đã ưng ý thì ấn chọn lưu. Một điều lưu ý đó là bạn hãy chọn hình ảnh đúng kích thước yêu cầu của mỗi mục thiết kế để hình ảnh được đẹp và đầy đủ thành phần hơn nhé 
+Sau khi đã hài lòng với bản thiết kế cho gian hàng, ở bước hoàn tất trang trí Shop.
+Chúng ta chọn Xem trước thiết kế trước khi hoàn tất để đảm bảo không còn sai sót gì. Sau đó bạn có thể chọn Lưu để lưu bản phác thảo hoặc chọn Áp dụng để đăng ngay lập tức bản thiết kế vừa tạo. Và trang chủ của Shop sẽ được cập nhật trong vòng 15 phút.
+Trên đây tôi đã nói về các bước để trang trí gian hàng của bạn chỉnh chu, tạo độ chuyên nghiệp và uy tín khi khách hàng xem sản phẩm. Và để gian hàng trở nên đẹp hơn, sinh động kích thích khách hàng thanh toán sản phẩm thì tôi sẽ điểm qua một số típ mà bạn cần lưu ý khi thiết kế gian hàng nhé. 
+Thứ nhất: Sử dụng một tone màu và một font chữ cho cả gian hàng
+Khi bạn sử dụng một tone màu và một phông chữ sẽ sự thể hiện tính thống nhất thương hiệu của bạn, việc sử dụng nhiều phông chữ gây lộn xộn, khó chịu và không thể hiện được sự chuyên nghiệp. Điều này sẽ giúp gian hàng của bạn trở nên khác biệt và nổi bật hơn so với các đối thủ cạnh tranh của mình. Ví dụ như hình minh hoạ vô cùng đều màu thuận mắt ở trên 
+Thứ hai là hãy luôn có banner về thương hiệu
+Banner thương hiệu để giới thiệu về shop của bạn, những sản phẩm, dịch vụ mà bạn đang cung cấp. Thông tin này sẽ giúp bạn xây dựng được niềm tin và mối quan hệ với khách hàng của mình từ đó kích thích nhu cầu đối với các sản phẩm, dịch vụ của bạn. Vậy nên hãy luôn chú ý và nên thay đổi banner liên tục theo ngày lễ, chương trình giảm giá để làm mới mẻ gian hàng của bạn nhé 
+Thứ ba là Danh mục sản phẩm nổi bật
+Khách hàng thường có xu hướng tìm đến những sản phẩm nổi bật như: Sản phẩm bán chạy, Sản phẩm mới,… Khi nhìn danh sách này khách hàng sẽ tham khảo nhanh chóng những sản phẩm được mua nhiều, để có cái nhìn tổng quan và đánh giá về chất lượng, giá thành sản phẩm trong shop của bạn.
+Và tôi khuyến khích bạn nên sáng tạo thêm ý tưởng để trang trí gian hàng độc đáo và hấp dẫn. 
+### Subsection 3.2: Tối ưu gian hàng trên Shopee
+Sau khi chúng ta đã biết thiết lập gian hàng và trang trí gian hàng một cách thu hút thì, chúng ta cùng đi đến giai đoạn quan trọng nhất của việc tối ưu gian hàng, thúc đẩy số lượng đơn bán ra đó là Tối ưu hóa sản phẩm. 
+Định nghĩa tối ưu hóa sản phẩm là việc nghiên cứu các hành vi và tâm lý của người dùng để nâng cấp hình ảnh, nội dung, từ khóa cho sản phẩm.
+Vậy ưu điểm của việc tối ưu hoá sản phẩm trên sàn thương mại điện tử Shopee là gì. Đó là sẽ giúp Tăng độ hiển thị sản phẩm để có lượng khách hàng tiếp cận nhiều hơn. Cũng giúp Giảm thiểu lượng tin nhắn, Chat người mua để tích kiệm thời gian chăm sóc khách hàng. Song song đó là Giảm thiểu phát sinh khiếu nại từ Người Mua sau khi nhận hàng. Bên cạnh đó cũng giúp chúng ta Tuân thủ Quy định về Đăng bán của Shopee để tránh bị hạn chế sản phẩm hoặc bị tạm ngưng hoạt động 
+Bây giờ chúng ta sẽ đi vào tìm hiểu từng yếu tố của việc tối ưu hoá sản phẩm nhé
+Yếu tố thứ nhất là Hình ảnh Sản Phẩm. Hình ảnh là thứ tiếp cận khách hàng đầu tiên đối với Shop của bạn giúp thu hút khách hàng truy cập vào shop cũng như tăng tỷ lệ chuyển đổi bán hàng nên nó vô cùng quan trọng và bạn cần tỉ mỉ thiết kế. Chúng ta sẽ sử dụng Kích thước:
+- Từ 500x500 đến 1000x1000 pixels
+- Yêu cầu ảnh là hình vuông
+Và Định dạng của hình ảnh sẽ là
+- PNG/ JPEG
+Hình ảnh cũng cần được sắp xếp, phân bố hợp lý, thuận mắt và đầy đủ chi tiết những yếu tố thu hút khách hàng nên Phân bổ hình ảnh sản phẩm sẽ bao gồm: 
+- Ảnh bìa sản phẩm cần có 1 trong 3 yếu tố sau là chương trình khuyến mãi; Chính sách bảo hành; Thông tin sản phẩm
+- Ảnh mô tả sản phẩm thì chúng ta cần chụp chi tiết ví dụ như góc cận, góc cận cảnh góc nghiêng, trước sau, trong ngoài, vân vân 
+Bên cạnh đó chúng ta cũng có thể sử dụng hình ảnh hướng dẫn sử dụng hoặc tác dụng sản phẩm và có thể sử dụng những từ chuyên ngành kết hợp với từ phổ thông để tạo niềm tin cho khách hàng và tạo sự uy tín cho chất lượng sản phẩm
+Tôi sẽ nhắc lại một số những lưu ý về tối ưu hình ảnh sản phẩm như sau 
+ Không sử dụng quá nhiều tiếng Anh, tiếng nước ngoài, như vậy sẽ làm giảm trải nghiệm của khách hàng. Hãy Sử dụng đồng nhất toàn bộ sản phẩm về bố cục, màu sắc cho shop của bạn và Chọn màu sắc, hình ảnh sản phẩm bán chạy nhất để làm ảnh bìa sản phẩm
+Tiếp theo đến Yếu tố thứ hai chúng ta sẽ đi đến Tiêu đề sản phẩm
+Để tên sản phẩm chuyên nghiệp, các bạn nên nắm vững quy tắc đặt tên sản phẩm Shopee và tham khảo cách đặt tên sản phẩm Shopee theo công thức tôi đưa ra dưới đây :
+Đối với Tên sản phẩm có thương hiệu: chúng ta có công thức 
+Tên sản phẩm là sự kết hợp từ Loại sản phẩm cộng Thương hiệu cộng Tên hoặc Mã sản phẩm cộng Mô tả sản phẩm
+Ví Dụ: Smart Tivi TCL 4K 55 inch L55U50 – Hàng chính hãng
+Đối với tên sản phẩm không có thương hiệu công thức sẽ là 
+Tên sản phẩm bằng với Loại sản phẩm cộng Mô tả sản phẩm
+chúng ta có Ví dụ: Xốp dán tường giả gạch kích thước 70 x 77 cm
+Sang đến Yếu tố thứ ba là ngành hàng và thuộc tính sản phẩm 
+Ở phần ngành hàng thì chúng ta đăng tải sản phẩm đúng với ngành hàng sẽ giúp người mua dễ dàng tìm thấy sản phẩm trong gian hàng khi họ tìm kiếm mục của ngành hàng đó hoặc tìm kiếm với từ khoá của ngành hàng đó.
+Ở phần thuộc tính sản phẩm khi chúng ta điền đầy đủ sẽ giúp Người mua hiểu rõ hơn về sản phẩm khi sản phẩm có thông tin thuộc tính rõ ràng và minh bạch đồng thời sẽ giúp tăng khả năng hiển thị của sản phẩm của chúng ta trên thanh công cụ tìm kiếm.
+Yếu tố thứ 4 cũng là yếu tố cuối cùng trong khóa học ngày hôm nay là Mô tả sản phẩm
+Ở phần Mô tả sản phẩm này sẽ bao gồm những thông tin giới thiệu đặc tính chất lượng, chức năng, lợi ích, vân vân của một sản phẩm được đăng tải trên Shopee nhằm mang đến cho Người mua các thông tin đầy đủ về sản phẩm để họ có cơ sở lựa chọn khi mua hàng của bạn. Khách hàng thường rất chú trọng phần mô tả cho nên chúng ta cần chú trọng phần mô tả sản phẩm này. Tôi sẽ hướng dẫn các bạn tối ưu 3 thành phần sau đây:
+- Đầu tiên là Thông số kỹ thuật: thì các thông số kỹ thuật chi tiết của sản phẩm ví dụ như chất liệu, trọng lượng, kích thước và các đặc tính khác chúng ta nên ghi càng chi tiết càng tốt, tránh trường hợp khách hàng lựa chọn sản phẩm không phù hợp dẫn đến những kiếu nại hoặc không hài lòng
+- Tiếp đến chúng ta hãy đưa ra những ưu điểm, công dụng của sản phẩm như là Giải thích tính năng, lợi ích và hướng dẫn sử dụng sản phẩm của Shop.
+Cuối cùng là hậu mãi và chính sách bảo hành ví dụ như Chính sách đổi trả, tình trạng sản phẩm, các linh kiện trong hộp sản phẩm. Đây là điều khá nhiều khách hàng quan tâm đồng thời cũng nâng cao sự uy tín của gian hàng chúng ta 
+Những yếu tố tôi vừa chia sẻ ở trên là những yếu tố tưởng như đơn giản nhưng nhiều gian hàng không tìm hiểu kĩ, không tỉ mỉ chăm chút cho sản phẩm dẫn đến việc chưa đạt được hiệu quả, số lượng sản phẩm bán ra không nhiều dẫn đến doanh thu tụt giảm. Mong là sau những chia sẻ trên, các bạn có thể kiểm tra lại gian hàng của mình và tối ưu việc bán hàng của mình trên sàn thương mại điện tử 
+Điều cuối cùng và cũng là điều tôi cảm thấy vô cùng quan trọng không chỉ giúp mở rộng khối lượng khách hàng mà còn có thể khiến họ thành khách hàng quen thuộc đó là dịch vụ chăm sóc khách hàng. 
+Khi đã kinh doanh dù bạn dùng bất cứ hình thức nào thì dịch vụ chăm sóc khách hàng tốt cũng là yếu tố hàng đầu để giữ chân khách hàng của bạn. 
+Ví dụ nếu bạn liên tục Chú ý đến đánh giá của khách hàng và phản hồi hợp lý; Chú ý cập nhật tồn kho và nhanh chóng điều chỉnh ,... thì sự cẩn thận của bạn sẽ là điều khiến khách hàng quay lại ủng hộ bạn nhiều lần
+Bán hàng trên shopee hay bất kỳ sàn thương mại điện tử nào thì việc có được đánh giá tốt của khách hàng về sản phẩm vô cùng quan trọng. Vì thói quen của khách hàng thường sẽ xem những đánh giá từ người mua trước đó có tốt hay không để đi đến quyết định mua hàng nên gian hàng của bạn trên shopee rất cần những đánh giá tốt, những lời phản hồi tốt. Bên cạnh đó lượt khách hàng đánh giá tốt, cho nhiều sao thì theo thuật toán của shopee cũng sẽ được đẩy lên cao hơn. Từ đó shop bạn sẽ trở nên uy tín và có tỉ lệ ra đơn hiệu quả hơn.
+Một trường hợp nữa mà chủ gian hàng shopee cần lưu ý là khi khách đặt mà shop không có hàng thực, không giao được cho ship vận chuyển đi thì gian hàng sẽ bị shopee phạt tiền, đánh tụt thứ hạng tìm kiếm, thậm chí hậu quả nghiêm trọng nhất là buộc đóng cửa gian hàng. Điều này sẽ xảy ra nếu chủ shop không cẩn thận, bỏ sót cập nhật tồn kho sản phẩm hoặc cập nhật tồn kho số lượng không đúng với thực tế. Hơn thể là điều này sẽ đem đến cho khách hàng cái nhìn tệ về sự cẩn thận của gian hàng. 
+Cách để giúp đồng bộ tồn kho nhanh, tự động và chính xác khi bán hàng trên Shopee mà nhiều nhà bán hàng online sử dụng là Phần mềm Quản lý Bán hàng. Hỗ trợ giảm trừ tồn kho hiệu quả, đăng nhiều sản phẩm mới cùng lúc lên gian hàng shopee thay vì đăng thủ công từng sản phẩm một và còn nhiều tình năng khác dành cho chủ shop kinh doanh trên shopee. Hiện nay có khá nhiều phần mềm quán lý bán hàng trên thị trường, bạn có thể dễ dàng tìm kiếm trên google hoặc tham khảo những chủ cửa hàng khác.
+## Section 4: Bài tập và lời kết 
+### Subsection 4.1: Bài tập và lời kết 
+Để hoàn thiện khoá học Tối ưu bán hàng trên Shopeee ngày hôm nay. Tôi sẽ đưa cho các bạn một bài test nhỏ để các bạn có thể thực hành ngay sau khi học. 
+Đề bài thứ nhất tôi đưa ra là bạn hãy thiết kế một gian hàng hoàn thiện đầy đủ các bước với Avatar, ảnh bìa và hệ thống hình ảnh các sản phẩm theo chủ đề Tết 2024. 
+Các bạn hãy dựa vào những kiến thức tôi đã đưa ra ở trên và bắt tay vào tối ưu sản phẩm ngay nhé. Hãy ôn tập lại từng yếu tố như là hình ảnh cần kích thước ra sao, đồng bộ các hình ảnh như thế nào, phần mô tả ghi những gì? 
+Đề bài thứ hai tôi đưa ra là hãy quay một video quảng cáo hoặc mô tả chi tiết sản phẩm của bạn và mở livestream trong chương trình giảm giá sắp tới của Shopee nhé. 
+Xu hướng của người bán hàng trên các nền tảng trực tuyến hiện nay là ngoài hình ảnh còn đầu tư quay những video sản phẩm để thu hút khách hàng và tạo độ chuyên nghiệp cho gian hàng. Đồng thời livestream để tương tác trực tiếp với khách hàng và đưa ra ưu đãi. Đây là những hoạt động đang rất thu hút người mua hàng online mà nhiều shop online đã thực hiện. Bạn hãy học hỏi và phát triển gian hàng của mình theo xu thế nhé. 
+Chúc các bạn hoàn thành thật tốt bài tập này và có ngay một bản thiết kế gian hàng thật tuyệt vời
+Bên cạnh những điều tôi đã chia sẻ trong khóa học thì các bạn có thể mua những gói Quảng cáo của Shopee để tăng lượt hiển thị và lên top. 
+Có nhiều gói quảng cáo khác nhau được Shopee tung ra để giúp gian hàng của bạn lên top. Thông thường sẽ là các dịch vụ như đấu thầu từ khóa, gói vàng, bạc, đồng giúp lên trang chủ trong một số ngày nhất định. Hoặc đuổi theo khách hàng khi đã click vào sản phẩm của shop bạn trên các nền tảng khác nhau như Facebook, Youtube, báo chí,.. Tuy nhiên, nhược điểm là các gói này sẽ không bền, chỉ trong một khoảng thời gian. Chủ shop vẫn nên tối ưu gian hàng, tận dụng lượt search tự nhiên để vừa tiết kiệm chi phí và vừa có lượt mua đều đặn. Nên sử dụng gói quảng cáo để đẩy hàng trong những đợt khuyến mãi nhất định
+Và một mẹo nhỏ nữa đó là Bạn nên tham gia các chương trình sale này để có thể gia tăng doanh thu và tăng độ uy tín của shop mình.
+Shopee là sàn mua sắm và bán hàng với rất nhiều ngày hội sale lớn nhỏ, theo tháng hoặc theo khung giờ. Bạn có thể tạo ra những sản phẩm dẫn cho cửa hàng của mình bằng cách tạo ra một vài sản phẩm với giá cực rẻ, gần như có thể không được lời hay thậm chí lỗ. Thế nhưng, khi khách hàng kích vào mua sản phẩm của bạn thì có xu hướng sẽ xem và mua thêm vài sản phẩm khác để đủ số tiền tối thiểu nhằm được miễn phí ship. Nhờ phương pháp bán chéo đó mà bạn có thể được thu thêm lợi nhuận từ những sản phẩm khách hàng mua kèm. Bên cạnh đó, số lượng đơn hàng của sản phẩm đó tăng càng cao thì đồng nghĩa shop của bạn nhận được sự tin tưởng và đề xuất cao trong thứ hạng tìm kiếm của Shopee.
+Từ những kiến thức và bí kíp tôi chia sẻ trong khoá học Tối ưu bán hàng trên Shopee ngày hôm nay. Hy vọng bạn sẽ áp dụng được những kỹ năng và phương pháp trên để tối ưu gian hàng của mình. Chúc các bạn thành công. 
+Chúng ta đang cùng học tại Onlinica.

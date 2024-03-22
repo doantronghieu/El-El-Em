@@ -46,11 +46,12 @@ class MyAgent:
         )
 
         self.message_history = histories.ChatMessageHistory()
-        self.agent_with_chat_history = runnables.RunnableWithMessageHistory(
+        self.agent_executor_conversable = runnables.RunnableWithMessageHistory(
             self.agent_executor,
             lambda session_id: self.message_history,
             input_messages_key="input",
-            history_messages_key="chat_history"
+            output_messages_key="output",
+            history_messages_key="chat_history",
         )
 
     def _create_agent(self):
@@ -64,6 +65,6 @@ class MyAgent:
 
     def invoke_agent(self, input_message):
         config = {"configurable": {"session_id": self.session_id}}
-        return self.agent_with_chat_history.invoke({"input": input_message}, config=config)['output']
+        return self.agent_executor_conversable.invoke({"input": input_message}, config=config)['output']
 
 
