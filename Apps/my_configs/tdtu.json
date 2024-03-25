@@ -1,0 +1,11 @@
+{
+	"vector_db": {
+		"qdrant_instance_": {
+			"collection_name": "",
+			"default_search_type": "similarity",
+			"default_search_kwargs": { "k": 5 },
+			"retriever_tool_name": "",
+			"retriever_tool_description": ""
+		}
+	}
+}
