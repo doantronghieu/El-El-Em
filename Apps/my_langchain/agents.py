@@ -68,6 +68,9 @@ class MyAgent:
         return self.agent_executor_conversable.invoke({"input": input_message}, config=self.config)['output']
     
     async def invoke_agent_stream(self, input_message):
+        """
+        Usage: await agent.invoke_agent_stream(input_message)
+        """
         async for event in self.agent_executor_conversable.astream_events(
             {"input": input_message}, config=self.config, version="v1"
         ):
