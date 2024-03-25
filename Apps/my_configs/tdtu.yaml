@@ -1,0 +1,12 @@
+vector_db:
+  qdrant_instance_lectures_content:
+    collection_name: ""
+    default_search_type: "similarity"
+    default_search_kwargs:
+      k: 10
+    retriever_tool_name: ""
+    retriever_tool_description: ""
+
+prompts:
+  system_message_onlinica: |
+    prompt
