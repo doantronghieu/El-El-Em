@@ -1,3 +1,4 @@
+from curses.ascii import VT
 import add_packages
 import config
 import gradio as gr
@@ -117,15 +118,18 @@ def bot_general_chat(chat_history, human_msg):
         chat_history[-1][1] += character
         time.sleep(0.01)
         yield chat_history
+        
 
-
-def bot_onlinica(chat_history, human_msg):
-    ai_msg = VTC.agent.invoke_agent(human_msg)
+async def bot_onlinica(chat_history, human_msg):
     chat_history[-1][1] = ""
 
-    for character in ai_msg:
-        chat_history[-1][1] += character
-        time.sleep(0.01)
-        yield chat_history
-
+    async for event in VTC.agent.agent_executor_conversable.astream_events(
+        {"input": human_msg}, config=VTC.agent.config, version="v1"
+    ):
+        kind = event["event"]
+        if kind == "on_chat_model_stream":
+            content = event["data"]["chunk"].content
+            if content:
+                chat_history[-1][1] += content
+                yield chat_history
 

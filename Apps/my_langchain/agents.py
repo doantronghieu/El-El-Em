@@ -38,6 +38,7 @@ class MyAgent:
         self.agent_type = agent_type
         self.llm = llm
         self.session_id = str(uuid.uuid4())  # Generate a UUID for session_id
+        self.config = {"configurable": {"session_id": self.session_id}}
 
         self.agent = self._create_agent()
         self.agent_executor = AgentExecutor(
@@ -64,7 +65,34 @@ class MyAgent:
                 "Invalid agent type. Supported types are 'openai_tools' and 'react'.")
 
     def invoke_agent(self, input_message):
-        config = {"configurable": {"session_id": self.session_id}}
-        return self.agent_executor_conversable.invoke({"input": input_message}, config=config)['output']
+        return self.agent_executor_conversable.invoke({"input": input_message}, config=self.config)['output']
+    
+    async def invoke_agent_stream(self, input_message):
+        async for event in self.agent_executor_conversable.astream_events(
+            {"input": input_message}, config=self.config, version="v1"
+        ):
+            kind = event["event"]
+            if kind == "on_chat_model_stream":
+                content = event["data"]["chunk"].content
+                if content:
+                    # Empty content in the context of OpenAI means
+                    # that the model is asking for a tool to be invoked.
+                    # So we only print non-empty content
+                    print(content, end="")
+                    # yield content
 
 
+"""
+async def bot_APP(chat_history, human_msg):
+    chat_history[-1][1] = ""
+
+    async for event in AGENT_INSTANCE.agent.agent_executor_conversable.astream_events(
+        {"input": human_msg}, config=AGENT_INSTANCE.agent.config, version="v1"
+    ):
+        kind = event["event"]
+        if kind == "on_chat_model_stream":
+            content = event["data"]["chunk"].content
+            if content:
+                chat_history[-1][1] += content
+                yield chat_history
+"""

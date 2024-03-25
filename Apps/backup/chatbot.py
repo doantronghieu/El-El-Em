@@ -120,10 +120,12 @@ def bot_general_chat(chat_history, human_msg):
 
 
 def bot_onlinica(chat_history, human_msg):
-    ai_msg = VTC.agent_executor.invoke({"input": human_msg})["output"]
+    ai_msg = VTC.agent.invoke_agent(human_msg)
     chat_history[-1][1] = ""
 
     for character in ai_msg:
         chat_history[-1][1] += character
         time.sleep(0.01)
         yield chat_history
+
+
