@@ -27,21 +27,21 @@ qdrant_lectures_content = vectorstores.QdrantWrapper(
     qdrant_host=os.getenv("QDRANT_HOST"),
     qdrant_api_key=os.getenv("QDRANT_API_KEY"),
     embeddings=configs_vtc["vector_db"]["embeddings"],
-    **configs_vtc["vector_db"]["qdrant_lectures_content"],
+    **configs_vtc["vector_db"]["qdrant"]["lectures_content"],
 )
 
 qdrant_courses_information = vectorstores.QdrantWrapper(
     qdrant_host=os.getenv("QDRANT_HOST"),
     qdrant_api_key=os.getenv("QDRANT_API_KEY"),
     embeddings=configs_vtc["vector_db"]["embeddings"],
-    **configs_vtc["vector_db"]["qdrant_courses_information"]
+    **configs_vtc["vector_db"]["qdrant"]["courses_information"]
 )
 
 qdrant_faq = vectorstores.QdrantWrapper(
     qdrant_host=os.getenv("QDRANT_HOST"),
     qdrant_api_key=os.getenv("QDRANT_API_KEY"),
     embeddings=configs_vtc["vector_db"]["embeddings"],
-    **configs_vtc["vector_db"]["qdrant_faq"]
+    **configs_vtc["vector_db"]["qdrant"]["faq"]
 )
 
 # *=============================================================================

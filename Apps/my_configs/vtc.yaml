@@ -22,29 +22,30 @@ vector_db:
 
   # default_search_type: similarity, mmr
 
-  qdrant_lectures_content:
-    collection_name: "vtc-lectures-content-2"
-    default_search_type: "mmr"
-    default_search_kwargs:
-      k: 5
-    retriever_tool_name: "lectures_content"
-    retriever_tool_description: "Searches and returns content, knowledge from the lecture scripts based on specialized keywords from user's question like Typography, Lazada, Premiere, Unity ..."
+  qdrant:
+    lectures_content:
+      collection_name: "vtc-lectures-content-2"
+      default_search_type: "mmr"
+      default_search_kwargs:
+        k: 5
+      retriever_tool_name: "lectures_content"
+      retriever_tool_description: "Searches and returns content, knowledge from the lecture scripts based on specialized keywords from user's question like Typography, Lazada, Premiere, Unity ..."
 
-  qdrant_courses_information:
-    collection_name: "vtc-courses-information-2"
-    default_search_type: "mmr"
-    default_search_kwargs:
-      k: 10
-    retriever_tool_name: "courses_information"
-    retriever_tool_description: "Searches and returns information about courses of Onlinica like course name, course category, course link, course description, total number of courses ..."
+    courses_information:
+      collection_name: "vtc-courses-information-2"
+      default_search_type: "mmr"
+      default_search_kwargs:
+        k: 10
+      retriever_tool_name: "courses_information"
+      retriever_tool_description: "Searches and returns information about courses of Onlinica like course name, course category, course link, course description, total number of courses ..."
 
-  qdrant_faq:
-    collection_name: "vtc-faq"
-    default_search_type: "mmr"
-    default_search_kwargs:
-      k: 10
-    retriever_tool_name: "frequently_asked_questions"
-    retriever_tool_description: "Searches and returns answer for frequently asked questions about Onlinica information like accounts, fees, courses, payments, certificates ..."
+    faq:
+      collection_name: "vtc-faq"
+      default_search_type: "mmr"
+      default_search_kwargs:
+        k: 10
+      retriever_tool_name: "frequently_asked_questions"
+      retriever_tool_description: "Searches and returns answer for frequently asked questions about Onlinica information like accounts, fees, courses, payments, certificates ..."
 
 prompts:
   system_message_onlinica: "You are a consultant for an online learning platform called Onlinica. Link: https://onlinica.com/\n  #magic___^_^___line\nYou have the following qualities:\n- Helpful\n- Extremely dedicated and hardworking\n- Professionalism, respect, sincerity and honesty\n- Standard thinking\n- Excellent communication, negotiation and complaint handling skills\n- Excellent sales skills\n- Deep understanding of products/services. Strong knowledge of the industry\n- Optimistic and positive spirit. Ability to create a positive customer experience\n- Sensitive to customers' requests and desires\n  #magic___^_^___line\nYou will help users answer questions about the courses on the platform. The language in which you respond will be the same as the user's language.\n  #magic___^_^___line\nQuestions users might ask and how to answer:\n- Course Information: You MUST list ALL available courses (and their information) that MOST MATCH the user's question.\n- List courses in a certain category: You MUST list about 10 courses in that category. \n- Content and knowledge of the lecture: These questions will often contain specialized keywords such as Typography, Lazada, Premiere, Unity,... You will synthesize information from the scripts of the lectures that contain keywords that major and give detailed answers to users. \n- Frequently asked questions.\n"
