@@ -23,25 +23,25 @@ from langchain_core.prompts import (
 with open("./my_configs/vtc.yaml", 'r') as file:
     configs_vtc = yaml.safe_load(file)
 
-qdrant_instance_lectures_content = vectorstores.QdrantWrapper(
+qdrant_lectures_content = vectorstores.QdrantWrapper(
     qdrant_host=os.getenv("QDRANT_HOST"),
     qdrant_api_key=os.getenv("QDRANT_API_KEY"),
     embeddings=configs_vtc["vector_db"]["embeddings"],
-    **configs_vtc["vector_db"]["qdrant_instance_lectures_content"],
+    **configs_vtc["vector_db"]["qdrant_lectures_content"],
 )
 
-qdrant_instance_courses_information = vectorstores.QdrantWrapper(
+qdrant_courses_information = vectorstores.QdrantWrapper(
     qdrant_host=os.getenv("QDRANT_HOST"),
     qdrant_api_key=os.getenv("QDRANT_API_KEY"),
     embeddings=configs_vtc["vector_db"]["embeddings"],
-    **configs_vtc["vector_db"]["qdrant_instance_courses_information"]
+    **configs_vtc["vector_db"]["qdrant_courses_information"]
 )
 
-qdrant_instance_faq = vectorstores.QdrantWrapper(
+qdrant_faq = vectorstores.QdrantWrapper(
     qdrant_host=os.getenv("QDRANT_HOST"),
     qdrant_api_key=os.getenv("QDRANT_API_KEY"),
     embeddings=configs_vtc["vector_db"]["embeddings"],
-    **configs_vtc["vector_db"]["qdrant_instance_faq"]
+    **configs_vtc["vector_db"]["qdrant_faq"]
 )
 
 # *=============================================================================
@@ -51,9 +51,9 @@ prompt_onlinica = prompts.create_prompt_custom_agent_openai_tools(
     system_message_onlinica)
 
 tools = [
-    qdrant_instance_lectures_content.retriever_tool,
-    qdrant_instance_faq.retriever_tool,
-    qdrant_instance_courses_information.retriever_tool,
+    qdrant_lectures_content.retriever_tool,
+    qdrant_faq.retriever_tool,
+    qdrant_courses_information.retriever_tool,
 ]
 
 llm = chat_models.chat_openai

@@ -1,5 +1,5 @@
 vector_db:
-  qdrant_instance_lectures_content:
+  qdrant_lectures_content:
     collection_name: ""
     default_search_type: "similarity"
     default_search_kwargs:
