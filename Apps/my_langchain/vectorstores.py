@@ -1,10 +1,18 @@
+import add_packages
+import config
+import os
 from loguru import logger
 
 from langchain_community.vectorstores import (
   faiss, qdrant, chroma, docarray
 )
 from langchain_openai import OpenAIEmbeddings
+from langchain_community.embeddings import CohereEmbeddings
+
 from langchain.tools.retriever import create_retriever_tool
+from langchain.retrievers import (
+  ContextualCompressionRetriever, 
+)
 from langchain_core.documents import Document
 
 import qdrant_client
@@ -12,6 +20,7 @@ from qdrant_client.http import models
 
 from pprint import pprint
 from tqdm import tqdm
+from langchain_community.chat_models import ChatCohere
 
 # -------------------------------------------------------------------------------
 doc_array_in_memory_search = docarray.DocArrayInMemorySearch
@@ -79,7 +88,7 @@ class QdrantWrapper:
                 
                 size=1536,
                 distance=models.Distance.COSINE,
-                embeddings=OpenAIEmbeddings(),
+                embeddings="openai", # cohere
                 
                 chain=None,
                 
@@ -108,6 +117,7 @@ class QdrantWrapper:
         distance=distance,
       )
       
+      #*---------------------------------------------------------------------
       if self.collection_name in client_collections:
         logger.info(f"Found collection: `{self.collection_name}`.")
       else:
@@ -117,7 +127,15 @@ class QdrantWrapper:
         )
         logger.info(f"Collection: `{self.collection_name}` created.")
 
-      self.embeddings = embeddings
+      #*---------------------------------------------------------------------
+      logger.info(f"`{self.collection_name}` - Embeddings: {embeddings}")
+      if embeddings == "openai":
+        self.embeddings = OpenAIEmbeddings()
+      elif embeddings == "cohere":
+        self.embeddings = None
+        logger.warning("Not implemented yet")
+      
+      #*---------------------------------------------------------------------
       self.content_payload_key = content_payload_key
       self.metadata_payload_key = metadata_payload_key
       
@@ -129,11 +147,19 @@ class QdrantWrapper:
         metadata_payload_key=metadata_payload_key,
       )
 
-      self.retriever = self.vector_store.as_retriever(
-        search_type=default_search_type,
-        search_kwargs=default_search_kwargs,
-      )
-
+      #*---------------------------------------------------------------------
+      if embeddings == "cohere":
+        logger.info("`{self.collection_name}` - Retriever: Cohere")
+        logger.warning("Not implemented yet")
+        self.retriever = None
+      else:
+        logger.info(f"`{self.collection_name}` - Retriever: Vectorstore")
+        self.retriever = self.vector_store.as_retriever(
+          search_type=default_search_type,
+          search_kwargs=default_search_kwargs,
+        )
+        
+      #*---------------------------------------------------------------------
       self.retriever_tool = create_retriever_tool(
         retriever=self.retriever,
         name=retriever_tool_name,
@@ -141,7 +167,7 @@ class QdrantWrapper:
       )
       
       self.chain = chain
-
+      
   def add_documents(self, docs: list[Document]):
     for doc in tqdm(docs):
       self.vector_store.add_documents([doc])

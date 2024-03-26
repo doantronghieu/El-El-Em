@@ -1,4 +1,3 @@
 from langchain.retrievers.self_query.base import SelfQueryRetriever
-
-
-self_query_retriever = SelfQueryRetriever
+from langchain.retrievers import ContextualCompressionRetriever
+from langchain.retrievers.document_compressors import FlashrankRerank

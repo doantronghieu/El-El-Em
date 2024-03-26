@@ -9,8 +9,7 @@ from my_prompts import (
 )
 
 from my_langchain import (
-    document_loaders, text_splitters, text_embedding_models, vector_stores,
-    chat_models, prompts, utils, output_parsers, agents, documents
+    document_loaders, text_splitters, text_embedding_models, chat_models, prompts, utils, output_parsers, agents, documents, vectorstores
 )
 
 from langchain_core.prompts import (
@@ -24,21 +23,24 @@ from langchain_core.prompts import (
 with open("./my_configs/vtc.yaml", 'r') as file:
     configs_vtc = yaml.safe_load(file)
 
-qdrant_instance_lectures_content = vector_stores.QdrantWrapper(
+qdrant_instance_lectures_content = vectorstores.QdrantWrapper(
     qdrant_host=os.getenv("QDRANT_HOST"),
     qdrant_api_key=os.getenv("QDRANT_API_KEY"),
-    **configs_vtc["vector_db"]["qdrant_instance_lectures_content"]
+    embeddings=configs_vtc["vector_db"]["embeddings"],
+    **configs_vtc["vector_db"]["qdrant_instance_lectures_content"],
 )
 
-qdrant_instance_courses_information = vector_stores.QdrantWrapper(
+qdrant_instance_courses_information = vectorstores.QdrantWrapper(
     qdrant_host=os.getenv("QDRANT_HOST"),
     qdrant_api_key=os.getenv("QDRANT_API_KEY"),
+    embeddings=configs_vtc["vector_db"]["embeddings"],
     **configs_vtc["vector_db"]["qdrant_instance_courses_information"]
 )
 
-qdrant_instance_faq = vector_stores.QdrantWrapper(
+qdrant_instance_faq = vectorstores.QdrantWrapper(
     qdrant_host=os.getenv("QDRANT_HOST"),
     qdrant_api_key=os.getenv("QDRANT_API_KEY"),
+    embeddings=configs_vtc["vector_db"]["embeddings"],
     **configs_vtc["vector_db"]["qdrant_instance_faq"]
 )
 

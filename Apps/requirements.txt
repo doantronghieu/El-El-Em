@@ -43,9 +43,12 @@ langchain-openai
 langchainhub
 langchain-pinecone
 langchain-anthropic
+
 pydantic==1.10.9
 grandalf
 wikipedia
+cohere
+flashrank
 
 # Llama Index
 llama-index
