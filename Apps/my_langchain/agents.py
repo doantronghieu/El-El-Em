@@ -1,5 +1,7 @@
 import uuid
 import add_packages
+from loguru import logger
+
 from my_langchain import histories, runnables
 
 from langchain.agents import (
@@ -56,6 +58,7 @@ class MyAgent:
         )
 
     def _create_agent(self):
+        logger.info(f"Agent type: {self.agent_type}")
         if self.agent_type == "openai_tools":
             return create_openai_tools_agent(self.llm, self.tools, self.prompt)
         elif self.agent_type == "react":

@@ -26,21 +26,21 @@ with open("./my_configs/vtc.yaml", 'r') as file:
 qdrant_lectures_content = vectorstores.QdrantWrapper(
     qdrant_host=os.getenv("QDRANT_HOST"),
     qdrant_api_key=os.getenv("QDRANT_API_KEY"),
-    embeddings=configs_vtc["vector_db"]["embeddings"],
+    configs=configs_vtc,
     **configs_vtc["vector_db"]["qdrant"]["lectures_content"],
 )
 
 qdrant_courses_information = vectorstores.QdrantWrapper(
     qdrant_host=os.getenv("QDRANT_HOST"),
     qdrant_api_key=os.getenv("QDRANT_API_KEY"),
-    embeddings=configs_vtc["vector_db"]["embeddings"],
+    configs=configs_vtc,
     **configs_vtc["vector_db"]["qdrant"]["courses_information"]
 )
 
 qdrant_faq = vectorstores.QdrantWrapper(
     qdrant_host=os.getenv("QDRANT_HOST"),
     qdrant_api_key=os.getenv("QDRANT_API_KEY"),
-    embeddings=configs_vtc["vector_db"]["embeddings"],
+    configs=configs_vtc,
     **configs_vtc["vector_db"]["qdrant"]["faq"]
 )
 
@@ -57,5 +57,7 @@ tools = [
 ]
 
 llm = chat_models.chat_openai
-agent = agents.MyAgent(prompt=prompt_onlinica, tools=tools,
-                       agent_type="openai_tools", llm=llm)
+agent = agents.MyAgent(
+    prompt=prompt_onlinica, tools=tools,
+    agent_type=configs_vtc["agents"]["agent_type_onlinica"], llm=llm
+)
