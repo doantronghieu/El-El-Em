@@ -1,34 +1,10 @@
 # General
-mypy
 python-dotenv
 loguru
-email-validator
 tqdm
 fastapi
 python-dateutil
-alembic
-passlib
-argon2_cffi
-starlette-csrf
-prometheus_fastapi_instrumentator
-
-# Database
-sqlalchemy[asyncio,mypy]
-asyncpg
-aiomysql
-
-# Storage
-minio
-
-# Message Broker
-broadcaster[redis]
-dramatiq[redis]
-
-# HuggingFace
-accelerate
-diffusers
-replicate
-
+gradio
 
 # LangChain
 langchain
@@ -45,7 +21,6 @@ langchain-pinecone
 langchain-anthropic
 
 pydantic==1.10.9
-grandalf
 wikipedia
 cohere
 flashrank
@@ -57,7 +32,7 @@ llama-index-llms-huggingface
 llama-index-embeddings-langchain
 
 bitsandbytes
-gradio
+
 pdf2image
 pdfminer.six
 pypdfium2
@@ -95,7 +70,38 @@ fireworks-ai
 pinecone-client
 datasets
 
+# # Database
+# sqlalchemy[asyncio,mypy]
+# asyncpg
+# aiomysql
+# alembic
+
+# # API
+# starlette-csrf
+# prometheus_fastapi_instrumentator
+
+# # Security
+# passlib
+# argon2_cffi
+
+# email-validator
+
+# # Storage
+# minio
+
+# # Message Broker
+# broadcaster[redis]
+# dramatiq[redis]
+
+# # HuggingFace
+# accelerate
+# diffusers
+# replicate
+
+# # Others
+# grandalf
+
+
 # Cmds
 #  alembic init alembic
 #  alembic revision --autogenerate -m "Initial migration"
-
