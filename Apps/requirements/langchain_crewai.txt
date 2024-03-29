@@ -1,0 +1,42 @@
+# Core
+context-python
+pydantic==1.10.9
+requests
+beautifulsoup4
+
+# Langchain
+langchain
+langchain-core
+langchain-community
+langchain-openai
+langchain-anthropic
+langchain-google-genai
+langchainhub
+langserve[all]
+langchain-cli
+langsmith
+
+
+openai
+
+predictionguard
+
+psycopg2-binary
+
+tiktoken
+
+# Store
+chromadb
+qdrant-client
+
+# Tools
+tools
+google-search-results
+wikipedia
+
+# Youtube
+youtube-transcript-api
+pytube
+
+# UI
+gradio

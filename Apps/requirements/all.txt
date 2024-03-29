@@ -5,14 +5,14 @@ tqdm
 fastapi
 python-dateutil
 gradio
+beautifulsoup4
 
 # LangChain
 langchain
 langchain-community
 langchain-core
-langchain-experimental
 langchainhub
-langserve[all]
+langserve
 langchain-cli
 langsmith
 langchain-openai
@@ -23,7 +23,12 @@ langchain-anthropic
 pydantic==1.10.9
 wikipedia
 cohere
-flashrank
+qdrant-client
+pinecone-client
+
+# CrewAI
+crewai
+crewai-tools
 
 # Llama Index
 llama-index
@@ -38,36 +43,28 @@ pdfminer.six
 pypdfium2
 pillow_heif
 unstructured_inference
-pikepdf
 
 spellchecker
 pyspellchecker
 youtube-transcript-api
 
 einops
-beautifulsoup4
-faiss-cpu
 tavily-python
 docarray
-tiktoken
 nltk
 unstructured
 jq
 markdown
 pypdf
-rapidocr-onnxruntime
 tiktoken
 spacy
 nltk
 konlpy
 sentence-transformers
-qdrant-client
 rank-bm25
 lark
-elasticsearch
 fireworks
 fireworks-ai
-pinecone-client
 datasets
 
 # # Database
