@@ -1,33 +1,43 @@
 # Core
 context-python
-pydantic==1.10.9
 requests
 beautifulsoup4
+loguru
+ipykernel
 
 # Langchain
-langchain
-langchain-core
-langchain-community
-langchain-openai
-langchain-anthropic
-langchain-google-genai
-langchainhub
-langserve[all]
-langchain-cli
-langsmith
+langchain >= 0.1.13
+langchain-core >= 0.1.36
+langchain-community >= 0.0.29
+langchain-openai == 0.0.5
+langchain-anthropic >= 0.1.4
+# langchain-google-genai
+langchainhub >= 0.1.15
+langserve[all] >= 0.0.51
+langsmith >= 0.1.37
+langchain-cli >= 0.0.21
+pydantic == 2.6.1 # 2.6.1 1.10.9 1.10.13
 
+# CrewAI
+crewai >= 0.22.5
+# crewai-tools >= 0.1.1 # 0.1.1
+# embedchain  # 0.1.99
 
-openai
+# llama-index
+# pypdf == 3.17.4 ##
+llama-index >= 0.10.25
 
-predictionguard
+openai >= 1.14.3
 
-psycopg2-binary
+# predictionguard
+
+# psycopg2-binary
 
 tiktoken
 
 # Store
 chromadb
-qdrant-client
+qdrant-client >= 1.8.2
 
 # Tools
 tools
@@ -39,4 +49,6 @@ youtube-transcript-api
 pytube
 
 # UI
-gradio
+# tomlkit==0.12.2
+# gradio >= 4.24.0
+# chainlit >= 1.0.401

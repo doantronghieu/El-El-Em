@@ -10,3 +10,5 @@ from langchain.runnables.hub import (
 from langchain_core.runnables.history import (
   RunnableWithMessageHistory
 )
+
+from langchain.schema.runnable import RunnableMap

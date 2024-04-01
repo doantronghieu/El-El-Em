@@ -7,6 +7,7 @@ from my_langchain import histories, runnables
 from langchain.agents import (
   create_openai_tools_agent, create_openai_functions_agent, 
   create_openapi_agent, create_react_agent, create_self_ask_with_search_agent,
+  create_xml_agent,
   AgentExecutor
 )
 from langchain.agents.format_scratchpad.openai_tools import (
@@ -63,6 +64,8 @@ class MyAgent:
             return create_openai_tools_agent(self.llm, self.tools, self.prompt)
         elif self.agent_type == "react":
             return create_react_agent(llm=self.llm, tools=self.tools, prompt=self.prompt)
+        elif self.agent_type == "anthropic": # todo
+            return create_xml_agent(llm=self.llm, tools=self.tools, prompt=self.prompt)
         else:
             raise ValueError(
                 "Invalid agent type. Supported types are 'openai_tools' and 'react'.")

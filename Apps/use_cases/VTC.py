@@ -56,7 +56,7 @@ tools = [
     qdrant_courses_information.retriever_tool,
 ]
 
-llm = chat_models.chat_openai
+llm = chat_models.create_chat_model(configs_vtc)
 agent = agents.MyAgent(
     prompt=prompt_onlinica, tools=tools,
     agent_type=configs_vtc["agents"]["agent_type_onlinica"], llm=llm

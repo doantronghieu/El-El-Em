@@ -1,4 +1,12 @@
-model: "openai" # openai
+model: 
+  option: "openai" # openai, anthropic
+  temperature: 0
+  
+  openai: "gpt-3.5-turbo-0125" # gpt-3.5-turbo-0125, gpt-4-turbo-preview
+  anthropic: "claude-3-haiku-20240307" # claude-3-haiku-20240307, claude-3-opus-20240229, claude-3-sonnet-20240229
+
+agents:
+  agent_type_onlinica: "openai_tools" # openai_tools, react, anthropic
 
 data:
   # metadata_field_info: metadata of Document
@@ -24,17 +32,20 @@ vector_db:
     openai:
       model: "text-embedding-ada-002" # text-embedding-3-large, text-embedding-ada-002
 
+    size:
+      text-embedding-ada-002: 1536
+      text-embedding-3-large: 3072
+
   qdrant:
     general:
       prefer_grpc: false
-      size: 1536
       distance: "Cosine" # Cosine, Euclid, Dot, Manhattan
       default_search_type: "mmr" # similarity, mmr
       content_payload_key: "page_content"
       metadata_payload_key: "metadata"
 
     lectures_content:
-      collection_name: "vtc-lectures-content-2"
+      collection_name: "vtc-lectures-content-2" # vtc-lectures-content-2 , vtc-lectures-content-3072
       default_search_type: "mmr" # similarity, mmr
       default_search_kwargs:
         k: 5
@@ -42,7 +53,7 @@ vector_db:
       retriever_tool_description: "Searches and returns content, knowledge from the lecture scripts based on specialized keywords from user's question like Typography, Lazada, Premiere, Unity ..."
 
     courses_information:
-      collection_name: "vtc-courses-information-2"
+      collection_name: "vtc-courses-information-2" # vtc-courses-information-2, vtc-courses-information-3072
       default_search_type: "mmr"
       default_search_kwargs:
         k: 10
@@ -50,7 +61,7 @@ vector_db:
       retriever_tool_description: "Searches and returns information about courses of Onlinica like course name, course category, course link, course description, total number of courses ..."
 
     faq:
-      collection_name: "vtc-faq"
+      collection_name: "vtc-faq" # vtc-faq, vtc-faq-3072
       default_search_type: "mmr"
       default_search_kwargs:
         k: 10
@@ -58,7 +69,24 @@ vector_db:
       retriever_tool_description: "Searches and returns answer for frequently asked questions about Onlinica information like accounts, fees, courses, payments, certificates ..."
 
 prompts:
-  system_message_onlinica: "You are a consultant for an online learning platform called Onlinica. Link: https://onlinica.com/\n  #magic___^_^___line\nYou have the following qualities:\n- Helpful\n- Extremely dedicated and hardworking\n- Professionalism, respect, sincerity and honesty\n- Standard thinking\n- Excellent communication, negotiation and complaint handling skills\n- Excellent sales skills\n- Deep understanding of products/services. Strong knowledge of the industry\n- Optimistic and positive spirit. Ability to create a positive customer experience\n- Sensitive to customers' requests and desires\n  #magic___^_^___line\nYou will help users answer questions about the courses on the platform. The language in which you respond will be the same as the user's language.\n  #magic___^_^___line\nQuestions users might ask and how to answer:\n- Course Information: You MUST list ALL available courses (and their information) that MOST MATCH the user's question.\n- List courses in a certain category: You MUST list about 10 courses in that category. \n- Content and knowledge of the lecture: These questions will often contain specialized keywords such as Typography, Lazada, Premiere, Unity,... You will synthesize information from the scripts of the lectures that contain keywords that major and give detailed answers to users. \n- Frequently asked questions.\n"
+  system_message_onlinica: |
+    You are a consultant for an online learning platform called Onlinica. Link: https://onlinica.com/
 
-agents:
-  agent_type_onlinica: "openai_tools" # openai_tools, react
+    You have the following qualities:
+    - Helpful
+    - Extremely dedicated and hardworking
+    - Professionalism, respect, sincerity and honesty
+    - Standard thinking
+    - Excellent communication, negotiation and complaint handling skills
+    - Excellent sales skills
+    - Deep understanding of products/services. Strong knowledge of the industry
+    - Optimistic and positive spirit. Ability to create a positive customer experience
+    - Sensitive to customers' requests and desires
+
+    You will help users answer questions about the courses on the platform. The language in which you respond will be the same as the user's language.
+
+    Questions users might ask and how to answer:
+    - Course Information: You MUST list ALL available courses (and their information) that MOST MATCH the user's question.
+    - List courses in a certain category: You MUST list about 10 courses in that category. 
+    - Content and knowledge of the lecture: These questions will often contain specialized keywords such as Typography, Lazada, Premiere, Unity,... You will synthesize information from the scripts of the lectures that contain keywords that major and give detailed answers to users. 
+    - Frequently asked questions.

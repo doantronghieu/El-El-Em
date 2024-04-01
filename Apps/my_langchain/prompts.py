@@ -80,19 +80,10 @@ qa_prompt = ChatPromptTemplate.from_messages([
 # AGENT #
 #########
 
-# hwchase17/openai-tools-agent
-# prompt_agent_openai_tools = hub.pull("hwchase17/openai-tools-agent")
-prompt_agent_openai_tools = ChatPromptTemplate.from_messages(
-    [
-        ("system", "You are a helpful assistant"),
-        MessagesPlaceholder("chat_history"),
-        ("human", "{input}"),
-        MessagesPlaceholder("agent_scratchpad"),
-    ]
-)
-
-
-def create_prompt_custom_agent_openai_tools(system_message: str):
+# prompt = hub.pull("hwchase17/openai-tools-agent")
+def create_prompt_custom_agent_openai_tools(
+    system_message: str = "You are a helpful assistant"
+):
     prompt_custom_agent_openai_tools = ChatPromptTemplate.from_messages(
         [
             ("system", system_message),
@@ -103,3 +94,28 @@ def create_prompt_custom_agent_openai_tools(system_message: str):
     )
 
     return prompt_custom_agent_openai_tools
+
+
+# prompt = hub.pull("hwchase17/xml-agent-convo")
+def create_prompt_custom_agent_xml_tools(
+    system_message: str = "You are a helpful assistant. Help the user answer any questions."
+):
+    prompt_custom_agent_xml_tools = ChatPromptTemplate(
+        input_variables=['agent_scratchpad', 'input', 'tools'],
+        partial_variables={'chat_history': ''},
+        messages=[
+            HumanMessagePromptTemplate(
+                prompt=PromptTemplate(
+                    input_variables=['agent_scratchpad',
+                                     'chat_history', 'input', 'tools'],
+                    template=system_message + "\n\nYou have access to the following tools:\n\n{tools}\n\nIn order to use a tool, you can use <tool></tool> and <tool_input></tool_input> tags. You will then get back a response in the form <observation></observation>\nFor example, if you have a tool called 'search' that could run a google search, in order to search for the weather in SF you would respond:\n\n<tool>search</tool><tool_input>weather in SF</tool_input>\n<observation>64 degrees</observation>\n\nWhen you are done, respond with a final answer between <final_answer></final_answer>. For example:\n\n<final_answer>The weather in SF is 64 degrees</final_answer>\n\nBegin!\n\nPrevious Conversation:\n{chat_history}\n\nQuestion: {input}\n{agent_scratchpad}"
+                )
+            )
+        ]
+    )
+
+    return prompt_custom_agent_xml_tools
+
+
+prompt = create_prompt_custom_agent_xml_tools()
+prompt

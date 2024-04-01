@@ -1,0 +1,4 @@
+host: "localhost"
+port: 8000
+
+base_endpoint: "http://127.0.0.1:8000"

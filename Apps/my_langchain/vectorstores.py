@@ -99,6 +99,10 @@ class QdrantWrapper:
                  ):
 
         configs_qdrant = configs["vector_db"]["qdrant"]["general"]
+        embeddings_name = configs["vector_db"]["embeddings"]["model"]
+        embeddings_params = configs["vector_db"]["embeddings"][embeddings_name]
+        embeddings_model = embeddings_params["model"]
+        embeddings_size = configs["vector_db"]["embeddings"]["size"][embeddings_model]
         
         self.client = qdrant_client.QdrantClient(
             location=qdrant_host,
@@ -110,7 +114,7 @@ class QdrantWrapper:
         client_collections = str(self.client.get_collections())
 
         vectors_config = models.VectorParams(
-            size=configs_qdrant["size"],
+            size=embeddings_size,
             distance=configs_qdrant["distance"],
         )
 
@@ -125,11 +129,10 @@ class QdrantWrapper:
             logger.info(f"Collection: `{self.collection_name}` created.")
 
         # *---------------------------------------------------------------------
-        embeddings_name = configs["vector_db"]["embeddings"]["model"]
-        embeddings_params = configs["vector_db"]["embeddings"][embeddings_name]
+        
 
         logger.info(
-            f"`{self.collection_name}` - Embeddings: {embeddings_name} - {embeddings_params}")
+            f"`{self.collection_name}` - Embeddings: {embeddings_name} - {embeddings_params}, {embeddings_size}")
         if embeddings_name == "openai":
             self.embeddings = OpenAIEmbeddings(**embeddings_params)
         elif embeddings_name == "cohere":

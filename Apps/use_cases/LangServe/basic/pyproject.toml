@@ -1,0 +1,51 @@
+[tool.poetry]
+name = "basic"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+packages = [
+    { include = "app" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+uvicorn = "^0.23.2"
+langserve = {extras = ["server"], version = ">=0.0.30"}
+pydantic = "<2"
+
+requests = "^2.26.0"
+beautifulsoup4 = "^4.10.0"
+loguru = "^0.5.3"
+ipykernel = "^6.6.0"
+langchain = ">=0.1.13"
+langchain-core = ">=0.1.36"
+langchain-community = ">=0.0.29"
+langchain-openai = "==0.0.5"
+langchain-anthropic = ">=0.1.4"
+langchainhub = ">=0.1.15"
+langsmith = ">=0.1.37"
+
+crewai = ">=0.22.5"
+crewai-tools = ">=0.1.1"
+
+openai = "^1.14.3"
+
+tiktoken = "*"
+
+chromadb = "*"
+qdrant-client = ">=1.8.2"
+
+tools = "*"
+google-search-results = "*"
+wikipedia = "*"
+
+youtube-transcript-api = "*"
+pytube = "*"
+
+[tool.poetry.group.dev.dependencies]
+langchain-cli = ">=0.0.15"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
