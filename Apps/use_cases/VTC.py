@@ -59,5 +59,6 @@ tools = [
 llm = chat_models.create_chat_model(configs_vtc)
 agent = agents.MyAgent(
     prompt=prompt_onlinica, tools=tools,
-    agent_type=configs_vtc["agents"]["agent_type_onlinica"], llm=llm
+    agent_type=configs_vtc["agents"]["agent_type_onlinica"], 
+    llm=llm
 )

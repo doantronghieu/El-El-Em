@@ -6,20 +6,20 @@ loguru
 ipykernel
 
 # Langchain
-langchain >= 0.1.13
-langchain-core >= 0.1.36
-langchain-community >= 0.0.29
-langchain-openai == 0.0.5
+langchain >= 0.1.14
+langchain-core >= 0.1.37
+langchain-community >= 0.0.30
+langchain-openai >= 0.1.1 # == 0.0.5 (crewai), >= 0.1.1
 langchain-anthropic >= 0.1.4
 # langchain-google-genai
 langchainhub >= 0.1.15
 langserve[all] >= 0.0.51
-langsmith >= 0.1.37
+langsmith >= 0.1.38
 langchain-cli >= 0.0.21
 pydantic == 2.6.1 # 2.6.1 1.10.9 1.10.13
 
 # CrewAI
-crewai >= 0.22.5
+# crewai >= 0.22.5
 # crewai-tools >= 0.1.1 # 0.1.1
 # embedchain  # 0.1.99
 
@@ -28,12 +28,11 @@ crewai >= 0.22.5
 llama-index >= 0.10.25
 
 openai >= 1.14.3
+tiktoken >= 0.6.0 # >=0.5.2 | >= 0.6.0
 
 # predictionguard
 
 # psycopg2-binary
-
-tiktoken
 
 # Store
 chromadb
@@ -43,6 +42,8 @@ qdrant-client >= 1.8.2
 tools
 google-search-results
 wikipedia
+duckduckgo-search
+e2b
 
 # Youtube
 youtube-transcript-api

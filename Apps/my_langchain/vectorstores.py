@@ -87,8 +87,6 @@ class QdrantWrapper:
                  qdrant_api_key,
                  configs,
 
-                 chain=None,
-
                  collection_name="",
                  default_search_type="similarity",  # "mmr"
                  default_search_kwargs={
@@ -168,15 +166,9 @@ class QdrantWrapper:
             description=retriever_tool_description,
         )
 
-        self.chain = chain
-
     def add_documents(self, docs: list[Document]):
         for doc in tqdm(docs):
             self.vector_store.add_documents([doc])
-
-    def invoke_query(self, query):
-        response = self.chain.invoke(query)
-        pprint(response['result'])
 
     def invoke_retriever(self, query, **kwargs):
         return self.retriever.invoke(query, **kwargs)

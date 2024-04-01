@@ -1,6 +1,6 @@
 
 from langchain.tools import (
-  BaseTool, StructuredTool, tool,
+  BaseTool, StructuredTool, tool, 
 )
 
 from langchain_core.tools import (
@@ -12,11 +12,9 @@ import langchain_community.tools as tools_community
 from langchain_community.tools.tavily_search import (
   TavilySearchResults, TavilyAnswer,
 )
-
-from langchain_community.tools.file_management import (
-  MoveFileTool,
-)
-
+from langchain_community.tools.ddg_search.tool import DuckDuckGoSearchRun
+from langchain_community.tools.e2b_data_analysis.tool import E2BDataAnalysisTool
+from langchain_community.tools.file_management import MoveFileTool
 from langchain_community.tools.wikipedia.tool import WikipediaQueryRun
 from langchain_community.utilities.wikipedia import WikipediaAPIWrapper
 

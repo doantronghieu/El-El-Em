@@ -1,15 +1,22 @@
 import uuid
 import add_packages
 from loguru import logger
+from typing import Union
 
 from my_langchain import histories, runnables
 
 from langchain.agents import (
   create_openai_tools_agent, create_openai_functions_agent, 
-  create_openapi_agent, create_react_agent, create_self_ask_with_search_agent,
+  create_react_agent, create_self_ask_with_search_agent,
   create_xml_agent,
   AgentExecutor
 )
+from langchain_core.language_models.chat_models import BaseChatModel
+from langchain_core.prompts.chat import BaseChatPromptTemplate
+from langchain_core.runnables import Runnable
+from langchain_core.tools import BaseTool
+
+from langchain.agents.openai_assistant import OpenAIAssistantRunnable
 from langchain.agents.format_scratchpad.openai_tools import (
   format_to_openai_tool_messages, 
 )
@@ -33,9 +40,13 @@ def invoke_agent_executor(agent_executor: AgentExecutor, input_str):
 
 #*----------------------------------------------------------------------------
 
-
 class MyAgent:
-    def __init__(self, prompt, tools, agent_type, llm):
+    def __init__(self, 
+                 prompt: Union[BaseChatPromptTemplate, None],
+                 tools: list[BaseTool],
+                 agent_type: str, 
+                 llm: Union[BaseChatModel, None],
+                ):
         self.prompt = prompt
         self.tools = tools
         self.agent_type = agent_type
@@ -58,14 +69,21 @@ class MyAgent:
             history_messages_key="chat_history",
         )
 
-    def _create_agent(self):
+    def _create_agent(self) -> Runnable:
         logger.info(f"Agent type: {self.agent_type}")
+        
         if self.agent_type == "openai_tools":
-            return create_openai_tools_agent(self.llm, self.tools, self.prompt)
+            return create_openai_tools_agent(
+                self.llm, self.tools, self.prompt
+            )
         elif self.agent_type == "react":
-            return create_react_agent(llm=self.llm, tools=self.tools, prompt=self.prompt)
+            return create_react_agent(
+                llm=self.llm, tools=self.tools, prompt=self.prompt
+            )
         elif self.agent_type == "anthropic": # todo
-            return create_xml_agent(llm=self.llm, tools=self.tools, prompt=self.prompt)
+            return create_xml_agent(
+                llm=self.llm, tools=self.tools, prompt=self.prompt
+            )
         else:
             raise ValueError(
                 "Invalid agent type. Supported types are 'openai_tools' and 'react'.")
@@ -74,6 +92,7 @@ class MyAgent:
         return self.agent_executor_conversable.invoke({"input": input_message}, config=self.config)['output']
     
     async def invoke_agent_stream(self, input_message):
+        
         """
         Usage: await agent.invoke_agent_stream(input_message)
         """
@@ -89,6 +108,8 @@ class MyAgent:
                     # So we only print non-empty content
                     print(content, end="")
                     # yield content
+        
+        print()
 
 
 """
