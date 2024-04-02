@@ -1,3 +1,9 @@
 from langchain.retrievers.self_query.base import SelfQueryRetriever
+from langchain.retrievers.multi_query import MultiQueryRetriever
 from langchain.retrievers import ContextualCompressionRetriever
-from langchain.retrievers.document_compressors import FlashrankRerank
+from langchain.retrievers.document_compressors import (
+  LLMChainExtractor, LLMChainFilter, EmbeddingsFilter, DocumentCompressorPipeline
+)
+from langchain_community.document_transformers.embeddings_redundant_filter import EmbeddingsRedundantFilter
+from langchain_cohere import CohereRerank
+from langchain.retrievers.cohere_rag_retriever import CohereRagRetriever

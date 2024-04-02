@@ -3,7 +3,9 @@ import os, dotenv, yaml
 from loguru import logger
 from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
+from langchain_cohere import ChatCohere
 from langchain_core.language_models.chat_models import BaseChatModel
+
 dotenv.load_dotenv()
 
 # with open("../my_configs/vtc.yaml") as file:

@@ -1,2 +1,2 @@
 from langchain_openai import OpenAIEmbeddings
-
+from langchain_cohere import CohereEmbeddings

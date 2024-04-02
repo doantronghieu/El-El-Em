@@ -1,0 +1,16 @@
+# Core
+context-python
+requests
+beautifulsoup4
+loguru
+python-dotenv
+ipykernel
+
+# CrewAI
+crewai >= 0.22.5
+crewai-tools >= 0.1.1
+
+# Tools
+tools >= 0.1.9
+pyowm # wrapper around OpenWeatherMap web APIs
+unstructured # prepares raw documents for downstream ML tasks.

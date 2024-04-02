@@ -8,6 +8,7 @@ from langchain.chains.combine_documents import (
 )
 
 from langchain_core.runnables import Runnable
+from langchain.chains.query_constructor.schema import AttributeInfo
 
 #*------------------------------------------------------------------------------
 def parse_retriever_input(params: typing.Dict):

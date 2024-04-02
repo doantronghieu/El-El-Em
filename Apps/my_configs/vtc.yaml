@@ -45,7 +45,7 @@ vector_db:
       metadata_payload_key: "metadata"
 
     lectures_content:
-      collection_name: "vtc-lectures-content-3072" # vtc-lectures-content-2 , vtc-lectures-content-3072
+      collection_name: "vtc-lectures-content-3072-v1" # vtc-lectures-content-2 , vtc-lectures-content-3072
       default_search_type: "mmr" # similarity, mmr
       default_search_kwargs:
         k: 5
@@ -53,7 +53,7 @@ vector_db:
       retriever_tool_description: "Searches and returns content, knowledge from the lecture scripts based on specialized keywords from user's question like Typography, Lazada, Premiere, Unity ..."
 
     courses_information:
-      collection_name: "vtc-courses-information-3072" # vtc-courses-information-2, vtc-courses-information-3072
+      collection_name: "vtc-courses-information-3072-v1" # vtc-courses-information-2, vtc-courses-information-3072
       default_search_type: "mmr"
       default_search_kwargs:
         k: 10
@@ -61,7 +61,7 @@ vector_db:
       retriever_tool_description: "Searches and returns information about courses of Onlinica like course name, course category, course link, course description, total number of courses ..."
 
     faq:
-      collection_name: "vtc-faq-3072" # vtc-faq, vtc-faq-3072
+      collection_name: "vtc-faq-3072-v1" # vtc-faq, vtc-faq-3072
       default_search_type: "mmr"
       default_search_kwargs:
         k: 10

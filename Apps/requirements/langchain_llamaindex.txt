@@ -3,6 +3,7 @@ context-python
 requests
 beautifulsoup4
 loguru
+python-dotenv
 ipykernel
 
 # Langchain
@@ -11,12 +12,18 @@ langchain-core >= 0.1.37
 langchain-community >= 0.0.30
 langchain-openai >= 0.1.1 # == 0.0.5 (crewai), >= 0.1.1
 langchain-anthropic >= 0.1.4
+langchain_cohere
 # langchain-google-genai
 langchainhub >= 0.1.15
 langserve[all] >= 0.0.51
 langsmith >= 0.1.38
 langchain-cli >= 0.0.21
 pydantic == 2.6.1 # 2.6.1 1.10.9 1.10.13
+
+lark
+
+# Third parties
+cohere >= 5.1.7
 
 # CrewAI
 # crewai >= 0.22.5
@@ -26,6 +33,10 @@ pydantic == 2.6.1 # 2.6.1 1.10.9 1.10.13
 # llama-index
 # pypdf == 3.17.4 ##
 llama-index >= 0.10.25
+llama-index-readers-txtai
+llama-index-vector-stores-qdrant
+llama-index-vector-stores-chroma
+txtai >= 7.0.0
 
 openai >= 1.14.3
 tiktoken >= 0.6.0 # >=0.5.2 | >= 0.6.0
@@ -35,7 +46,7 @@ tiktoken >= 0.6.0 # >=0.5.2 | >= 0.6.0
 # psycopg2-binary
 
 # Store
-chromadb
+chromadb >= 0.4.24
 qdrant-client >= 1.8.2
 
 # Tools

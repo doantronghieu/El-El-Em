@@ -16,3 +16,12 @@ while True:
     parent_directory = os.path.dirname(parent_directory)
 
 # pprint(sys.path)
+
+cwd = os.getcwd()
+
+cwd_parent = os.path.dirname(cwd)
+
+while cwd_parent.split("/")[-1] != "Apps":
+  cwd_parent = os.path.dirname(cwd_parent)
+
+APP_PATH = cwd_parent
