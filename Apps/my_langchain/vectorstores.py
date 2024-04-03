@@ -88,18 +88,16 @@ class QdrantWrapper:
     self.collection_name = collection_name
     client_collections = str(self.client.get_collections())
 
-    vectors_config = models.VectorParams(
-      size=embeddings_size,
-      distance=configs_qdrant["distance"],
-    )
-
     # *---------------------------------------------------------------------
     if self.collection_name in client_collections:
       logger.info(f"Found collection: `{self.collection_name}`.")
     else:
       self.client.create_collection(
         collection_name=self.collection_name,
-        vectors_config=vectors_config,
+        vectors_config=models.VectorParams(
+          size=embeddings_size,
+          distance=configs_qdrant["distance"],
+        ),
       )
       logger.info(f"Collection: `{self.collection_name}` created.")
 
@@ -124,16 +122,11 @@ class QdrantWrapper:
     )
 
     # *---------------------------------------------------------------------
-    if embeddings_name == "cohere":
-      logger.info("`{self.collection_name}` - Retriever: Cohere")
-      logger.warning("Not implemented yet")
-      self.retriever = None
-    else:
-      logger.info(f"`{self.collection_name}` - Retriever: Vectorstore")
-      self.retriever = self.vector_store.as_retriever(
-        search_type=default_search_type,
-        search_kwargs=default_search_kwargs,
-      )
+    logger.info(f"`{self.collection_name}` - Retriever: Vectorstore")
+    self.retriever = self.vector_store.as_retriever(
+      search_type=default_search_type,
+      search_kwargs=default_search_kwargs,
+    )
 
     # *---------------------------------------------------------------------
     self.retriever_tool = create_retriever_tool(
