@@ -130,13 +130,7 @@ class ToolsBrowser():
     
     return "\n".join(result_str)
 
-  @tool("Search the internet")
-  def search_duckduckgo():
-    """
-    Useful to search the internet about a a given topic and return relevant 
-    results
-    """
-    return agent_tools.DuckDuckGoSearchRun()
+  search_duckduckgo = agent_tools.DuckDuckGoSearchRun()
   
 #*==============================================================================
 class ToolsCalculator():
@@ -155,7 +149,7 @@ class ToolsCalculator():
       return "Error: Invalid syntax in mathematical expression"
 
 #*==============================================================================
-class ToolsContent():
+class ToolsContent:
   
   @tool("Read webpage content")
   def read_content(url: str) -> str:

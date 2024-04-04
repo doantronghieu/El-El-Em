@@ -14,6 +14,7 @@ agents:
         teams towards their goals, ensuring the trip not only meets but exceed
         expectations. You also validate your final output before presenting it
         to the client.
+      allow_delegation: 'true'
 
     travel_consultant:
       role:
@@ -23,7 +24,8 @@ agents:
         suggestions for your clients to travel to %DESTINATION%.
       backstory: >
         Specialist in travel planning and logistics with decades of experience
-    
+      allow_delegation: 'true'
+      
     city_selection_expert:
       role:
         City Selection Expert
@@ -31,7 +33,8 @@ agents:
         Select the best city based on weather, season, and prices
       backstory: >
         An expert in analyzing travel data to pick ideal destinations
-
+      allow_delegation: 'true'
+      
     local_tour_guide:
       role:
         Local Expert at this city
@@ -40,7 +43,8 @@ agents:
       backstory: >
         A knowledgeable local guide with extensive information about the city,
         it's attractions and customs
-
+      allow_delegation: 'true'
+      
     quality_control_expert:
       role:
         Quality Control Expert
@@ -63,6 +67,8 @@ agents:
         the overall client experience. Your role as a quality control expert
         is the culmination of your dedication to elevating travel experiences
         through precision, reliability, and client satisfaction.
+      allow_delegation: 'true'
+      
 
   # Template
   TOPIC:
@@ -87,7 +93,7 @@ tasks:
         a comprehensive with detailed per-day plans, including budget,
         packing suggestions.
       expected_output: ""
-        
+      async_execution: 'false'
 
     identify_city:
       description: >
@@ -116,7 +122,6 @@ tasks:
         Trip Date: %TRAVEL_DATES%
 
         Traveler Interests: %INTERESTS%
-      
       expected_output: >
         A detailed report on the selected city including:
           
@@ -127,6 +132,7 @@ tasks:
         
         - Analysis comparing multiple cities and why the chosen city is best for 
         the trip
+      async_execution: 'false'
 
     gather_city_info:
       description: >
@@ -163,18 +169,18 @@ tasks:
         Traveler Interests: %INTERESTS%
       expected_output: >
         An in-depth city guide featuring:
-
+        
         - Key attractions and local customs
-
+        
         - Special events happening around the trip dates
-
+        
         - Recommendations for daily activities including hidden gems and cultural hotspots
-
+        
         - Weather forecast for the trip dates with appropriate clothing suggestions
-
+        
         - High-level cost estimates for suggested activities and spots
-
-
+      async_execution: 'false'
+      
     plan_itinerary:
       description: >
         Expand this guide into a a full 7-day travel itinerary with detailed 
@@ -210,7 +216,8 @@ tasks:
         Traveler Interests: %INTERESTS%
       expected_output: >
         A complete 7-day travel itinerary in markdown format to %DESTINATION%
-    
+      async_execution: 'false'  
+
     quality_control:
       description: >
         Look over the 7-day travel itinerary and provide feedback on the quality
@@ -359,12 +366,11 @@ tasks:
         - Hiking shoes for treks
 
         - Formal attire for nightlife
-
-
       expected_output: >
         Actionable feedback on the 7-day travel itinerary with  assessment of
         the itinerary's adherence to the format and quality standards
-        
+      async_execution: 'false'
+
   TOPIC:
     TASK:
       description: >
