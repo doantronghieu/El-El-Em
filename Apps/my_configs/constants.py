@@ -3,6 +3,8 @@ MODELS = {
   {
     "GPT-3.5-TURBO-0125": "gpt-3.5-turbo-0125",
     "GPT-4-TURBO-PREVIEW": "gpt-4-turbo-preview",
+    "GPT-3.5-TURBO-L.INDEX": "gpt-3.5-turbo",
+    "GPT-4-L.INDEX": "gpt-4",
   },
   "ANTHROPIC":
   {
