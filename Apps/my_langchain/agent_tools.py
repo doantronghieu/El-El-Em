@@ -8,7 +8,7 @@ from langchain_core.tools import (
 )
 
 import langchain_community.tools as tools_community
-
+from langchain.agents import load_tools
 from langchain_community.tools.tavily_search import (
   TavilySearchResults, TavilyAnswer,
 )
@@ -42,3 +42,4 @@ def _handle_error(error: ToolException) -> str:
     + "Please try another tool."
   )
   
+tools_human = load_tools(["human"])

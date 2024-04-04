@@ -14,3 +14,4 @@ crewai-tools >= 0.1.1
 tools >= 0.1.9
 pyowm # wrapper around OpenWeatherMap web APIs
 unstructured # prepares raw documents for downstream ML tasks.
+wikipedia
