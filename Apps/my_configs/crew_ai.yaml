@@ -94,6 +94,7 @@ tasks:
         packing suggestions.
       expected_output: ""
       async_execution: 'false'
+      agent: manager
 
     identify_city:
       description: >
@@ -133,6 +134,7 @@ tasks:
         - Analysis comparing multiple cities and why the chosen city is best for 
         the trip
       async_execution: 'false'
+      agent: city_selection_expert
 
     gather_city_info:
       description: >
@@ -180,6 +182,7 @@ tasks:
         
         - High-level cost estimates for suggested activities and spots
       async_execution: 'false'
+      agent: city_selection_expert
       
     plan_itinerary:
       description: >
@@ -217,6 +220,7 @@ tasks:
       expected_output: >
         A complete 7-day travel itinerary in markdown format to %DESTINATION%
       async_execution: 'false'  
+      agent: travel_consultant
 
     quality_control:
       description: >
@@ -370,6 +374,7 @@ tasks:
         Actionable feedback on the 7-day travel itinerary with  assessment of
         the itinerary's adherence to the format and quality standards
       async_execution: 'false'
+      agent: quality_control_expert
 
   TOPIC:
     TASK:
