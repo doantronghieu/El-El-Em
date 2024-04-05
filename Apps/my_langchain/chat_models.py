@@ -19,27 +19,27 @@ chat_anthropic = ChatAnthropic(
 
 
 def create_chat_model(config: dict) -> BaseChatModel:
-    model_option = config["model"]["option"]
-    model_version = config['model'][model_option]
-    temperature = config["model"]["temperature"]
-    
-    logger.info(f"Model: {model_option}, {model_version}")
-    
-    if model_option == 'openai':
-        if model_version:
-            return ChatOpenAI(
-                temperature=temperature, model=model_version, streaming=True,
-            )
-        else:
-            raise ValueError("OpenAI model name is missing in config.")
-    elif model_option == 'anthropic':
-        if model_version:
-            return ChatAnthropic(
-                temperature=temperature, model_name=model_version, streaming=True,
-            )
-        else:
-            raise ValueError("Anthropic model name is missing in config.")
-    else:
-        raise ValueError(
-            "Invalid model option in config. Supported options are 'openai', 'anthropic'.")
+  model_option = config["model"]["option"]
+  model_version = config['model'][model_option]
+  temperature = config["model"]["temperature"]
+  
+  logger.info(f"Model: {model_option}, {model_version}")
+  
+  if model_option == 'openai':
+      if model_version:
+          return ChatOpenAI(
+              temperature=temperature, model=model_version, streaming=True,
+          )
+      else:
+          raise ValueError("OpenAI model name is missing in config.")
+  elif model_option == 'anthropic':
+      if model_version:
+          return ChatAnthropic(
+              temperature=temperature, model_name=model_version, streaming=True,
+          )
+      else:
+          raise ValueError("Anthropic model name is missing in config.")
+  else:
+      raise ValueError(
+          "Invalid model option in config. Supported options are 'openai', 'anthropic'.")
 

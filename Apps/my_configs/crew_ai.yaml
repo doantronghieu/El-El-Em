@@ -1,5 +1,4 @@
 agents:
-  youtube:
     
   traveling:
     manager:
@@ -15,6 +14,7 @@ agents:
         expectations. You also validate your final output before presenting it
         to the client.
       allow_delegation: 'true'
+      tools: calculator
 
     travel_consultant:
       role:
@@ -25,6 +25,7 @@ agents:
       backstory: >
         Specialist in travel planning and logistics with decades of experience
       allow_delegation: 'true'
+      tools: calculator, searcher, reader
       
     city_selection_expert:
       role:
@@ -34,6 +35,7 @@ agents:
       backstory: >
         An expert in analyzing travel data to pick ideal destinations
       allow_delegation: 'true'
+      tools: searcher, reader
       
     local_tour_guide:
       role:
@@ -44,6 +46,7 @@ agents:
         A knowledgeable local guide with extensive information about the city,
         it's attractions and customs
       allow_delegation: 'true'
+      tools: searcher, reader
       
     quality_control_expert:
       role:
@@ -68,6 +71,7 @@ agents:
         is the culmination of your dedication to elevating travel experiences
         through precision, reliability, and client satisfaction.
       allow_delegation: 'true'
+      tools: x # human
       
 
   # Template
@@ -81,7 +85,6 @@ agents:
         BACKSTORY
 
 tasks:  
-  youtube:
   
   traveling:
     manage:
