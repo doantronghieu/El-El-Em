@@ -98,6 +98,7 @@ tasks:
       expected_output: ""
       async_execution: 'false'
       agent: manager
+      context: x
 
     identify_city:
       description: >
@@ -138,6 +139,7 @@ tasks:
         the trip
       async_execution: 'false'
       agent: city_selection_expert
+      context: x
 
     gather_city_info:
       description: >
@@ -186,6 +188,7 @@ tasks:
         - High-level cost estimates for suggested activities and spots
       async_execution: 'false'
       agent: city_selection_expert
+      context: x
       
     plan_itinerary:
       description: >
@@ -224,6 +227,7 @@ tasks:
         A complete 7-day travel itinerary in markdown format to %DESTINATION%
       async_execution: 'false'  
       agent: travel_consultant
+      context: x
 
     quality_control:
       description: >
@@ -378,6 +382,7 @@ tasks:
         the itinerary's adherence to the format and quality standards
       async_execution: 'false'
       agent: quality_control_expert
+      context: x
 
   TOPIC:
     TASK:
