@@ -25,7 +25,7 @@ agents:
       backstory: >
         Specialist in travel planning and logistics with decades of experience
       allow_delegation: 'true'
-      tools: calculator, scraper
+      tools: calculator, searcher, reader
       
     city_selection_expert:
       role:
@@ -35,7 +35,7 @@ agents:
       backstory: >
         An expert in analyzing travel data to pick ideal destinations
       allow_delegation: 'true'
-      tools: scraper
+      tools: searcher, reader
       
     local_tour_guide:
       role:
@@ -46,7 +46,7 @@ agents:
         A knowledgeable local guide with extensive information about the city,
         it's attractions and customs
       allow_delegation: 'true'
-      tools: scraper
+      tools: searcher, reader
       
     quality_control_expert:
       role:

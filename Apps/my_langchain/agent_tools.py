@@ -8,7 +8,7 @@ from langchain_core.tools import (
 )
 
 import langchain_community.tools as tools_community
-from langchain.agents import load_tools
+from langchain.agents import load_tools, Tool
 from langchain_community.tools.tavily_search import (
   TavilySearchResults, TavilyAnswer,
 )
@@ -27,6 +27,7 @@ from langchain.callbacks.manager import (
 from langchain_core.utils.function_calling import (
   convert_to_openai_function
 )
+from langchain_experimental.utilities import PythonREPL
 
 import typing
 

@@ -20,3 +20,4 @@ duckduckgo-search
 # LangChain
 langchain_cohere
 langchain_anthropic
+langchain_experimental
