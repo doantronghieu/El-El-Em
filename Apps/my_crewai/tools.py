@@ -98,7 +98,7 @@ class ToolsBrowser():
     query: str,
     top_result_to_return: int = 4,
   ) -> str:
-    """
+    """\
     Useful to search the internet about a a given topic and return relevant 
     results
     """
@@ -137,22 +137,96 @@ class ToolsCalculator():
   
   @tool("Make a calculation")
   def calculate(operation):
-    """
+    """\
     Useful to perform any mathematical calculations, like sum, minus, multiplication,
     division, etc. 
-    The input to this tool should be mathematical expression, a couple of examples
-    are `200*7` or `5000/2*10`
+    
+    The input to this tool should be mathematical expression, examples:
+    
+    - `1 + 2`\n
+    - `1 * 2`\n
+    - `3 - 1`\n
+    - `4 / 2`\n
+    - `5 // 2`\n
+    - `6 % 2`\n
+    - `2 ** 3`\n
+    - `(1 + 2) * 3`\n
+    - `(5 - 2) ** 2`\n
+    - `10 // (3 - 1)`\n
+    - `25 % (4 + 1)`\n
+    - `(8 * 2) / (6 - 2)`\n
+    - `(4 ** 3) - (2 * 5)`\n
+    - `(2 * 3) ** (4 % 2)`\n
+    - `(5 + 3) * (12 // 4) - (2 ** 2)`\n
+    - `((7 * 2) - 10) / (3 + (4 // 2))`\n
+    - `(10 - 2) * (16 % 5) + (3 ** 2)`\n
+    - `(2 ** 3) * ((15 // 5) - (4 % 3))`\n
+    - `((6 * 2) + (8 // 4)) ** (7 % 3)`\n
+    - `2 ** (3 + 4)`\n
+    - `4 ** (1 / 2)` (square root of 4)\n
+    - `pow(2, 3)` (equivalent to `2 ** 3`)\n
+    - `abs(-5)` (absolute value of -5)\n
+    - `round(3.14159, 2)` (rounding 3.14159 to 2 decimal places)\n
+    - `max(5, 9)` (maximum of 5 and 9)\n
+    - `min(3, 8)` (minimum of 3 and 8)\n
+    - `sum([1, 2, 3, 4, 5])` (sum of a list of numbers)\n
+    - `2 ** (3 * 4)` (exponential with multiplication)\n
+    - `pow(3, 2)` (equivalent to `3 ** 2`, exponentiation)\n
+    - `abs(-10)` (absolute value)\n
+    - `round(3.567, 2)` (rounding to 2 decimal places)\n
+    - `max(4, 7, 2, 9)` (maximum of a set of numbers)\n
+    - `min(8, 2, 6, 4)` (minimum of a set of numbers)\n
+    - `sum([1, 2, 3, 4, 5])` (sum of a list of numbers)\n
     """
     try:
       return eval(operation)
     except SyntaxError:
       return "Error: Invalid syntax in mathematical expression"
   
-  python_repl = agent_tools.Tool(
-    name="python_repl",
-    description="A Python shell. Use this to execute python commands. Input should be a valid python command. If you want to see the output of a value, you should print it out with `print(...)`.",
-    func=agent_tools.PythonREPL().run,
-  )
+  @tool("Python REPL")
+  def python_repl(operation: str):
+    """\
+    A Python shell. Use this to execute python commands. Input should be a 
+    valid python command, examples:
+    
+    - `1 + 2`\n
+    - `1 * 2`\n
+    - `3 - 1`\n
+    - `4 / 2`\n
+    - `5 // 2`\n
+    - `6 % 2`\n
+    - `2 ** 3`\n
+    - `(1 + 2) * 3`\n
+    - `(5 - 2) ** 2`\n
+    - `10 // (3 - 1)`\n
+    - `25 % (4 + 1)`\n
+    - `(8 * 2) / (6 - 2)`\n
+    - `(4 ** 3) - (2 * 5)`\n
+    - `(2 * 3) ** (4 % 2)`\n
+    - `(5 + 3) * (12 // 4) - (2 ** 2)`\n
+    - `((7 * 2) - 10) / (3 + (4 // 2))`\n
+    - `(10 - 2) * (16 % 5) + (3 ** 2)`\n
+    - `(2 ** 3) * ((15 // 5) - (4 % 3))`\n
+    - `((6 * 2) + (8 // 4)) ** (7 % 3)`\n
+    - `2 ** (3 + 4)`\n
+    - `4 ** (1 / 2)` (square root of 4)\n
+    - `pow(2, 3)` (equivalent to `2 ** 3`)\n
+    - `abs(-5)` (absolute value of -5)\n
+    - `round(3.14159, 2)` (rounding 3.14159 to 2 decimal places)\n
+    - `max(5, 9)` (maximum of 5 and 9)\n
+    - `min(3, 8)` (minimum of 3 and 8)\n
+    - `sum([1, 2, 3, 4, 5])` (sum of a list of numbers)\n
+    - `2 ** (3 * 4)` (exponential with multiplication)\n
+    - `pow(3, 2)` (equivalent to `3 ** 2`, exponentiation)\n
+    - `abs(-10)` (absolute value)\n
+    - `round(3.567, 2)` (rounding to 2 decimal places)\n
+    - `max(4, 7, 2, 9)` (maximum of a set of numbers)\n
+    - `min(8, 2, 6, 4)` (minimum of a set of numbers)\n
+    - `sum([1, 2, 3, 4, 5])` (sum of a list of numbers)\n
+    """
+    my_python_repl = agent_tools.PythonREPL()
+    return my_python_repl.run(operation)
+  
 #*==============================================================================
 class ToolsContent:
   
