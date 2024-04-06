@@ -14,6 +14,7 @@ agents:
         expectations. You also validate your final output before presenting it
         to the client.
       allow_delegation: 'true'
+      max_iter: 25
       tools: calculator
 
     travel_consultant:
@@ -25,6 +26,7 @@ agents:
       backstory: >
         Specialist in travel planning and logistics with decades of experience
       allow_delegation: 'true'
+      max_iter: 7
       tools: calculator, scraper
       
     city_selection_expert:
@@ -35,6 +37,7 @@ agents:
       backstory: >
         An expert in analyzing travel data to pick ideal destinations
       allow_delegation: 'true'
+      max_iter: 25
       tools: scraper
       
     local_tour_guide:
@@ -46,6 +49,7 @@ agents:
         A knowledgeable local guide with extensive information about the city,
         it's attractions and customs
       allow_delegation: 'true'
+      max_iter: 25
       tools: scraper
       
     quality_control_expert:
@@ -71,6 +75,7 @@ agents:
         is the culmination of your dedication to elevating travel experiences
         through precision, reliability, and client satisfaction.
       allow_delegation: 'true'
+      max_iter: 25
       tools: x # human
       
 
