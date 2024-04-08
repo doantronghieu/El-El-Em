@@ -5,6 +5,8 @@ beautifulsoup4
 loguru
 python-dotenv
 ipykernel
+
+
 #*-----------------------------------------------------------------------------
 # Langchain
 langchain >= 0.1.14
