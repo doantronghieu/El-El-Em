@@ -136,47 +136,44 @@ class ToolsBrowser():
 class ToolsCalculator():
   
   @tool("Make a calculation")
-  def calculate(operation):
+  def calculate(operation: str):
     """\
-    Useful to perform any mathematical calculations, like sum, minus, multiplication,
+    Useful to perform any mathematical calculations, like sum, minus, multiplication, \
     division, etc. 
     
-    The input to this tool should be mathematical expression, examples:
+    Parameters:
+    - operation: str
     
-    - `1 + 2`\n
-    - `1 * 2`\n
-    - `3 - 1`\n
-    - `4 / 2`\n
-    - `5 // 2`\n
-    - `6 % 2`\n
-    - `2 ** 3`\n
-    - `(1 + 2) * 3`\n
-    - `(5 - 2) ** 2`\n
-    - `10 // (3 - 1)`\n
-    - `25 % (4 + 1)`\n
-    - `(8 * 2) / (6 - 2)`\n
-    - `(4 ** 3) - (2 * 5)`\n
-    - `(2 * 3) ** (4 % 2)`\n
-    - `(5 + 3) * (12 // 4) - (2 ** 2)`\n
-    - `((7 * 2) - 10) / (3 + (4 // 2))`\n
-    - `(10 - 2) * (16 % 5) + (3 ** 2)`\n
-    - `(2 ** 3) * ((15 // 5) - (4 % 3))`\n
-    - `((6 * 2) + (8 // 4)) ** (7 % 3)`\n
-    - `2 ** (3 + 4)`\n
-    - `4 ** (1 / 2)` (square root of 4)\n
-    - `pow(2, 3)` (equivalent to `2 ** 3`)\n
-    - `abs(-5)` (absolute value of -5)\n
-    - `round(3.14159, 2)` (rounding 3.14159 to 2 decimal places)\n
-    - `max(5, 9)` (maximum of 5 and 9)\n
-    - `min(3, 8)` (minimum of 3 and 8)\n
-    - `sum([1, 2, 3, 4, 5])` (sum of a list of numbers)\n
-    - `2 ** (3 * 4)` (exponential with multiplication)\n
-    - `pow(3, 2)` (equivalent to `3 ** 2`, exponentiation)\n
-    - `abs(-10)` (absolute value)\n
-    - `round(3.567, 2)` (rounding to 2 decimal places)\n
-    - `max(4, 7, 2, 9)` (maximum of a set of numbers)\n
-    - `min(8, 2, 6, 4)` (minimum of a set of numbers)\n
-    - `sum([1, 2, 3, 4, 5])` (sum of a list of numbers)\n
+    The input to this tool should be mathematical expression, examples:
+    - `1 + 2`
+    - `3 - 1`
+    - `1 * 2`
+    - `4 / 2`
+    - `5 // 2`
+    - `6 % 2`
+    - `2 ** 3`
+    - `(1 + 2) * 3`
+    - `(5 - 2) ** 2`
+    - `10 // (3 - 1)`
+    - `25 % (4 + 1)`
+    - `(8 * 2) / (6 - 2)`
+    - `(4 ** 3) - (2 * 5)`
+    - `(2 * 3) ** (4 % 2)`
+    - `(5 + 3) * (12 // 4) - (2 ** 2)`
+    - `((7 * 2) - 10) / (3 + (4 // 2))`
+    - `(10 - 2) * (16 % 5) + (3 ** 2)`
+    - `(2 ** 3) * ((15 // 5) - (4 % 3))`
+    - `((6 * 2) + (8 // 4)) ** (7 % 3)`
+    - `2 ** (3 + 4)`
+    - `4 ** (1 / 2)`
+    - `2 ** (3 * 4)`
+    
+    ALLOWED Action input must be string of mathematical expression, examples: \n
+    - "1 + 2"
+    
+    NOT ALLOWED Action input examples: \n
+    - "expression": "1 + 2"
+    - "calculation": "7 * 24"
     """
     try:
       return eval(operation)

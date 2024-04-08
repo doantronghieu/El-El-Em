@@ -1,5 +1,4 @@
 agents:
-    
   traveling:
     manager:
       role:
@@ -38,7 +37,7 @@ agents:
         An expert in analyzing travel data to pick ideal destinations
       allow_delegation: 'true'
       max_iter: 25
-      tools: scraper
+      tools: searcher, scraper
       
     local_tour_guide:
       role:
@@ -50,8 +49,18 @@ agents:
         it's attractions and customs
       allow_delegation: 'true'
       max_iter: 25
-      tools: scraper
-      
+      tools: searcher, scraper, calculator
+    
+    budget_specialist:
+      role: Budget Specialist
+      goal: >
+        Optimize the trip's costs while maintaining high-quality experiences
+      backstory: >
+        A finance expert with a focus on cost-saving strategies for travel
+      allow_delegation: 'true'
+      max_iter: 25
+      tools: calculator
+
     quality_control_expert:
       role:
         Quality Control Expert
@@ -90,16 +99,28 @@ agents:
         BACKSTORY
 
 tasks:  
-  
   traveling:
     manage:
       description: >
         Oversee the integration of research findings, trip suggestions,
-        and quality control feedback to produce a 7-day travel itinerary
-        specifically tailored to the user's interests: %INTERESTS% and
-        their travel destination: %DESTINATION%. The final output should be
-        a comprehensive with detailed per-day plans, including budget,
-        packing suggestions.
+        and quality control feedback to produce a %DAYS%-day travel itinerary
+        specifically tailored to the user's information: 
+        
+
+        - Budget: %BUDGET%
+
+        - Traveling from: %ORIGIN%
+
+        - Travel destination: %DESTINATION%
+
+        - Traveler Interests: %INTERESTS%
+
+        - Trip Date: %TRAVEL_DATES%
+
+        - Travel Duration: %DAYS%
+
+        The final output should be a comprehensive with detailed per-day plans, 
+        including budget, packing suggestions.
       expected_output: ""
       async_execution: 'false'
       agent: manager
@@ -113,25 +134,26 @@ tasks:
         weather conditions, upcoming cultural or seasonal events, and overall
         travel expenses. 
 
-
         Make sure you stay inside the country that the user requests.
-
 
         Your final answer must be a detailed report on the chosen city, and
         everything you found out about it, including the actual flight costs,
         weather forecast and attractions.
-        
 
         If you do your BEST WORK, I'll tip you $100!
 
 
-        Traveling from: %ORIGIN%
+        - Budget: %BUDGET%
 
-        City Options: %DESTINATION%
+        - Traveling from: %ORIGIN%
 
-        Trip Date: %TRAVEL_DATES%
+        - City Options: %DESTINATION%
 
-        Traveler Interests: %INTERESTS%
+        - Trip Date: %TRAVEL_DATES%
+          
+        - Travel Duration: %DAYS%
+
+        - Traveler Interests: %INTERESTS%
       expected_output: >
         A detailed report on the selected city including:
           
@@ -144,7 +166,7 @@ tasks:
         the trip
       async_execution: 'false'
       agent: city_selection_expert
-      context: x
+      context: manage
 
     gather_city_info:
       description: >
@@ -174,11 +196,15 @@ tasks:
         If you do your BEST WORK, I'll tip you $100!
 
 
-        Trip Date: %TRAVEL_DATES%
-        
-        Traveling to: %DESTINATION%
+        - Budget: %BUDGET%
 
-        Traveler Interests: %INTERESTS%
+        - Trip Date: %TRAVEL_DATES%    
+              
+        - Travel Duration: %DAYS%
+
+        - Traveling to: %DESTINATION%
+
+        - Traveler Interests: %INTERESTS%
       expected_output: >
         An in-depth city guide featuring:
         
@@ -193,11 +219,11 @@ tasks:
         - High-level cost estimates for suggested activities and spots
       async_execution: 'false'
       agent: city_selection_expert
-      context: x
+      context: identify_city
       
     plan_itinerary:
       description: >
-        Expand this guide into a a full 7-day travel itinerary with detailed 
+        Expand this guide into a a full %DAYS%-day travel itinerary with detailed 
         per-day plans, including weather forecasts, places to eat, packing 
         suggestions, and a budget breakdown.
         
@@ -221,24 +247,42 @@ tasks:
         If you do your BEST WORK, I'll tip you $100!
 
 
-        Trip Date: %TRAVEL_DATES%
+        - Budget: %BUDGET%
 
-        Traveling from: %ORIGIN%
+        - Trip Date: %TRAVEL_DATES%
+          
+        - Travel Duration: %DAYS%
 
-        Traveling to: %DESTINATION%
+        - Traveling from: %ORIGIN%
 
-        Traveler Interests: %INTERESTS%
+        - Traveling to: %DESTINATION%
+
+        - Traveler Interests: %INTERESTS%
       expected_output: >
-        A complete 7-day travel itinerary in markdown format to %DESTINATION%
+        A complete %DAYS%-day travel itinerary in markdown format to %DESTINATION%
       async_execution: 'false'  
       agent: travel_consultant
-      context: x
+      context: gather_city_info
+    
+    optimize_costs:
+      description: >
+        Analyze the trip's budget to identify potential cost-saving opportunities
+        without compromising the quality of the experience.
+
+
+        - Budget: %BUDGET%
+      expected_output: >
+        Recommendations for reducing expenses while maintaining the desired travel
+        experience quality.
+      async_execution: 'false'
+      agent: budget_specialist
+      context: plan_itinerary
 
     quality_control:
       description: >
-        Look over the 7-day travel itinerary and provide feedback on the quality
+        Look over the %DAYS%-day travel itinerary and provide feedback on the quality
         of the plan and to make sure that the itinerary follows the same format 
-        as the following 7 day example where you outline what the traveler will 
+        as the following %DAYS% day example where you outline what the traveler will 
         do in the morning, afternoon, and evening along with optional opportunities. 
         Obviously the exact information will differ for each trip, but the format
         should be the same. 
@@ -383,11 +427,35 @@ tasks:
 
         - Formal attire for nightlife
       expected_output: >
-        Actionable feedback on the 7-day travel itinerary with  assessment of
+        Actionable feedback on the %DAYS%-day travel itinerary with  assessment of
         the itinerary's adherence to the format and quality standards
       async_execution: 'false'
       agent: quality_control_expert
-      context: x
+      context: optimize_costs
+    
+    finalize_result:
+      description: >
+        Review the finalized travel itinerary, polish it, and prepare it for presentation
+        to the client. Ensure all details are accurate, consistent, and aligned with
+        the client's preferences and requirements.
+
+
+        - Budget: %BUDGET%
+
+        - Traveling from: %ORIGIN%
+
+        - Travel destination: %DESTINATION%
+
+        - Traveler Interests: %INTERESTS%
+
+        - Trip Date: %TRAVEL_DATES%
+
+        - Travel Duration: %DAYS%
+      expected_output: >
+        A polished and finalized travel itinerary ready for presentation to the client.
+      async_execution: 'false'
+      agent: quality_control_expert
+      context: quality_control
 
   TOPIC:
     TASK:

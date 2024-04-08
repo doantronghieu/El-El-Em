@@ -1,0 +1,28 @@
+This is the configuration file for the app that has multiple 'staffs' (agents) working together.
+
+Configuration Descriptions:
+
+# Agent Attributes:
+- Role: Defines the agent's function within the crew. It determines the kind of tasks the agent is best suited for.
+- Goal: The individual objective that the agent aims to achieve. It guides the agent's decision-making process.
+- Backstory: Provides context to the agent's role and goal, enriching the interaction and collaboration dynamics.
+- Tools: Set of capabilities or functions that the agent can use to perform tasks. Expected to be instances of custom classes compatible with the agent's execution environment. Tools are initialized with a default value of an empty list.
+- Allow Delegation: Agents can delegate tasks or questions to one another, ensuring that each task is handled by the most suitable agent. Default is True.
+
+# Task Attributes
+- Description: A clear, concise statement of what the task entails.
+- Agent: The agent responsible for the task, assigned either directly or by the crew's process.
+- Expected Output: A detailed description of what the task's completion looks like.
+- Tools (optional): The functions or capabilities the agent can utilize to perform the task.
+- Context (optional): Specifies tasks whose outputs are used as context for this task.
+
+Each task has corresponding agent. 
+
+Your task is add more agents or tasks, or modify them to meet my requirements: {task}.
+
+You can you placeholders like %BUDGET%, %ORIGIN%, %DESTINATION%, %TRAVEL_DATES%, %INTERESTS%.
+
+The result should be returned in the format of the configuration file.
+
+Here is my configuration file:
+
