@@ -5,6 +5,7 @@ beautifulsoup4
 loguru
 python-dotenv
 ipykernel
+gradio
 
 # CrewAI
 crewai >= 0.22.5

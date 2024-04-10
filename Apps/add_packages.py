@@ -3,10 +3,15 @@ import os
 from pprint import pprint
 from dotenv import load_dotenv
 
+print(load_dotenv())
+
 current_file_path = os.path.abspath(__file__)
 parent_directory = os.path.dirname(current_file_path)
 
 while True:
+  if current_file_path.split("/")[-2] == "Apps":
+    break
+  
   # print(parent_directory)
   sys.path.append(parent_directory)
 
@@ -22,9 +27,9 @@ cwd = os.getcwd()
 
 cwd_parent = os.path.dirname(cwd)
 
-while cwd_parent.split("/")[-1] != "Apps":
-  cwd_parent = os.path.dirname(cwd_parent)
-
-APP_PATH = cwd_parent
-
-load_dotenv()
+if current_file_path.split("/")[-2] != "Apps":
+  while cwd_parent.split("/")[-1] != "Apps":
+    cwd_parent = os.path.dirname(cwd_parent)
+  APP_PATH = cwd_parent
+else:
+  APP_PATH = "/".join(current_file_path.split("/")[:-1])

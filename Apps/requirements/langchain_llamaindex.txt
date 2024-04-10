@@ -5,7 +5,7 @@ beautifulsoup4
 loguru
 python-dotenv
 ipykernel
-
+gradio
 
 #*-----------------------------------------------------------------------------
 # Langchain

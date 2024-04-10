@@ -6,6 +6,7 @@ fastapi
 python-dateutil
 gradio
 beautifulsoup4
+gradio
 
 # LangChain
 langchain
