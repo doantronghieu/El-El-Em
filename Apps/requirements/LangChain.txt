@@ -1,14 +1,5 @@
-# Core
-context-python
-requests
-beautifulsoup4
-loguru
-python-dotenv
-ipykernel
-gradio
 
-#*-----------------------------------------------------------------------------
-# Langchain
+
 langchain >= 0.1.14
 langchain-core >= 0.1.37
 langchain-community >= 0.0.30
@@ -16,6 +7,7 @@ langchain-openai >= 0.1.1 # == 0.0.5 (crewai), >= 0.1.1
 langchain-anthropic >= 0.1.4
 langchain_cohere
 langchain-groq
+langgraph
 
 # langchain-google-genai
 langchainhub >= 0.1.15
@@ -40,15 +32,6 @@ groq >= 0.4.2
 # embedchain  # 0.1.99
 
 #*-----------------------------------------------------------------------------
-# llama-index
-# pypdf == 3.17.4 ##
-llama-index >= 0.10.25
-llama-index-readers-txtai
-llama-index-vector-stores-qdrant
-llama-index-vector-stores-chroma
-txtai >= 7.0.0
-
-#*-----------------------------------------------------------------------------
 openai >= 1.14.3
 tiktoken >= 0.6.0 # >=0.5.2 | >= 0.6.0
 
@@ -70,8 +53,3 @@ e2b
 # Youtube
 youtube-transcript-api
 pytube
-
-# UI
-# tomlkit==0.12.2
-# gradio >= 4.24.0
-# chainlit >= 1.0.401

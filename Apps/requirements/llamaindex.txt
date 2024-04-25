@@ -1,5 +1,4 @@
 SpeechRecognition
-astrapy
 astrapy # >=0.5.8
 asyncpg 
 autoevals 
@@ -27,7 +26,6 @@ guardrails-ai
 html2text
 httpx
 huggingface_hub
-huggingface_hub[inference]
 ipython-ngql 
 ipywidgets
 jsonpath-ng
@@ -221,7 +219,8 @@ llama-index-vector-stores-typesense
 llama-index-vector-stores-weaviate
 llama-index-vector-stores-zep
 llama_hub 
-lm-format-enforcer llama-cpp-python
+lm-format-enforcer 
+llama-cpp-python
 marvin
 matplotlib
 monsterapi
@@ -233,10 +232,10 @@ ollama
 open-clip-torch
 openai
 openai-whisper
-optimum[exporters]
+optimum
 pandas
 pathway
-pgvecto_rs[sdk]
+pgvecto_rs
 pgvector 
 pillow
 pinecone-client
@@ -254,7 +253,8 @@ pymongo
 pymupdf
 pytube
 pyvis
-qdrant-client pypdf 
+qdrant-client 
+pypdf 
 qdrant_client
 rank-bm25
 rank_llm

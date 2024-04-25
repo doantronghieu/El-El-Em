@@ -12,7 +12,7 @@ dotenv.load_dotenv()
 # with open("../my_configs/vtc.yaml") as file:
 #   configs = yaml.safe_load(file)
 
-chat_openai = ChatOpenAI(temperature=0, model="gpt-3.5-turbo-0125")
+chat_openai = ChatOpenAI(temperature=0, model="gpt-3.5-turbo-0125", streaming=True)
 
 chat_anthropic = ChatAnthropic(
   temperature=0, model_name="claude-3-haiku-20240307"

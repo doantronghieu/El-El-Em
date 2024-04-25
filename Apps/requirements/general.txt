@@ -1,0 +1,11 @@
+gradio
+loguru
+beautifulsoup4
+context-python
+tqdm
+fastapi
+requests
+bitsandbytes
+ipykernel
+python-dotenv
+python-dateutil

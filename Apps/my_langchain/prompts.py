@@ -4,7 +4,7 @@ from langchain_core.prompts import (
     HumanMessagePromptTemplate
 )
 from langchain_core.messages import (
-    SystemMessage, AIMessage, HumanMessage,
+    SystemMessage, AIMessage, HumanMessage, ToolMessage, BaseMessage, FunctionMessage
 )
 from langchain import hub
 # *-----------------------------------------------------------------------------

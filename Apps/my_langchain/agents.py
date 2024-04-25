@@ -15,6 +15,9 @@ from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.prompts.chat import BaseChatPromptTemplate
 from langchain_core.runnables import Runnable
 from langchain_core.tools import BaseTool
+from langchain_core.agents import (
+  AgentActionMessageLog, AgentFinish, AgentAction
+)
 
 from langchain.agents.openai_assistant import OpenAIAssistantRunnable
 from langchain.agents.format_scratchpad.openai_tools import (
@@ -25,9 +28,6 @@ from langchain.agents.format_scratchpad import (
 )
 from langchain.agents.output_parsers.openai_tools import (
   OpenAIToolsAgentOutputParser,
-)
-from langchain_core.agents import (
-  AgentActionMessageLog, AgentFinish,
 )
 
 #*----------------------------------------------------------------------------

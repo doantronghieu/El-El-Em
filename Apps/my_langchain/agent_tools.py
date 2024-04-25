@@ -1,14 +1,15 @@
 
 from langchain.tools import (
-  BaseTool, StructuredTool, tool, 
+  BaseTool, StructuredTool, 
 )
 
 from langchain_core.tools import (
-  ToolException,
+  ToolException, tool
 )
 
-import langchain_community.tools as tools_community
 from langchain.agents import load_tools, Tool
+
+import langchain_community.tools as tools_community
 from langchain_community.tools.tavily_search import (
   TavilySearchResults, TavilyAnswer,
 )
@@ -25,9 +26,9 @@ from langchain.callbacks.manager import (
 )
 
 from langchain_core.utils.function_calling import (
-  convert_to_openai_function
+  convert_to_openai_function, convert_to_openai_tool
 )
-from langchain_experimental.utilities import PythonREPL
+from langchain.tools.render import format_tool_to_openai_function
 
 import typing
 
