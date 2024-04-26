@@ -12,3 +12,4 @@ python-dateutil
 chainlit
 streamlit
 watchdog
+transformers
