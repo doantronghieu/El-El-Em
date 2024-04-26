@@ -9,3 +9,6 @@ bitsandbytes
 ipykernel
 python-dotenv
 python-dateutil
+chainlit
+streamlit
+watchdog
