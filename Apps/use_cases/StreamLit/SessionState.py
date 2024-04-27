@@ -1,38 +1,28 @@
 import streamlit as st
-import datetime
-
+import add_packages
+from my_streamlit import utils
 
 #*==============================================================================
 
 STATES = {
-  "COUNT": (
-    "count", 
-    0,
-  ),
-  "CELSIUS": (
-    "celsius", 
-    50.0,
-  ),
+  "COUNT": {
+    "INITIAL_VALUE": 0,
+  },
+  "CELSIUS": {
+    "INITIAL_VALUE": 50.0,
+  },
 }
 
-def initialize_session_state():
-  """
-  Function to initialize session state with default values
-  """
-  for session_key, default_value in STATES.values():
-    if session_key not in st.session_state:
-        st.session_state[session_key] = default_value
-
-initialize_session_state()
+utils.initialize_session_state(STATES)
 
 #*==============================================================================
 st.header("Counter")
 
 def increment_counter(value_increment):
-  st.session_state[STATES["COUNT"][0]] += value_increment
+  st.session_state[STATES["COUNT"]["KEY"]] += value_increment
 
 def decrement_counter(value_decrement):
-  st.session_state[STATES["COUNT"][0]] -= value_decrement
+  st.session_state[STATES["COUNT"]["KEY"]] -= value_decrement
 
 col1, col2 = st.columns(2)
 with col1:
@@ -59,7 +49,7 @@ st.slider(
   "Temperature (Celsius)", 
   min_value=-100.0, 
   max_value=100.0,
-  key=STATES["CELSIUS"][0]
+  key=STATES["CELSIUS"]["KEY"]
 )
 
 st.header("Session States")

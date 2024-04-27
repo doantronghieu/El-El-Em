@@ -1,0 +1,13 @@
+[client]
+showSidebarNavigation = false
+
+[server]
+port = 8501
+
+[theme]
+font="sans serif" # "sans serif", "serif", "monospace"
+base="dark" # "light", "dark"
+primaryColor="blue" # blue, Any CSS color, RGB, Hex
+# backgroundColor="#FFFFFF"
+# secondaryBackgroundColor="#F0F2F6"
+# textColor="#262730"

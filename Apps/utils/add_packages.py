@@ -3,7 +3,7 @@ import os
 from pprint import pprint
 from dotenv import load_dotenv
 
-print(load_dotenv())
+load_dotenv() 
 
 current_file_path = os.path.abspath(__file__)
 parent_directory = os.path.dirname(current_file_path)
