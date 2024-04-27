@@ -1,7 +1,7 @@
 import uuid
 import add_packages
 from loguru import logger
-from typing import Union, Optional, List
+from typing import Union, Optional, List, Literal
 
 from my_langchain import histories, runnables
 
@@ -41,13 +41,15 @@ def invoke_agent_executor(agent_executor: AgentExecutor, input_str):
 
 #*----------------------------------------------------------------------------
 
+AgentType = Literal["tool_calling", "openai_tools", "react", "anthropic"]
+
 class MyAgent:
   def __init__(
     self, 
     llm: Union[BaseChatModel, None],
     tools: list[BaseTool],
     prompt: Union[BaseChatPromptTemplate, None],
-    agent_type: str, 
+    agent_type: AgentType, 
   ):
     self.prompt = prompt
     self.tools = tools
@@ -104,7 +106,9 @@ class MyAgent:
     input_data = {"input": input_message, "chat_history": self.chat_history}
     additional_data = {"callbacks": callbacks} if callbacks else {}
     
-    result = self.agent_executor.invoke(input_data, additional_data)["output"]
+    result = self.agent_executor.invoke(input_data, additional_data)
+    result = result["output"]
+    
     self._add_messages_to_history(input_message, result)
     
     return result

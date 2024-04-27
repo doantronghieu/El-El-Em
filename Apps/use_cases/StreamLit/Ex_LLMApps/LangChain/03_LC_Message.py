@@ -21,16 +21,11 @@ st.set_page_config(
 
 STATES = {
   "MESSAGES": {
-    "INITIAL_VALUE": [
-      prompts.AIMessage(content="Your are a helpful assistant.")
-    ],
+    "INITIAL_VALUE": [],
   },
 }
 
-
 utils.initialize_session_state(STATES)
-
-
 
 #*==============================================================================
 
@@ -52,26 +47,29 @@ def create_callbacks() -> list:
   return callbacks
 
 def generate_response(
-  input, 
+  input: str, 
   agent: agents.MyAgent,
 ):
-  
   response = agent.invoke_agent(
     input_message=input, 
     callbacks=create_callbacks()
   )
-
   return response
 
-def process_chat(
+def process_on_user_input(
   prompt: str, 
   agent: agents.MyAgent,
 ):
   st.chat_message(CHAT_ROLE.user).markdown(prompt)
   stream = generate_response(prompt, agent)
-  response = st.chat_message(CHAT_ROLE.assistant).write(stream)
-  return response
+  st.chat_message(CHAT_ROLE.assistant).write(stream)
 
+def render_chat_messages_on_rerun(
+  agent: agents.MyAgent,
+):
+  for msg in agent.chat_history:
+    msg: Union[prompts.AIMessage, prompts.HumanMessage]
+    st.chat_message(msg.type).markdown(msg.content)
 #*==============================================================================
 
 llm = chat_models.chat_openai
@@ -92,12 +90,19 @@ agent: agents.MyAgent = create_agent(
 
 #*==============================================================================
 
-for msg in agent.chat_history:
-  msg: Union[prompts.AIMessage, prompts.HumanMessage]
-  st.chat_message(msg.type).markdown(msg.content)
+render_chat_messages_on_rerun(agent=agent)
 
 prompt = st.chat_input("Say something")
-  
+
 if prompt:
-  process_chat(prompt=prompt, agent=agent)
-  
+  process_on_user_input(prompt=prompt, agent=agent)
+
+# cols = st.columns([0.7, 0.3])
+# prompt_user = cols[0].chat_input("Say something")
+# prompt_example = cols[1].selectbox(
+#   label="Examples",
+#   label_visibility="collapsed",
+#   options=[
+#     "Hello",
+#   ]
+# )

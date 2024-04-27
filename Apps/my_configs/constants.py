@@ -57,7 +57,3 @@ EMBEDDINGS = {
     "MANHATTAN": "Manhattan",
   }
 }
-
-"""
-
-"""
