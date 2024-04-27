@@ -120,7 +120,7 @@ def bot_general_chat(chat_history, human_msg):
 
 
 def bot_onlinica(chat_history, human_msg):
-    ai_msg = VTC.agent.invoke_agent(human_msg)
+    ai_msg = VTC.agent.invoke_conversable_agent(human_msg)
     chat_history[-1][1] = ""
 
     for character in ai_msg:

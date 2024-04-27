@@ -47,7 +47,7 @@ qdrant_faq = vectorstores.QdrantWrapper(
 # *=============================================================================
 system_message_onlinica = configs_vtc["prompts"]["system_message_onlinica"]
 
-prompt_onlinica = prompts.create_prompt_custom_agent_openai_tools(
+prompt_onlinica = prompts.create_custom_prompt_tool_calling_agent(
     system_message_onlinica)
 
 tools = [

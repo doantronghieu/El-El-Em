@@ -1,11 +1,12 @@
 from langchain_core.prompts import (
-    ChatPromptTemplate, PromptTemplate, MessagesPlaceholder,
-    SystemMessagePromptTemplate, AIMessagePromptTemplate,
-    HumanMessagePromptTemplate
+  ChatPromptTemplate, PromptTemplate, MessagesPlaceholder,
+  SystemMessagePromptTemplate, AIMessagePromptTemplate,
+  HumanMessagePromptTemplate
 )
 from langchain_core.messages import (
-    SystemMessage, AIMessage, HumanMessage, ToolMessage, BaseMessage, FunctionMessage
+  SystemMessage, AIMessage, HumanMessage, ToolMessage, BaseMessage, FunctionMessage
 )
+from langchain.schema import ChatMessage
 from langchain import hub
 # *-----------------------------------------------------------------------------
 
@@ -24,7 +25,7 @@ Current conversation:
 Human: {input}
 AI Assistant:"""
 general_prompt = prompt_template(
-    input_variables=["history", "input"], template=general_template,
+  input_variables=["history", "input"], template=general_template,
 )
 
 # *-----------------------------------------------------------------------------
@@ -54,9 +55,9 @@ needed and otherwise return as is.\
 """
 
 contextualize_q_prompt = ChatPromptTemplate.from_messages([
-    ("system", contextualize_q_system_prompt),
-    MessagesPlaceholder(variable_name="chat_history"),
-    ("human", "{question}"),
+  ("system", contextualize_q_system_prompt),
+  MessagesPlaceholder(variable_name="chat_history"),
+  ("human", "{question}"),
 ])
 
 qa_system_prompt = """\
@@ -69,9 +70,9 @@ three sentences maximum and keep the answer as concise as possible.
 """
 
 qa_prompt = ChatPromptTemplate.from_messages([
-    ("system", qa_system_prompt),
-    MessagesPlaceholder(variable_name="chat_history"),
-    ("human", "{question}"),
+  ("system", qa_system_prompt),
+  MessagesPlaceholder(variable_name="chat_history"),
+  ("human", "{question}"),
 ])
 
 # *-----------------------------------------------------------------------------
@@ -81,41 +82,36 @@ qa_prompt = ChatPromptTemplate.from_messages([
 #########
 
 # prompt = hub.pull("hwchase17/openai-tools-agent")
-def create_prompt_custom_agent_openai_tools(
-    system_message: str = "You are a helpful assistant"
+def create_custom_prompt_tool_calling_agent(
+  system_message: str = "You are a helpful assistant"
 ):
-    prompt_custom_agent_openai_tools = ChatPromptTemplate.from_messages(
-        [
-            ("system", system_message),
-            MessagesPlaceholder("chat_history"),
-            ("human", "{input}"),
-            MessagesPlaceholder("agent_scratchpad"),
-        ]
-    )
+  prompt = ChatPromptTemplate.from_messages([
+    ("system", system_message),
+    MessagesPlaceholder("chat_history"),
+    ("human", "{input}"),
+    MessagesPlaceholder("agent_scratchpad"),
+  ])
 
-    return prompt_custom_agent_openai_tools
+  return prompt
 
 
 # prompt = hub.pull("hwchase17/xml-agent-convo")
 def create_prompt_custom_agent_xml_tools(
     system_message: str = "You are a helpful assistant. Help the user answer any questions."
 ):
-    prompt_custom_agent_xml_tools = ChatPromptTemplate(
-        input_variables=['agent_scratchpad', 'input', 'tools'],
-        partial_variables={'chat_history': ''},
-        messages=[
-            HumanMessagePromptTemplate(
-                prompt=PromptTemplate(
-                    input_variables=['agent_scratchpad',
-                                     'chat_history', 'input', 'tools'],
-                    template=system_message + "\n\nYou have access to the following tools:\n\n{tools}\n\nIn order to use a tool, you can use <tool></tool> and <tool_input></tool_input> tags. You will then get back a response in the form <observation></observation>\nFor example, if you have a tool called 'search' that could run a google search, in order to search for the weather in SF you would respond:\n\n<tool>search</tool><tool_input>weather in SF</tool_input>\n<observation>64 degrees</observation>\n\nWhen you are done, respond with a final answer between <final_answer></final_answer>. For example:\n\n<final_answer>The weather in SF is 64 degrees</final_answer>\n\nBegin!\n\nPrevious Conversation:\n{chat_history}\n\nQuestion: {input}\n{agent_scratchpad}"
-                )
-            )
-        ]
-    )
+  prompt_custom_agent_xml_tools = ChatPromptTemplate(
+    input_variables=['agent_scratchpad', 'input', 'tools'],
+    partial_variables={'chat_history': ''},
+    messages=[
+      HumanMessagePromptTemplate(
+        prompt=PromptTemplate(
+          input_variables=['agent_scratchpad',
+                            'chat_history', 'input', 'tools'],
+          template=system_message + "\n\nYou have access to the following tools:\n\n{tools}\n\nIn order to use a tool, you can use <tool></tool> and <tool_input></tool_input> tags. You will then get back a response in the form <observation></observation>\nFor example, if you have a tool called 'search' that could run a google search, in order to search for the weather in SF you would respond:\n\n<tool>search</tool><tool_input>weather in SF</tool_input>\n<observation>64 degrees</observation>\n\nWhen you are done, respond with a final answer between <final_answer></final_answer>. For example:\n\n<final_answer>The weather in SF is 64 degrees</final_answer>\n\nBegin!\n\nPrevious Conversation:\n{chat_history}\n\nQuestion: {input}\n{agent_scratchpad}"
+        )
+      )
+    ]
+  )
 
-    return prompt_custom_agent_xml_tools
+  return prompt_custom_agent_xml_tools
 
-
-prompt = create_prompt_custom_agent_xml_tools()
-prompt

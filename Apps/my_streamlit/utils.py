@@ -3,6 +3,7 @@ import typing
 import time
 from pydantic import BaseModel, Field
 from typing import Any
+from langchain_community.callbacks.streamlit import StreamlitCallbackHandler
 
 #*==============================================================================
 
@@ -54,3 +55,6 @@ class MsgItem:
     self.content = "content"
     
 MSG_ITEM = MsgItem()
+
+#*==============================================================================
+

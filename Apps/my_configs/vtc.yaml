@@ -6,7 +6,7 @@ model:
   anthropic: "claude-3-haiku-20240307" # claude-3-haiku-20240307, claude-3-opus-20240229, claude-3-sonnet-20240229
 
 agents:
-  agent_type_onlinica: "openai_tools" # openai_tools, react, anthropic
+  agent_type_onlinica: "tool_calling" # openai_tools, react, anthropic, tool_calling
 
 data:
   # metadata_field_info: metadata of Document
