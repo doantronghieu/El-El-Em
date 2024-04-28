@@ -2,6 +2,7 @@ cookie:
   expiry_days: 30
   key: some_signature_key
   name: some_cookie_name
+
 credentials:
   usernames:
     admin:
@@ -9,7 +10,7 @@ credentials:
       failed_login_attempts: 0
       logged_in: false
       name: Admin
-      password: $2b$12$Rrye2aH4jpJc4TtI0is8GOsz5lNr0bNV6oXlgOmaJ8qQc6kGwVQfK
+      password: $2b$12$AH1qzaCHmeEzwEFYHU1RseDsZLq53/rWOz0WwJWCdQjMSMAfx9KR.
     dad:
       email: dad@gmail.com
       failed_login_attempts: 0
@@ -18,9 +19,11 @@ credentials:
       password: $2b$12$iZ4FMV8Ei4qIkqOgb/CdpuvmmsoNHEQiqfxLQc2NOqaalUk9t0DHi
     mom:
       email: mom@gmail.com
+      failed_login_attempts: 0
       logged_in: false
       name: Mom
       password: $2b$12$GnKcLs3DPhNQT1OokjW0sOc3U2Vg.O571vUIt7vt35.T.xpK3Vq2y
+
 pre-authorized:
   emails:
   - melsby@gmail.com

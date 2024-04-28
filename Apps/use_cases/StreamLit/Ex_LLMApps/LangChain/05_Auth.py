@@ -1,211 +1,228 @@
-import add_packages
 import streamlit as st
-import streamlit_authenticator as stauth
 import yaml
-from yaml.loader import SafeLoader
+from typing import Dict
+from secrets import token_hex
+from hashlib import sha256
+from datetime import datetime, timedelta
+import string
+import secrets
 
-from my_streamlit import utils
+HASH_ALGORITHM = "sha256"
+SALT_LENGTH = 16
 
-#*==============================================================================
+# Load configuration from users.yaml
+with open("users.yaml", "r") as f:
+  config = yaml.safe_load(f)
 
-st.set_page_config(
-  layout="wide",
-)
+# Authentication configuration
+AUTH_CONFIG = config["auth"]
+COOKIE_NAME = AUTH_CONFIG["cookie"]["name"]
+COOKIE_KEY = AUTH_CONFIG["cookie"]["key"]
+COOKIE_EXPIRY_DAYS = AUTH_CONFIG["cookie"]["expiry_days"]
+HASH_ALGORITHM = AUTH_CONFIG["passwords"]["hash_algorithm"]
+SALT_LENGTH = AUTH_CONFIG["passwords"]["salt_length"]
+USERS = AUTH_CONFIG["users"]
+PRE_AUTHORIZED_EMAILS = AUTH_CONFIG["pre_authorized_emails"]
 
-with open(f"{add_packages.APP_PATH}/app_streamlit/.streamlit/users.yaml", "r+") as f:
-  config = yaml.load(f, Loader=SafeLoader)
+# Initialize session state
+if "user" not in st.session_state:
+  st.session_state.user = None
 
-STATES = {
-  "MESSAGES": {
-    "INITIAL_VALUE": [],
-  },
-  "AUTHENTICATION_STATUS": {
-    "INITIAL_VALUE": "widget",
-  },
-  "BTN_REGISTER": {
-    "INITIAL_VALUE": "widget",
-  },
-  "IS_BTN_REGISTER": {
-    "INITIAL_VALUE": False,
-  },
-  "BTN_FORGOT_USERNAME": {
-    "INITIAL_VALUE": "widget",
-  },
-  "IS_BTN_FORGOT_USERNAME": {
-    "INITIAL_VALUE": False,
-  },
-  "BTN_FORGOT_PASSWORD": {
-    "INITIAL_VALUE": "widget",
-  },
-  "IS_BTN_FORGOT_PASSWORD": {
-    "INITIAL_VALUE": False,
-  },
-  "BTN_RESET_PASSWORD": {
-    "INITIAL_VALUE": "widget",
-  },
-  "IS_BTN_RESET_PASSWORD": {
-    "INITIAL_VALUE": False,
-  },
-  "BTN_UPDATE_USER_DETAIL": {
-    "INITIAL_VALUE": "widget",
-  },
-  "IS_BTN_UPDATE_USER_DETAIL": {
-    "INITIAL_VALUE": False,
-  },
-}
 
-utils.initialize_session_state(STATES)
+def hash_password(password: str, salt: str = None) -> str:
+  """
+  Hashes a password using the configured algorithm and salt.
+  If no salt is provided, a random salt is generated.
+  """
+  if salt is None:
+    salt = token_hex(SALT_LENGTH)
+  if HASH_ALGORITHM == "sha256":
+    return sha256((salt + password).encode()).hexdigest()
+  else:
+    raise ValueError(f"Unsupported hash algorithm: {HASH_ALGORITHM}")
 
-#*==============================================================================
 
-st.title("Welcome to My Home")
+def authenticate_user(username: str, password: str) -> bool:
+  """
+  Authenticates a user by checking if the username and password match the stored credentials.
+  Returns True if authenticated, False otherwise.
+  """
+  user = USERS.get(username)
+  if user is None:
+    return False
 
-authenticator = stauth.Authenticate(
-  config['credentials'],
-  config['cookie']['name'],
-  config['cookie']['key'],
-  config['cookie']['expiry_days'],
-  config['pre-authorized']
-)
+  hashed_password = user["password_hash"].split("$")[3]
+  salt = user["password_hash"].split("$")[2]
+  if hash_password(password, salt) == hashed_password:
+    st.session_state.user = user
+    return True
+  else:
+    # Increment failed login attempts
+    user["failed_login_attempts"] += 1
+    USERS[username] = user
+    return False
 
-def save_config():
-  # Ensure that the configuration file is re-saved anytime the credentials are 
-  # updated or whenever the reset_password, register_user, forgot_password, or 
-  # update_user_details widgets are used.
-  with open(f"{add_packages.APP_PATH}/app_streamlit/.streamlit/users.yaml", "w") as f:
-    
+
+def register_user(email: str, name: str, password: str):
+  """
+  Registers a new user with the provided email, name, and password.
+  """
+  username = email.split("@")[0]
+  if username in USERS:
+    st.error("Username already exists!")
+    return
+
+  salt = token_hex(SALT_LENGTH)
+  password_hash = f"{HASH_ALGORITHM}${SALT_LENGTH}${salt}${hash_password(password, salt)}"
+  USERS[username] = {
+    "name": name,
+    "email": email,
+    "password_hash": password_hash,
+    "failed_login_attempts": 0,
+    "locked": False,
+  }
+
+  st.success(f"User '{username}' registered successfully!")
+
+  # Save the updated users to users.yaml
+  config["auth"]["users"] = USERS
+  with open("users.yaml", "w") as f:
     yaml.dump(config, f, default_flow_style=False)
-    
 
-def handle_toggle_btn(btn_name: str):
-  st.session_state[f"is_{btn_name}"] = not st.session_state[f"is_{btn_name}"]
 
-def handle_on_click_btn_register():
-  try:
-    reg_user_email, reg_user_username, \
-      reg_user_name = authenticator.register_user(
-        pre_authorization=False,
-        location="sidebar",
-        domains=['gmail.com'],
-      )
-    if reg_user_email:
-      st.sidebar.success('User registered successfully')
-      handle_toggle_btn(STATES["BTN_REGISTER"]["KEY"])
-      save_config()
+def forgot_password(username: str):
+  """
+  Handles the "forgot password" functionality by generating a new password for the user.
+  """
+  if username not in USERS:
+    st.error("Username not found!")
+    return
+
+  new_password = generate_password()
+  salt = token_hex(SALT_LENGTH)
+  password_hash = f"{HASH_ALGORITHM}${SALT_LENGTH}${salt}${hash_password(new_password, salt)}"
+  USERS[username]["password_hash"] = password_hash
+
+  st.success(f"New password for '{username}' is '{new_password}'")
+
+  # Save the updated users to users.yaml
+  config["auth"]["users"] = USERS
+  with open("users.yaml", "w") as f:
+    yaml.dump(config, f, default_flow_style=False)
+
+
+def generate_password(length=12, complexity=SALT_LENGTH):
+  """
+  Generates a random password with the specified length and complexity.
+
+  Args:
+      length (int, optional): The length of the password. Default is 12.
+      complexity (int, optional): The complexity level of the password, ranging from 1 (least complex) to 4 (most complex). Default is the same as SALT_LENGTH.
+
+  Returns:
+      str: The generated random password.
+
+  Complexity Levels:
+      1: Lowercase characters only
+      2: Lowercase and uppercase characters
+      3: Lowercase, uppercase, and digits
+      4: Lowercase, uppercase, digits, and special characters
+  """
+  # Define character sets for each complexity level
+  char_sets = [
+    string.ascii_lowercase,
+    string.ascii_letters,
+    string.ascii_letters + string.digits,
+    string.ascii_letters + string.digits + string.punctuation,
+  ]
+
+  # Choose the character set based on the specified complexity level
+  char_set = char_sets[complexity - 1]
+
+  # Generate the password
+  password = ''.join(secrets.choice(char_set) for _ in range(length))
+
+  return password
+
+
+def check_session():
+  """
+  Checks if the user is authenticated by verifying the session state.
+  Returns True if authenticated, False otherwise.
+  """
+  return st.session_state.user is not None
+
+
+def set_session(user: Dict):
+  """
+  Sets the user session state with the user details.
+  """
+  st.session_state.user = user
+
+
+def clear_session():
+  """
+  Clears the user session state.
+  """
+  st.session_state.user = None
+
+
+def authenticated_content():
+  st.header(f"Welcome, {user['name']}!")
+  # Add your authenticated user content here
+  
+
+
+def render_sidebar():
+  if check_session():
+    # Render sidebar content for authenticated users
+    st.sidebar.header("User Menu")
+    st.sidebar.button("Logout", on_click=clear_session)
     
+    # Add your authenticated user sidebar options here
       
-  except Exception as e:
-    print(e)
-    st.error(e)
-  
-def handle_on_click_btn_forgot_username():
-  try:
-    forgot_username_username, forgot_username_email = authenticator.forgot_username(
-      location="sidebar",
-    )
-    if forgot_username_username:
-      st.success('Username to be sent securely')
-      # The developer should securely transfer the username to the user.
-    elif forgot_username_username == False:
-      st.error('Email not found')
-  except Exception as e:
-    st.error(e)
+  else:
+    # Render sidebar content for unauthenticated users
+    menu = ["Login", "Register", "Forgot Password"]
+    choice = st.sidebar.selectbox("Menu", menu)
 
-def handle_on_click_btn_forgot_password():
-  try:
-    forgot_pw_username, forgot_pw_email, \
-      new_random_password = authenticator.forgot_password(
-        location="sidebar"
-      )
-    if forgot_pw_username:
-      st.success('New password to be sent securely')
-      # The developer should securely transfer the new password to the user.
-    elif forgot_pw_username == False:
-      st.error('Username not found')
-  except Exception as e:
-    st.error(e)
+    if choice == "Login":
+      username = st.sidebar.text_input("Username")
+      password = st.sidebar.text_input("Password", type="password")
+      if st.sidebar.button("Login"):
+        if authenticate_user(username, password):
+          st.success(f"Welcome, {st.session_state.user['name']}!")
+        else:
+          st.error("Invalid username or password")
 
-def handle_on_click_btn_reset_password():
-  try:
-    if authenticator.reset_password(
-      username=st.session_state["username"],
-      location="sidebar",
-    ):
-      st.success('Password modified successfully')
-  except Exception as e:
-    st.error(e)
+    elif choice == "Register":
+      email = st.sidebar.text_input("Email")
+      name = st.sidebar.text_input("Name")
+      password = st.sidebar.text_input("Password", type="password")
+      if st.sidebar.button("Register"):
+        register_user(email, name, password)
 
-def handle_on_click_btn_update_user_detail():
-  try:
-    if authenticator.update_user_details(
-      username=st.session_state["username"],
-      location="sidebar",
-    ):
-      st.success('Entries updated successfully')
-  except Exception as e:
-    st.error(e)
-#*==============================================================================
+    elif choice == "Forgot Password":
+      username = st.sidebar.text_input("Username")
+      if st.sidebar.button("Reset Password"):
+        forgot_password(username)
 
-# re-invoked on every page
-user_name, user_authen_status, user_username = authenticator.login(
-  location="sidebar", # main, sidebar
-)
-
-if st.session_state["authentication_status"]:
-  st.sidebar.write(f'Welcome *{st.session_state["name"]}*')
-  
-  authenticator.logout(key="logout_btn", location="sidebar")
-  
-  st.title('Some content')
-  
-elif st.session_state["authentication_status"] == False:
-  st.sidebar.error('Username/password is incorrect')
-  
-elif st.session_state["authentication_status"] is None:
-  st.sidebar.warning('Please enter your username and password')
-
-  btn_register = st.sidebar.button(
-    "Register", key=STATES["BTN_REGISTER"]["KEY"],
-    on_click=handle_toggle_btn, 
-    kwargs=dict(btn_name=STATES["BTN_REGISTER"]["KEY"]),
-  )
-  if st.session_state[STATES["IS_BTN_REGISTER"]["KEY"]]:
-    handle_on_click_btn_register()
-  
-  btn_forgot_username = st.sidebar.button(
-    "Forgot Username", key=STATES["BTN_FORGOT_USERNAME"]["KEY"],
-    on_click=handle_toggle_btn, 
-    kwargs=dict(btn_name=STATES["BTN_FORGOT_USERNAME"]["KEY"]),
-  )
-  if st.session_state[STATES["IS_BTN_FORGOT_USERNAME"]["KEY"]]:
-    handle_on_click_btn_forgot_username()
-    
-  btn_forgot_password = st.sidebar.button(
-    "Forgot Password", key=STATES["BTN_FORGOT_PASSWORD"]["KEY"],
-    on_click=handle_toggle_btn, 
-    kwargs=dict(btn_name=STATES["BTN_FORGOT_PASSWORD"]["KEY"]),
-  )
-  if st.session_state[STATES["IS_BTN_FORGOT_PASSWORD"]["KEY"]]:
-    handle_on_click_btn_forgot_password()
-    
-if st.session_state["authentication_status"]:
-  btn_reset_password = st.sidebar.button(
-    "Reset Password", key=STATES["BTN_RESET_PASSWORD"]["KEY"],
-    on_click=handle_toggle_btn,
-    kwargs=dict(btn_name=STATES["BTN_RESET_PASSWORD"]["KEY"]),
-  )
-  if st.session_state[STATES["IS_BTN_RESET_PASSWORD"]["KEY"]]:
-    handle_on_click_btn_reset_password()
-  
-  btn_update_user_detail = st.sidebar.button(
-    "Update User Detail", key=STATES["BTN_UPDATE_USER_DETAIL"]["KEY"],
-    on_click=handle_toggle_btn, 
-    kwargs=dict(btn_name=STATES["BTN_UPDATE_USER_DETAIL"]["KEY"]),
-  )
-  if st.session_state[STATES["IS_BTN_UPDATE_USER_DETAIL"]["KEY"]]:
-    handle_on_click_btn_update_user_detail()
-  
+    if st.sidebar.checkbox("Pre-authorized"):
+      email = st.sidebar.text_input("Email")
+      if email in PRE_AUTHORIZED_EMAILS:
+        user = {"name": email.split("@")[0], "email": email}
+        set_session(user)
+        st.experimental_rerun()
+      else:
+        st.error("Email not pre-authorized")
 
 
-st.write(st.session_state)
-st.write(config)
+# Streamlit app
+st.set_page_config(layout="wide")
+st.title("LLMs-powered Applications")
+
+render_sidebar()
+
+if check_session():
+  user = st.session_state.user
+  authenticated_content()

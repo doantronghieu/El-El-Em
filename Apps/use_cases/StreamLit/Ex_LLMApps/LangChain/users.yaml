@@ -1,0 +1,41 @@
+auth:
+  cookie:
+    expiry_days: 30
+    key: YOUR_SECRET_KEY_HERE
+    name: auth_cookie
+  passwords:
+    hash_algorithm: sha256
+    salt_length: 16
+  pre_authorized_emails:
+  - melsby@gmail.com
+  users:
+    admin:
+      email: admin@gmail.com
+      failed_login_attempts: 0
+      locked: false
+      name: admin
+      password_hash: sha256$16$c65acb506cd7895859cad055ceed2904$24acf2911a008ae108f2499dc1fd0d59ac09f290dbc559f3789e84b0eb5cf55b
+    cat:
+      email: cat@gmail.com
+      failed_login_attempts: 0
+      locked: false
+      name: cat
+      password_hash: sha256$16$358fc1818541a4c27f51802bbca73743$2ad9a0d97e45c224519299a594250de135138bb23658c314e88e9ec6435bbd77
+    dad:
+      email: dad@example.com
+      failed_login_attempts: 0
+      locked: false
+      name: Daddy
+      password_hash: $2b$12$iZ4FMV8Ei4qIkqOgb/CdpuvmmsoNHEQiqfxLQc2NOqaalUk9t0DHi
+    dog:
+      email: dog@gmail.com
+      failed_login_attempts: 0
+      locked: false
+      name: dog
+      password_hash: sha256$16$d3768e21b96af2350d89c2d6c04a9de8$0134d17a0c45f5c7cdfd161eb80417582e2ec2924f3ba113fe66d30ba7d65613
+    mom:
+      email: mom@example.com
+      failed_login_attempts: 0
+      locked: false
+      name: Mom
+      password_hash: $2b$12$GnKcLs3DPhNQT1OokjW0sOc3U2Vg.O571vUIt7vt35.T.xpK3Vq2y
