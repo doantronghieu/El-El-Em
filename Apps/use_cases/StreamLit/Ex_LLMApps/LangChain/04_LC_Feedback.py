@@ -1,14 +1,20 @@
 from typing import Union, Sequence
-import streamlit as st
 import uuid
+import os
+import time
 import add_packages
+
+import streamlit as st
+from streamlit_feedback import streamlit_feedback
 
 from langchain_core.language_models import BaseLanguageModel
 from langchain_core.prompts.chat import ChatPromptTemplate
 from langchain_core.tools import BaseTool
 from langchain_core.runnables import Runnable
 
-from my_langchain import chat_models, agent_tools, prompts, agents
+from my_langchain import (
+  chat_models, agent_tools, prompts, agents, smiths, runnables
+)
 
 from my_streamlit import utils
 from my_streamlit.utils import CHAT_ROLE, MSG_ITEM
@@ -22,6 +28,9 @@ st.set_page_config(
 STATES = {
   "MESSAGES": {
     "INITIAL_VALUE": [],
+  },
+  "LAST_RUN": {
+    "INITIAL_VALUE": None,
   },
   "PROMPT_EXAMPLE": {
     "INITIAL_VALUE": None,
@@ -42,9 +51,33 @@ STATES = {
 
 utils.initialize_session_state(STATES)
 
+#*==============================================================================
 
+PROJECT_LS = "default" # LangSmith
+ENDPOINT_LC = "https://api.smith.langchain.com" # LangChain
+CLIENT_LC = smiths.Client(
+  api_url=ENDPOINT_LC, api_key=os.getenv("LANGCHAIN_API_KEY")
+)
+TRACER_LS = smiths.LangChainTracer(project_name=PROJECT_LS, client=CLIENT_LC)
+RUN_COLLECTOR = smiths.RunCollectorCallbackHandler()
+
+#*------------------------------------------------------------------------------
+
+cfg = runnables.RunnableConfig()
+cfg["callbacks"] = [TRACER_LS, RUN_COLLECTOR]
 
 #*==============================================================================
+
+@st.cache_data(show_spinner=False)
+def get_LC_run_url(run_id):
+  time.sleep(1)
+  
+  try:
+    result = CLIENT_LC.read_run(run_id).url
+  except:
+    result = None
+    
+  return result
 
 @st.cache_resource
 def create_agent(
@@ -60,7 +93,7 @@ def create_agent(
 
 def create_callbacks() -> list:
   st_callback = utils.StreamlitCallbackHandler(st.container())
-  callbacks = [st_callback]
+  callbacks = [st_callback, TRACER_LS, RUN_COLLECTOR]
   return callbacks
 
 def generate_response(
@@ -71,6 +104,9 @@ def generate_response(
     input_message=input, 
     callbacks=create_callbacks()
   )
+  
+  st.session_state[STATES["LAST_RUN"]["KEY"]] = RUN_COLLECTOR.traced_runs[0].id
+  
   return response
 
 def process_on_user_input(
@@ -103,7 +139,10 @@ def on_click_btn_clear_chat(
   
 ):
   pass
+
 #*==============================================================================
+
+#*------------------------------------------------------------------------------
 
 llm = chat_models.chat_openai
 
@@ -192,5 +231,32 @@ if prompt_example:
   
 if prompt:
   process_on_user_input(prompt=prompt, agent=agent)
+
+#*------------------------------------------------------------------------------
+# Feedback
+
+if st.session_state[STATES["LAST_RUN"]["KEY"]]:
+  run_url = get_LC_run_url(st.session_state[STATES["LAST_RUN"]["KEY"]])
+  
+  if run_url is None:
+    pass
+  
+  feedback = streamlit_feedback(
+    feedback_type="faces",
+    optional_text_label="[Optional] Please provide an explanation",
+    key=f'feedback_{st.session_state[STATES["LAST_RUN"]["KEY"]]}'
+  )
+  
+  if feedback:
+    scores = {"😀": 1, "🙂": 0.75, "😐": 0.5, "🙁": 0.25, "😞": 0}
+    
+    CLIENT_LC.create_feedback(
+      st.session_state[STATES["LAST_RUN"]["KEY"]],
+      feedback["type"],
+      score=scores[feedback["score"]],
+      comment=feedback.get("text", None)
+    )
+    
+    st.toast("Feedback recorded.", icon="📝")
 
 # st.write(st.session_state)

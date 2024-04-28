@@ -108,9 +108,9 @@ class MyAgent:
     callbacks: Optional[List] = None,
   ):
     input_data = {"input": input_message, "chat_history": self.chat_history}
-    additional_data = {"callbacks": callbacks} if callbacks else {}
+    configs = {"callbacks": callbacks} if callbacks else {}
     
-    result = self.agent_executor.invoke(input_data, additional_data)
+    result = self.agent_executor.invoke(input_data, configs)
     result = result["output"]
     
     self._add_messages_to_history(input_message, result)

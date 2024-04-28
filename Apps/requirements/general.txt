@@ -12,6 +12,7 @@ python-dateutil
 chainlit
 
 streamlit
+streamlit_feedback
 streamlit-extras
 st-pages
 

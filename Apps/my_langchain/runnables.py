@@ -1,6 +1,7 @@
 from langchain_core.runnables import (
   Runnable, RunnablePassthrough, RunnableParallel, RunnableLambda, 
   ConfigurableField, chain, ConfigurableFieldSpec, RunnableBranch,
+  RunnableConfig,
 )
 
 from langchain.runnables.hub import (
