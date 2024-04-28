@@ -62,6 +62,7 @@ class MyAgent:
     self.agent_executor = AgentExecutor(
       agent=self.agent, tools=self.tools, verbose=True,
       handle_parsing_errors=True,
+      return_intermediate_steps=False,
     )
     self.chat_history: list[Union[AIMessage, HumanMessage, ChatMessage, None]] = []
 
@@ -98,6 +99,9 @@ class MyAgent:
     self.chat_history.append(HumanMessage(msg_user))
     self.chat_history.append(AIMessage(msg_ai))
 
+  def clear_chat_history(self):
+    self.chat_history = []
+  
   def invoke_agent(
     self, 
     input_message: str, 
