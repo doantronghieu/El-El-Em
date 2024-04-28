@@ -61,6 +61,8 @@ def authenticate_user(username: str, password: str) -> bool:
     user["failed_login_attempts"] += 1
     USERS[username] = user
     return False
+  
+  
 
 
 def register_user(email: str, name: str, password: str):
@@ -88,8 +90,9 @@ def register_user(email: str, name: str, password: str):
   config["auth"]["users"] = USERS
   with open("users.yaml", "w") as f:
     yaml.dump(config, f, default_flow_style=False)
-
-
+  
+  st.rerun()
+  
 def forgot_password(username: str):
   """
   Handles the "forgot password" functionality by generating a new password for the user.
@@ -194,6 +197,7 @@ def render_sidebar():
           st.success(f"Welcome, {st.session_state.user['name']}!")
         else:
           st.error("Invalid username or password")
+        
 
     elif choice == "Register":
       email = st.sidebar.text_input("Email")
