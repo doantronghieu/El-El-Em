@@ -1,0 +1,23 @@
+credentials:
+  usernames:
+    admin:
+      email: admin@gmail.com
+      failed_login_attempts: 0 # Will be managed automatically
+      logged_in: False # Will be managed automatically
+      name: Admin
+      password: "123" # Will be hashed automatically
+    dad:
+      email: dad@gmail.com
+      failed_login_attempts: 0 # Will be managed automatically
+      logged_in: False # Will be managed automatically
+      name: Daddy
+      password: def # Will be hashed automatically
+
+cookie:
+  expiry_days: 30
+  key: some_signature_key # Must be string
+  name: some_cookie_name
+
+pre-authorized:
+  emails:
+  - haha@gmail.com

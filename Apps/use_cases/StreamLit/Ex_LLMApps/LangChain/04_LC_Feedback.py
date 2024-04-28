@@ -61,10 +61,6 @@ CLIENT_LC = smiths.Client(
 TRACER_LS = smiths.LangChainTracer(project_name=PROJECT_LS, client=CLIENT_LC)
 RUN_COLLECTOR = smiths.RunCollectorCallbackHandler()
 
-#*------------------------------------------------------------------------------
-
-cfg = runnables.RunnableConfig()
-cfg["callbacks"] = [TRACER_LS, RUN_COLLECTOR]
 
 #*==============================================================================
 
@@ -117,7 +113,6 @@ def process_on_user_input(
   stream = generate_response(prompt, agent)
   st.chat_message(CHAT_ROLE.assistant).write(stream)
   
-  
 def render_chat_messages_on_rerun(
   agent: agents.MyAgent,
 ):
@@ -141,8 +136,6 @@ def on_click_btn_clear_chat(
   pass
 
 #*==============================================================================
-
-#*------------------------------------------------------------------------------
 
 llm = chat_models.chat_openai
 

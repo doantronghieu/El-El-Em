@@ -3,7 +3,6 @@ from datetime import datetime
 import typing
 import time
 import uuid
-from pydantic import BaseModel, Field
 from typing import Any
 from langchain_community.callbacks.streamlit import StreamlitCallbackHandler
 
@@ -67,3 +66,6 @@ def generate_user_uuid(user_email: str):
 def generate_chat_uuid(app_name: str, user_id: str):
 	name = f"{app_name}_{user_id}_{datetime.now()}"
 	return str(uuid.uuid5(namespace=uuid.NAMESPACE_DNS, name=name))
+
+#*==============================================================================
+
