@@ -12,16 +12,9 @@ st.set_page_config(
   layout="wide",
 )
 
-with open(f"{add_packages.APP_PATH}/app_streamlit/.streamlit/users.yaml") as f:
+with open(f"{add_packages.APP_PATH}/app_streamlit/.streamlit/users.yaml", "r+") as f:
   config = yaml.load(f, Loader=SafeLoader)
 
-"""
-
-
-
-
-
-"""
 STATES = {
   "MESSAGES": {
     "INITIAL_VALUE": [],
@@ -75,6 +68,15 @@ authenticator = stauth.Authenticate(
   config['pre-authorized']
 )
 
+def save_config():
+  # Ensure that the configuration file is re-saved anytime the credentials are 
+  # updated or whenever the reset_password, register_user, forgot_password, or 
+  # update_user_details widgets are used.
+  with open(f"{add_packages.APP_PATH}/app_streamlit/.streamlit/users.yaml", "w") as f:
+    
+    yaml.dump(config, f, default_flow_style=False)
+    
+
 def handle_toggle_btn(btn_name: str):
   st.session_state[f"is_{btn_name}"] = not st.session_state[f"is_{btn_name}"]
 
@@ -87,8 +89,13 @@ def handle_on_click_btn_register():
         domains=['gmail.com'],
       )
     if reg_user_email:
-      st.success('User registered successfully')
+      st.sidebar.success('User registered successfully')
+      handle_toggle_btn(STATES["BTN_REGISTER"]["KEY"])
+      save_config()
+    
+      
   except Exception as e:
+    print(e)
     st.error(e)
   
 def handle_on_click_btn_forgot_username():
@@ -198,10 +205,7 @@ if st.session_state["authentication_status"]:
   if st.session_state[STATES["IS_BTN_UPDATE_USER_DETAIL"]["KEY"]]:
     handle_on_click_btn_update_user_detail()
   
-# Ensure that the configuration file is re-saved anytime the credentials are 
-# updated or whenever the reset_password, register_user, forgot_password, or 
-# update_user_details widgets are used.
-# with open(f"{add_packages.APP_PATH}/app_streamlit/.streamlit/users.yaml") as f:
-#   yaml.dump(config, f, default_flow_style=False)
+
 
 st.write(st.session_state)
+st.write(config)

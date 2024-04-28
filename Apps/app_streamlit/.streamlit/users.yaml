@@ -1,23 +1,26 @@
+cookie:
+  expiry_days: 30
+  key: some_signature_key
+  name: some_cookie_name
 credentials:
   usernames:
     admin:
       email: admin@gmail.com
-      failed_login_attempts: 0 # Will be managed automatically
-      logged_in: False # Will be managed automatically
+      failed_login_attempts: 0
+      logged_in: false
       name: Admin
-      password: "123" # Will be hashed automatically
+      password: $2b$12$Rrye2aH4jpJc4TtI0is8GOsz5lNr0bNV6oXlgOmaJ8qQc6kGwVQfK
     dad:
       email: dad@gmail.com
-      failed_login_attempts: 0 # Will be managed automatically
-      logged_in: False # Will be managed automatically
+      failed_login_attempts: 0
+      logged_in: false
       name: Daddy
-      password: def # Will be hashed automatically
-
-cookie:
-  expiry_days: 30
-  key: some_signature_key # Must be string
-  name: some_cookie_name
-
+      password: $2b$12$iZ4FMV8Ei4qIkqOgb/CdpuvmmsoNHEQiqfxLQc2NOqaalUk9t0DHi
+    mom:
+      email: mom@gmail.com
+      logged_in: false
+      name: Mom
+      password: $2b$12$GnKcLs3DPhNQT1OokjW0sOc3U2Vg.O571vUIt7vt35.T.xpK3Vq2y
 pre-authorized:
   emails:
-  - haha@gmail.com
+  - melsby@gmail.com
