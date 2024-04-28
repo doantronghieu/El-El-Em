@@ -1,232 +1,176 @@
 import streamlit as st
 import yaml
+import time
 from typing import Dict
 from secrets import token_hex
 from hashlib import sha256
-from datetime import datetime, timedelta
 import string
 import secrets
 
 HASH_ALGORITHM = "sha256"
 SALT_LENGTH = 16
 
-# Load configuration from users.yaml
-with open("users.yaml", "r") as f:
-  config = yaml.safe_load(f)
+class UserManager:
+    def __init__(self, config_file="users.yaml"):
+        self.config_file = config_file
+        self.config = self.load_config()
 
-# Authentication configuration
-AUTH_CONFIG = config["auth"]
-COOKIE_NAME = AUTH_CONFIG["cookie"]["name"]
-COOKIE_KEY = AUTH_CONFIG["cookie"]["key"]
-COOKIE_EXPIRY_DAYS = AUTH_CONFIG["cookie"]["expiry_days"]
-HASH_ALGORITHM = AUTH_CONFIG["passwords"]["hash_algorithm"]
-SALT_LENGTH = AUTH_CONFIG["passwords"]["salt_length"]
-USERS = AUTH_CONFIG["users"]
-PRE_AUTHORIZED_EMAILS = AUTH_CONFIG["pre_authorized_emails"]
+    def load_config(self):
+        with open(self.config_file, "r") as f:
+            config = yaml.safe_load(f)
+        return config.get("auth", {}).get("users", {})
 
-# Initialize session state
-if "user" not in st.session_state:
-  st.session_state.user = None
+    def save_config(self, config):
+        with open(self.config_file, "w") as f:
+            yaml.dump({"auth": {"users": config}}, f, default_flow_style=False)
 
+    @staticmethod
+    def hash_password(password: str, salt: str = None) -> str:
+        if salt is None:
+            salt = token_hex(SALT_LENGTH)
+        if HASH_ALGORITHM == "sha256":
+            return f"{HASH_ALGORITHM}${SALT_LENGTH}${salt}${sha256((salt + password).encode()).hexdigest()}"
+        raise ValueError(f"Unsupported hash algorithm: {HASH_ALGORITHM}")
 
-def hash_password(password: str, salt: str = None) -> str:
-  """
-  Hashes a password using the configured algorithm and salt.
-  If no salt is provided, a random salt is generated.
-  """
-  if salt is None:
-    salt = token_hex(SALT_LENGTH)
-  if HASH_ALGORITHM == "sha256":
-    return sha256((salt + password).encode()).hexdigest()
-  else:
-    raise ValueError(f"Unsupported hash algorithm: {HASH_ALGORITHM}")
+    def authenticate_user(self, username: str, password: str) -> bool:
+        user = self.config.get(username)
+        if user is None:
+            return False
+        hashed_password, stored_salt = user["password_hash"].split("$")[3], user["password_hash"].split("$")[2]
+        if self.hash_password(password, stored_salt) == user["password_hash"]:
+            st.session_state.user = user
+            return True
+        user["failed_login_attempts"] += 1
+        self.config[username] = user
+        return False
 
+    def register_user(self, email: str, name: str, password: str):
+        username = email.split("@")[0]
+        if username in self.config:
+            st.sidebar.error("Username already exists!")
+            return
+        password_hash = self.hash_password(password)
+        self.config[username] = {
+            "name": name,
+            "email": email,
+            "password_hash": password_hash,
+            "failed_login_attempts": 0,
+            "locked": False,
+        }
+        st.sidebar.success(f"User '{username}' registered successfully!")
+        time.sleep(1)
+        st.session_state.email = ""
+        st.session_state.name = ""
+        st.session_state.password = ""
+        self.save_config(self.config)
+        st.session_state.registration_success = True
+        st.rerun()
 
-def authenticate_user(username: str, password: str) -> bool:
-  """
-  Authenticates a user by checking if the username and password match the stored credentials.
-  Returns True if authenticated, False otherwise.
-  """
-  user = USERS.get(username)
-  if user is None:
-    return False
+    def forgot_password(self, username: str):
+        if username not in self.config:
+            st.sidebar.error("Username not found!")
+            return
+        new_password = self.generate_password()
+        password_hash = self.hash_password(new_password)
+        self.config[username]["password_hash"] = password_hash
+        st.sidebar.success(f"New password for '{username}' is '{new_password}'")
+        self.save_config(self.config)
 
-  hashed_password = user["password_hash"].split("$")[3]
-  salt = user["password_hash"].split("$")[2]
-  if hash_password(password, salt) == hashed_password:
-    st.session_state.user = user
-    return True
-  else:
-    # Increment failed login attempts
-    user["failed_login_attempts"] += 1
-    USERS[username] = user
-    return False
-  
-  
+    @staticmethod
+    def generate_password(length=12, complexity=SALT_LENGTH):
+        char_sets = [
+            string.ascii_lowercase,
+            string.ascii_letters,
+            string.ascii_letters + string.digits,
+            string.ascii_letters + string.digits + string.punctuation,
+        ]
+        complexity = min(max(complexity, 1), len(char_sets))
+        char_set = char_sets[complexity - 1]
+        return ''.join(secrets.choice(char_set) for _ in range(length))
 
+class App:
+    def __init__(self):
+        self.manager = UserManager()
+        self.init_session_state()
 
-def register_user(email: str, name: str, password: str):
-  """
-  Registers a new user with the provided email, name, and password.
-  """
-  username = email.split("@")[0]
-  if username in USERS:
-    st.error("Username already exists!")
-    return
+    def init_session_state(self):
+        if "user" not in st.session_state:
+            st.session_state.user = None
+        if "selected_menu_choice" not in st.session_state:
+            st.session_state.selected_menu_choice = None
+        if "email" not in st.session_state:
+            st.session_state.email = ""
+        if "name" not in st.session_state:
+            st.session_state.name = ""
+        if "password" not in st.session_state:
+            st.session_state.password = ""
+        if "registration_success" not in st.session_state:
+            st.session_state.registration_success = False
 
-  salt = token_hex(SALT_LENGTH)
-  password_hash = f"{HASH_ALGORITHM}${SALT_LENGTH}${salt}${hash_password(password, salt)}"
-  USERS[username] = {
-    "name": name,
-    "email": email,
-    "password_hash": password_hash,
-    "failed_login_attempts": 0,
-    "locked": False,
-  }
-
-  st.success(f"User '{username}' registered successfully!")
-
-  # Save the updated users to users.yaml
-  config["auth"]["users"] = USERS
-  with open("users.yaml", "w") as f:
-    yaml.dump(config, f, default_flow_style=False)
-  
-  st.rerun()
-  
-def forgot_password(username: str):
-  """
-  Handles the "forgot password" functionality by generating a new password for the user.
-  """
-  if username not in USERS:
-    st.error("Username not found!")
-    return
-
-  new_password = generate_password()
-  salt = token_hex(SALT_LENGTH)
-  password_hash = f"{HASH_ALGORITHM}${SALT_LENGTH}${salt}${hash_password(new_password, salt)}"
-  USERS[username]["password_hash"] = password_hash
-
-  st.success(f"New password for '{username}' is '{new_password}'")
-
-  # Save the updated users to users.yaml
-  config["auth"]["users"] = USERS
-  with open("users.yaml", "w") as f:
-    yaml.dump(config, f, default_flow_style=False)
-
-
-def generate_password(length=12, complexity=SALT_LENGTH):
-  """
-  Generates a random password with the specified length and complexity.
-
-  Args:
-      length (int, optional): The length of the password. Default is 12.
-      complexity (int, optional): The complexity level of the password, ranging from 1 (least complex) to 4 (most complex). Default is the same as SALT_LENGTH.
-
-  Returns:
-      str: The generated random password.
-
-  Complexity Levels:
-      1: Lowercase characters only
-      2: Lowercase and uppercase characters
-      3: Lowercase, uppercase, and digits
-      4: Lowercase, uppercase, digits, and special characters
-  """
-  # Define character sets for each complexity level
-  char_sets = [
-    string.ascii_lowercase,
-    string.ascii_letters,
-    string.ascii_letters + string.digits,
-    string.ascii_letters + string.digits + string.punctuation,
-  ]
-
-  # Choose the character set based on the specified complexity level
-  char_set = char_sets[complexity - 1]
-
-  # Generate the password
-  password = ''.join(secrets.choice(char_set) for _ in range(length))
-
-  return password
-
-
-def check_session():
-  """
-  Checks if the user is authenticated by verifying the session state.
-  Returns True if authenticated, False otherwise.
-  """
-  return st.session_state.user is not None
-
-
-def set_session(user: Dict):
-  """
-  Sets the user session state with the user details.
-  """
-  st.session_state.user = user
-
-
-def clear_session():
-  """
-  Clears the user session state.
-  """
-  st.session_state.user = None
-
-
-def authenticated_content():
-  st.header(f"Welcome, {user['name']}!")
-  # Add your authenticated user content here
-  
-
-
-def render_sidebar():
-  if check_session():
-    # Render sidebar content for authenticated users
-    st.sidebar.header("User Menu")
-    st.sidebar.button("Logout", on_click=clear_session)
-    
-    # Add your authenticated user sidebar options here
-      
-  else:
-    # Render sidebar content for unauthenticated users
-    menu = ["Login", "Register", "Forgot Password"]
-    choice = st.sidebar.selectbox("Menu", menu)
-
-    if choice == "Login":
-      username = st.sidebar.text_input("Username")
-      password = st.sidebar.text_input("Password", type="password")
-      if st.sidebar.button("Login"):
-        if authenticate_user(username, password):
-          st.success(f"Welcome, {st.session_state.user['name']}!")
+    def render_sidebar(self):
+        if st.session_state.user:
+            self.render_authenticated_sidebar()
         else:
-          st.error("Invalid username or password")
-        
+            self.render_unauthenticated_sidebar()
 
-    elif choice == "Register":
-      email = st.sidebar.text_input("Email")
-      name = st.sidebar.text_input("Name")
-      password = st.sidebar.text_input("Password", type="password")
-      if st.sidebar.button("Register"):
-        register_user(email, name, password)
+    def render_authenticated_sidebar(self):
+        st.sidebar.header("User Menu")
+        st.sidebar.button("Logout", on_click=self.logout)
 
-    elif choice == "Forgot Password":
-      username = st.sidebar.text_input("Username")
-      if st.sidebar.button("Reset Password"):
-        forgot_password(username)
+    def render_unauthenticated_sidebar(self):
+        menu = ["Login", "Register", "Forgot Password"]
+        st.session_state.selected_menu_choice = st.sidebar.selectbox("Menu", menu)
 
-    if st.sidebar.checkbox("Pre-authorized"):
-      email = st.sidebar.text_input("Email")
-      if email in PRE_AUTHORIZED_EMAILS:
-        user = {"name": email.split("@")[0], "email": email}
-        set_session(user)
-        st.experimental_rerun()
-      else:
-        st.error("Email not pre-authorized")
+        if st.session_state.selected_menu_choice == "Login":
+            self.render_login_form()
+        elif st.session_state.selected_menu_choice == "Register":
+            self.render_register_form()
+        elif st.session_state.selected_menu_choice == "Forgot Password":
+            self.render_forgot_password_form()
 
+    def render_login_form(self):
+        username = st.sidebar.text_input("Username")
+        password = st.sidebar.text_input("Password", type="password")
 
-# Streamlit app
-st.set_page_config(layout="wide")
-st.title("LLMs-powered Applications")
+        if st.sidebar.button("Login"):
+            if self.manager.authenticate_user(username, password):
+                st.sidebar.success(f"Welcome, {st.session_state.user['name']}!")
+                st.rerun()
+            else:
+                st.sidebar.error("Invalid username or password")
 
-render_sidebar()
+    def render_register_form(self):
+        st.session_state.email = st.sidebar.text_input("Email", value=st.session_state.email)
+        st.session_state.name = st.sidebar.text_input("Name", value=st.session_state.name)
+        st.session_state.password = st.sidebar.text_input(
+            "Password", type="password", value=st.session_state.password
+        )
 
-if check_session():
-  user = st.session_state.user
-  authenticated_content()
+        if st.sidebar.button("Register"):
+            self.manager.register_user(st.session_state.email, st.session_state.name, st.session_state.password)
+
+        if st.session_state.registration_success:
+            st.session_state.selected_menu_choice = "Login"
+            st.session_state.registration_success = False
+
+    def render_forgot_password_form(self):
+        username = st.sidebar.text_input("Username")
+        if st.sidebar.button("Reset Password"):
+            self.manager.forgot_password(username)
+
+    def logout(self):
+        st.session_state.user = None
+
+    def authenticated_content(self):
+        st.sidebar.write(f"Welcome, :green[{st.session_state.user['name']}]!")
+
+    def run(self):
+        st.set_page_config(layout="wide")
+        st.title("LLMs-powered Applications")
+        self.render_sidebar()
+        if st.session_state.user:
+            self.authenticated_content()
+        st.write(st.session_state)
+
+app = App()
+app.run()
