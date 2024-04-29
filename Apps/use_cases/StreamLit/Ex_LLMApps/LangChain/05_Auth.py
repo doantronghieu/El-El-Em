@@ -1,14 +1,38 @@
+import secrets
+import string
+import time
+
+from regex import F
 import streamlit as st
 import yaml
-import time
-from typing import Dict
-from secrets import token_hex
 from hashlib import sha256
-import string
-import secrets
+from secrets import token_hex
 
 HASH_ALGORITHM = "sha256"
 SALT_LENGTH = 16
+
+
+class UserUtils:
+    @staticmethod
+    def hash_password(password: str, salt: str = None) -> str:
+        if salt is None:
+            salt = token_hex(SALT_LENGTH)
+        if HASH_ALGORITHM == "sha256":
+            return f"{HASH_ALGORITHM}${SALT_LENGTH}${salt}${sha256((salt + password).encode()).hexdigest()}"
+        raise ValueError(f"Unsupported hash algorithm: {HASH_ALGORITHM}")
+
+    @staticmethod
+    def generate_password(length=12, complexity=SALT_LENGTH):
+        char_sets = [
+            string.ascii_lowercase,
+            string.ascii_letters,
+            string.ascii_letters + string.digits,
+            string.ascii_letters + string.digits + string.punctuation,
+        ]
+        complexity = min(max(complexity, 1), len(char_sets))
+        char_set = char_sets[complexity - 1]
+        return ''.join(secrets.choice(char_set) for _ in range(length))
+
 
 class UserManager:
     def __init__(self, config_file="users.yaml"):
@@ -24,20 +48,12 @@ class UserManager:
         with open(self.config_file, "w") as f:
             yaml.dump({"auth": {"users": config}}, f, default_flow_style=False)
 
-    @staticmethod
-    def hash_password(password: str, salt: str = None) -> str:
-        if salt is None:
-            salt = token_hex(SALT_LENGTH)
-        if HASH_ALGORITHM == "sha256":
-            return f"{HASH_ALGORITHM}${SALT_LENGTH}${salt}${sha256((salt + password).encode()).hexdigest()}"
-        raise ValueError(f"Unsupported hash algorithm: {HASH_ALGORITHM}")
-
     def authenticate_user(self, username: str, password: str) -> bool:
         user = self.config.get(username)
         if user is None:
             return False
         hashed_password, stored_salt = user["password_hash"].split("$")[3], user["password_hash"].split("$")[2]
-        if self.hash_password(password, stored_salt) == user["password_hash"]:
+        if UserUtils.hash_password(password, stored_salt) == user["password_hash"]:
             st.session_state.user = user
             return True
         user["failed_login_attempts"] += 1
@@ -49,7 +65,7 @@ class UserManager:
         if username in self.config:
             st.sidebar.error("Username already exists!")
             return
-        password_hash = self.hash_password(password)
+        password_hash = UserUtils.hash_password(password)
         self.config[username] = {
             "name": name,
             "email": email,
@@ -70,23 +86,12 @@ class UserManager:
         if username not in self.config:
             st.sidebar.error("Username not found!")
             return
-        new_password = self.generate_password()
-        password_hash = self.hash_password(new_password)
+        new_password = UserUtils.generate_password()
+        password_hash = UserUtils.hash_password(new_password)
         self.config[username]["password_hash"] = password_hash
         st.sidebar.success(f"New password for '{username}' is '{new_password}'")
         self.save_config(self.config)
 
-    @staticmethod
-    def generate_password(length=12, complexity=SALT_LENGTH):
-        char_sets = [
-            string.ascii_lowercase,
-            string.ascii_letters,
-            string.ascii_letters + string.digits,
-            string.ascii_letters + string.digits + string.punctuation,
-        ]
-        complexity = min(max(complexity, 1), len(char_sets))
-        char_set = char_sets[complexity - 1]
-        return ''.join(secrets.choice(char_set) for _ in range(length))
 
 class App:
     def __init__(self):
@@ -115,7 +120,12 @@ class App:
 
     def render_authenticated_sidebar(self):
         st.sidebar.header("User Menu")
-        st.sidebar.button("Logout", on_click=self.logout)
+        st.sidebar.button("Logout", on_click=self.logout, key="logout_button")
+        
+        change_password_button = st.sidebar.button("Change Password", key="change_password_button")
+        
+        if st.session_state.change_password_button:
+            self.render_change_password_form()
 
     def render_unauthenticated_sidebar(self):
         menu = ["Login", "Register", "Forgot Password"]
@@ -146,7 +156,7 @@ class App:
             "Password", type="password", value=st.session_state.password
         )
 
-        if st.sidebar.button("Register"):
+        if st.sidebar.button("Register", key="register_button"):
             self.manager.register_user(st.session_state.email, st.session_state.name, st.session_state.password)
 
         if st.session_state.registration_success:
@@ -155,8 +165,57 @@ class App:
 
     def render_forgot_password_form(self):
         username = st.sidebar.text_input("Username")
-        if st.sidebar.button("Reset Password"):
+        if st.sidebar.button("Reset Password", key="reset_password_button"):
             self.manager.forgot_password(username)
+            
+    def render_change_password_form(self):
+        with st.form("change_password_form", clear_on_submit=False):
+            st.header("Change Password")
+            old_password_input = st.text_input("Old Password", type="password", key="old_password")
+            new_password_input = st.text_input("New Password", type="password", key="new_password")
+            confirm_password_input = st.text_input("Confirm New Password", type="password", key="confirm_password")
+
+            # Define a function to handle form submission
+            def handle_form_submission():
+                # Extract values from the inputs
+                old_password = st.session_state["old_password"]
+                new_password = st.session_state["new_password"]
+                confirm_password = st.session_state["confirm_password"]
+
+                self.change_password(old_password, new_password, confirm_password)
+                  
+            # Add an on_click function to the form submit button
+            st.form_submit_button(
+              "Confirm", 
+              on_click=handle_form_submission,
+            )
+
+    def change_password(self, old_password, new_password, confirm_password):
+        if not old_password:
+            st.sidebar.error("Please enter your old password")
+            return False
+
+        if not new_password or not confirm_password:
+            st.sidebar.error("Please enter a new password and confirm it")
+            return False
+
+        if new_password != confirm_password:
+            st.sidebar.error("New password and confirm password do not match")
+            return False
+
+        username = st.session_state.user["email"].split("@")[0]
+        if not self.manager.authenticate_user(username, old_password):
+            st.sidebar.error("Invalid old password")
+            return False
+
+        # Save the new password hash to the configuration
+        new_password_hash = UserUtils.hash_password(new_password)
+        self.manager.config[username]["password_hash"] = new_password_hash
+        self.manager.save_config(self.manager.config)
+        
+        st.sidebar.success("Password changed successfully!")
+        return True
+
 
     def logout(self):
         st.session_state.user = None
@@ -165,12 +224,15 @@ class App:
         st.sidebar.write(f"Welcome, :green[{st.session_state.user['name']}]!")
 
     def run(self):
-        st.set_page_config(layout="wide")
-        st.title("LLMs-powered Applications")
-        self.render_sidebar()
-        if st.session_state.user:
-            self.authenticated_content()
-        st.write(st.session_state)
-
+      st.set_page_config(layout="wide")
+      st.title("LLMs-powered Applications")
+      self.render_sidebar()
+      
+      if st.session_state.user:
+        self.authenticated_content()
+      
+                
 app = App()
 app.run()
+
+st.write(st.session_state)

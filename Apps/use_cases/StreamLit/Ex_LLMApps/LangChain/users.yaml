@@ -5,16 +5,4 @@ auth:
       failed_login_attempts: 0
       locked: false
       name: admin
-      password_hash: sha256$16$c65acb506cd7895859cad055ceed2904$24acf2911a008ae108f2499dc1fd0d59ac09f290dbc559f3789e84b0eb5cf55b
-    cat:
-      email: cat@gmail.com
-      failed_login_attempts: 0
-      locked: false
-      name: cat
-      password_hash: sha256$16$9e8e73b92bb1c7bc13a36e7cd73d9e25$62cc32fdca2d69d9d9e5bbdf15779fc91d336da41b3223f46921ea2aa3d5e48d
-    mom:
-      email: mom@gmail.com
-      failed_login_attempts: 0
-      locked: false
-      name: mom
-      password_hash: sha256$16$3a907973f840272426ba5f9c4d9484fe$b26aaaf2470d377fe12bfbcbb2b03a5a79be738509db3eaa60d2b31076a4066d
+      password_hash: sha256$16$6a3c35d31489c74133be99969c96cc64$059ec254875227e77d26b7803ece081dab10626cc3f818ffc4b20e821942794f
