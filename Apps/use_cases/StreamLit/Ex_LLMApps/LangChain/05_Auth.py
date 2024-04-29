@@ -2,24 +2,24 @@ import secrets
 import string
 import time
 
-from regex import F
 import streamlit as st
 import yaml
 from hashlib import sha256
 from secrets import token_hex
 
-HASH_ALGORITHM = "sha256"
-SALT_LENGTH = 16
-
+st.set_page_config(layout="wide")
 
 class UserUtils:
+    HASH_ALGORITHM = "sha256"
+    SALT_LENGTH = 16
+
     @staticmethod
     def hash_password(password: str, salt: str = None) -> str:
         if salt is None:
-            salt = token_hex(SALT_LENGTH)
-        if HASH_ALGORITHM == "sha256":
-            return f"{HASH_ALGORITHM}${SALT_LENGTH}${salt}${sha256((salt + password).encode()).hexdigest()}"
-        raise ValueError(f"Unsupported hash algorithm: {HASH_ALGORITHM}")
+            salt = token_hex(UserUtils.SALT_LENGTH)
+        if UserUtils.HASH_ALGORITHM == "sha256":
+            return f"{UserUtils.HASH_ALGORITHM}${UserUtils.SALT_LENGTH}${salt}${sha256((salt + password).encode()).hexdigest()}"
+        raise ValueError(f"Unsupported hash algorithm: {UserUtils.HASH_ALGORITHM}")
 
     @staticmethod
     def generate_password(length=12, complexity=SALT_LENGTH):
@@ -32,7 +32,6 @@ class UserUtils:
         complexity = min(max(complexity, 1), len(char_sets))
         char_set = char_sets[complexity - 1]
         return ''.join(secrets.choice(char_set) for _ in range(length))
-
 
 class UserManager:
     def __init__(self, config_file="users.yaml"):
@@ -101,8 +100,10 @@ class App:
     def init_session_state(self):
         if "user" not in st.session_state:
             st.session_state.user = None
-        if "selected_menu_choice" not in st.session_state:
-            st.session_state.selected_menu_choice = None
+        if "unauth_selected_menu_choice" not in st.session_state:
+            st.session_state.unauth_selected_menu_choice = None
+        if "auth_selected_menu_choice" not in st.session_state:
+            st.session_state.auth_selected_menu_choice = None
         if "email" not in st.session_state:
             st.session_state.email = ""
         if "name" not in st.session_state:
@@ -119,23 +120,40 @@ class App:
             self.render_unauthenticated_sidebar()
 
     def render_authenticated_sidebar(self):
-        st.sidebar.header("User Menu")
-        st.sidebar.button("Logout", on_click=self.logout, key="logout_button")
+        # st.sidebar.button("Logout", on_click=self.logout, key="logout_button")
         
-        change_password_button = st.sidebar.button("Change Password", key="change_password_button")
+        auth_menu = ["User Menu", "Logout", "Change Password"]
+        st.session_state.auth_selected_menu_choice = st.sidebar.selectbox(
+          label="Auth Menu", 
+          label_visibility="collapsed",
+          options=auth_menu, 
+          placeholder="Auth Options",
+        )
         
-        if st.session_state.change_password_button:
-            self.render_change_password_form()
+        if st.session_state.auth_selected_menu_choice == "Logout":
+          st.sidebar.button("Confirm Logout", on_click=self.logout, key="logout_button")
+        elif st.session_state.auth_selected_menu_choice == "Change Password":
+          self.render_change_password_form()
+          
+        
+        # change_password_button = st.sidebar.button("Change Password", key="change_password_button")
+        
+        # if st.session_state.change_password_button:
+        #     self.render_change_password_form()
 
     def render_unauthenticated_sidebar(self):
-        menu = ["Login", "Register", "Forgot Password"]
-        st.session_state.selected_menu_choice = st.sidebar.selectbox("Menu", menu)
+        unauth_menu = ["Login", "Register", "Forgot Password"]
+        st.session_state.unauth_selected_menu_choice = st.sidebar.selectbox(
+          label="UnAuth Menu",
+          label_visibility="collapsed", 
+          options=unauth_menu
+        )
 
-        if st.session_state.selected_menu_choice == "Login":
+        if st.session_state.unauth_selected_menu_choice == "Login":
             self.render_login_form()
-        elif st.session_state.selected_menu_choice == "Register":
+        elif st.session_state.unauth_selected_menu_choice == "Register":
             self.render_register_form()
-        elif st.session_state.selected_menu_choice == "Forgot Password":
+        elif st.session_state.unauth_selected_menu_choice == "Forgot Password":
             self.render_forgot_password_form()
 
     def render_login_form(self):
@@ -224,8 +242,10 @@ class App:
         st.sidebar.write(f"Welcome, :green[{st.session_state.user['name']}]!")
 
     def run(self):
-      st.set_page_config(layout="wide")
+      
+      
       st.title("LLMs-powered Applications")
+      
       self.render_sidebar()
       
       if st.session_state.user:
@@ -235,4 +255,4 @@ class App:
 app = App()
 app.run()
 
-st.write(st.session_state)
+# st.write(st.session_state)

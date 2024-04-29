@@ -5,4 +5,4 @@ auth:
       failed_login_attempts: 0
       locked: false
       name: admin
-      password_hash: sha256$16$6a3c35d31489c74133be99969c96cc64$059ec254875227e77d26b7803ece081dab10626cc3f818ffc4b20e821942794f
+      password_hash: sha256$16$e1836e572bddc3c076601ca5e8b12ff7$3033b8b79628134b44a5814299cbcde5dc2ec1c417a5a89b03321a362cba2235
