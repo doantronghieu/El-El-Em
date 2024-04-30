@@ -66,8 +66,6 @@ RUN_COLLECTOR = smiths.RunCollectorCallbackHandler()
 
 @st.cache_data(show_spinner=False)
 def get_LC_run_url(run_id):
-  time.sleep(1)
-  
   try:
     result = CLIENT_LC.read_run(run_id).url
   except:

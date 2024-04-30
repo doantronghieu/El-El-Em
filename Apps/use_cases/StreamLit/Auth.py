@@ -91,7 +91,6 @@ class UserManager:
         st.sidebar.success(f"New password for '{username}' is '{new_password}'")
         self.save_config(self.config)
 
-
 class App:
     def __init__(self):
         self.manager = UserManager()
@@ -134,12 +133,6 @@ class App:
           st.sidebar.button("Confirm Logout", on_click=self.logout, key="logout_button")
         elif st.session_state.auth_selected_menu_choice == "Change Password":
           self.render_change_password_form()
-          
-        
-        # change_password_button = st.sidebar.button("Change Password", key="change_password_button")
-        
-        # if st.session_state.change_password_button:
-        #     self.render_change_password_form()
 
     def render_unauthenticated_sidebar(self):
         unauth_menu = ["Login", "Register", "Forgot Password"]
@@ -234,7 +227,6 @@ class App:
         st.sidebar.success("Password changed successfully!")
         return True
 
-
     def logout(self):
         st.session_state.user = None
 
@@ -242,16 +234,13 @@ class App:
         st.sidebar.write(f"Welcome, :green[{st.session_state.user['name']}]!")
 
     def run(self):
-      
-      
       st.title("LLMs-powered Applications")
       
       self.render_sidebar()
       
       if st.session_state.user:
         self.authenticated_content()
-      
-                
+
 app = App()
 app.run()
 
