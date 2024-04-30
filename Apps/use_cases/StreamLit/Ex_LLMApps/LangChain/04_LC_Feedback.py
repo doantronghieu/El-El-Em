@@ -29,6 +29,9 @@ STATES = {
   "MESSAGES": {
     "INITIAL_VALUE": [],
   },
+  "CONTAINER_PLACEHOLDER": {
+    "INITIAL_VALUE": None,
+  },
   "LAST_RUN": {
     "INITIAL_VALUE": None,
   },
@@ -103,22 +106,41 @@ def generate_response(
   
   return response
 
+
+
+def render_buttons():
+    if llm.chat_history:
+        # Create a new container and store its placeholder
+        st.session_state.container_placeholder = st.empty()
+        
+        with st.session_state.container_placeholder:
+            cols_last_msg_opts = st.columns([0.92, 0.04, 0.04])
+            cols_last_msg_opts[1].button("↻", key="btn_lst_msg_regenerate")
+            cols_last_msg_opts[2].button("📋", key="btn_lst_msg_copy")
+
 def process_on_user_input(
   prompt: str, 
   llm: agents.MyAgent,
 ):
+  print(st.session_state.container_placeholder)
+  # Clear the container before displaying user's message
+  if st.session_state.container_placeholder is not None:
+      st.session_state.container_placeholder.empty()
+  print(st.session_state.container_placeholder)
+  
   st.chat_message(CHAT_ROLE.user).markdown(prompt)
   stream = generate_response(prompt, llm)
   st.chat_message(CHAT_ROLE.assistant).write(stream)
   
+  render_buttons()
+  
 def render_chat_messages_on_rerun(
   llm: agents.MyAgent,
 ):
-  for msg in llm. chat_history:
+  for msg in llm.chat_history:
     msg: Union[prompts.AIMessage, prompts.HumanMessage]
     st.chat_message(msg.type).markdown(msg.content)
 
-  
 def on_click_btn_clear_chat_history(
   llm: agents.MyAgent,
 ):
@@ -157,6 +179,9 @@ llm: agents.MyAgent = create_agent(
 )
 
 #*==============================================================================
+
+containter_empty_btn_opts_holder = st.empty()
+
 
 render_chat_messages_on_rerun(llm=llm)
 
@@ -221,7 +246,6 @@ with st.sidebar:
 #*----------------------------------------------------------------------------
 
 prompt: Union[str, None]
-
 prompt = st.chat_input("Say something")
 
 if prompt_example:
