@@ -92,9 +92,9 @@ def create_callbacks() -> list:
 
 def generate_response(
   input: str, 
-  agent: agents.MyAgent,
+  llm: agents.MyAgent,
 ):
-  response = agent.invoke_agent(
+  response = llm. invoke_agent(
     input_message=input, 
     callbacks=create_callbacks()
   )
@@ -105,23 +105,24 @@ def generate_response(
 
 def process_on_user_input(
   prompt: str, 
-  agent: agents.MyAgent,
+  llm: agents.MyAgent,
 ):
   st.chat_message(CHAT_ROLE.user).markdown(prompt)
-  stream = generate_response(prompt, agent)
+  stream = generate_response(prompt, llm)
   st.chat_message(CHAT_ROLE.assistant).write(stream)
   
 def render_chat_messages_on_rerun(
-  agent: agents.MyAgent,
+  llm: agents.MyAgent,
 ):
-  for msg in agent.chat_history:
+  for msg in llm. chat_history:
     msg: Union[prompts.AIMessage, prompts.HumanMessage]
     st.chat_message(msg.type).markdown(msg.content)
 
+  
 def on_click_btn_clear_chat_history(
-  agent: agents.MyAgent,
+  llm: agents.MyAgent,
 ):
-  agent.clear_chat_history()
+  llm. clear_chat_history()
   del st.session_state[STATES["LAST_RUN"]["KEY"]]
   st.toast(":orange[History cleared]", icon="🗑️")
 
@@ -148,7 +149,7 @@ tools = [
 
 prompt = prompts.create_custom_prompt_tool_calling_agent()
 
-agent: agents.MyAgent = create_agent(
+llm: agents.MyAgent = create_agent(
   _llm=llm, 
   _tools=tools, 
   _prompt=prompt, 
@@ -157,7 +158,7 @@ agent: agents.MyAgent = create_agent(
 
 #*==============================================================================
 
-render_chat_messages_on_rerun(agent=agent)
+render_chat_messages_on_rerun(llm=llm)
 
 with st.sidebar:
   btn_new_chat = st.button(
@@ -199,10 +200,6 @@ with st.sidebar:
   
   #*----------------------------------------------------------------------------
   
-  
-  
-  #*----------------------------------------------------------------------------
-  
   cols_clear = st.columns([0.25, 0.25, 0.5])
   
   btn_clear_chat_history = cols_clear[0].button(
@@ -210,7 +207,7 @@ with st.sidebar:
     help="Clear Chat History",
     key=STATES["BTN_CLEAR_CHAT_HISTORY"]["KEY"],
     on_click=on_click_btn_clear_chat_history, 
-    kwargs=dict(agent=agent)
+    kwargs=dict(llm=llm)
   )
   
   btn_clear_chat = cols_clear[1].button(
@@ -220,6 +217,7 @@ with st.sidebar:
     on_click=on_click_btn_clear_chat, 
     kwargs=dict()
   )
+  
 #*----------------------------------------------------------------------------
 
 prompt: Union[str, None]
@@ -231,7 +229,7 @@ if prompt_example:
   del st.session_state[STATES["PROMPT_EXAMPLE"]["KEY"]]
   
 if prompt:
-  process_on_user_input(prompt=prompt, agent=agent)
+  process_on_user_input(prompt=prompt, llm=llm)
 
 #*------------------------------------------------------------------------------
 # Feedback
