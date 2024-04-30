@@ -122,16 +122,20 @@ def on_click_btn_clear_chat_history(
   agent: agents.MyAgent,
 ):
   agent.clear_chat_history()
+  del st.session_state[STATES["LAST_RUN"]["KEY"]]
+  st.toast(":orange[History cleared]", icon="🗑️")
 
 def on_click_btn_new_chat(
   
 ):
-  pass
+  st.toast(":green[Chat created]", icon="✅")
+
 
 def on_click_btn_clear_chat(
   
 ):
-  pass
+  st.toast(":red[Chat cleared]", icon="❌")
+
 
 #*==============================================================================
 
