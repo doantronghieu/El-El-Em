@@ -160,10 +160,32 @@ agent: agents.MyAgent = create_agent(
 render_chat_messages_on_rerun(agent=agent)
 
 with st.sidebar:
+  btn_new_chat = st.button(
+    label="💬", 
+    key=STATES["BTN_NEW_CHAT"]["KEY"],
+    help="Create new Chat",
+    on_click=on_click_btn_new_chat, 
+    kwargs=dict()
+  )
+  
+  selected_chat = st.selectbox(
+    label="Chat",
+    label_visibility="collapsed",
+    help="Select Your Chat",
+    placeholder="Chats",
+    options=[
+      None,
+      "Dummy Chat 1",
+      "Dummy Chat 2",
+    ],
+    key=STATES["SELECTED_CHAT"]["KEY"],
+  )
+  
   prompt_example = st.selectbox(
     label="Examples",
     label_visibility="collapsed",
-    placeholder="Choose an example",
+    help="Example prompts",
+    placeholder="Examples",
     options=[
       None,
       "Hello",
@@ -177,44 +199,28 @@ with st.sidebar:
   
   #*----------------------------------------------------------------------------
   
-  cols_chat = st.columns([0.15, 0.01, 0.84])
   
-  btn_new_chat = cols_chat[0].button(
-    label="✏️", 
-    key=STATES["BTN_NEW_CHAT"]["KEY"],
-    on_click=on_click_btn_new_chat, 
-    kwargs=dict()
-  )
-  
-  selected_chat = cols_chat[2].selectbox(
-    label="Chat",
-    label_visibility="collapsed",
-    placeholder="Choose a Chat",
-    options=[
-      None,
-      "Dummy Chat 1",
-      "Dummy Chat 2",
-    ],
-    key=STATES["SELECTED_CHAT"]["KEY"],
-  )
   
   #*----------------------------------------------------------------------------
   
-  cols_clear = st.columns([0.5, 0.5])
+  cols_clear = st.columns([0.25, 0.25, 0.5])
   
   btn_clear_chat_history = cols_clear[0].button(
-    label="Clear History", 
+    label="🗑️", 
+    help="Clear Chat History",
     key=STATES["BTN_CLEAR_CHAT_HISTORY"]["KEY"],
     on_click=on_click_btn_clear_chat_history, 
     kwargs=dict(agent=agent)
   )
   
   btn_clear_chat = cols_clear[1].button(
-    label="Clear Chat", 
+    label="❌", 
+    help="Clear Chat",
     key=STATES["BTN_CLEAR_CHAT"]["KEY"],
     on_click=on_click_btn_clear_chat, 
     kwargs=dict()
   )
+#*----------------------------------------------------------------------------
 
 prompt: Union[str, None]
 
