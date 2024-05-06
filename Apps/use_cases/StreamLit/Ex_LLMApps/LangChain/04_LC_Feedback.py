@@ -97,7 +97,7 @@ def generate_response(
   input: str, 
   llm: agents.MyAgent,
 ):
-  response = llm. invoke_agent(
+  response = llm.invoke_agent(
     input_message=input, 
     callbacks=create_callbacks()
   )
@@ -106,15 +106,13 @@ def generate_response(
   
   return response
 
-
-
-def render_buttons():
+def render_last_msg_opt_btns():
     if llm.chat_history:
         # Create a new container and store its placeholder
         st.session_state.container_placeholder = st.empty()
         
         with st.session_state.container_placeholder:
-            cols_last_msg_opts = st.columns([0.92, 0.04, 0.04])
+            cols_last_msg_opts = st.columns([0.94, 0.03, 0.03])
             cols_last_msg_opts[1].button("↻", key="btn_lst_msg_regenerate")
             cols_last_msg_opts[2].button("📋", key="btn_lst_msg_copy")
 
@@ -130,7 +128,7 @@ def process_on_user_input(
   stream = generate_response(prompt, llm)
   st.chat_message(CHAT_ROLE.assistant).write(stream)
   
-  render_buttons()
+  # render_last_msg_opt_btns()
   
 def render_chat_messages_on_rerun(
   llm: agents.MyAgent,
@@ -142,7 +140,7 @@ def render_chat_messages_on_rerun(
 def on_click_btn_clear_chat_history(
   llm: agents.MyAgent,
 ):
-  llm. clear_chat_history()
+  llm.clear_chat_history()
   del st.session_state[STATES["LAST_RUN"]["KEY"]]
   st.toast(":orange[History cleared]", icon="🗑️")
 
@@ -167,7 +165,7 @@ tools = [
   tool_search,
 ]
 
-prompt = prompts.create_custom_prompt_tool_calling_agent()
+prompt = prompts.create_prompt_tool_calling_agent()
 
 llm: agents.MyAgent = create_agent(
   _llm=llm, 

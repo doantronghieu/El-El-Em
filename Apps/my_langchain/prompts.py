@@ -82,7 +82,7 @@ qa_prompt = ChatPromptTemplate.from_messages([
 #########
 
 # prompt = hub.pull("hwchase17/openai-tools-agent")
-def create_custom_prompt_tool_calling_agent(
+def create_prompt_tool_calling_agent(
   system_message: str = "You are a helpful assistant"
 ):
   prompt = ChatPromptTemplate.from_messages([

@@ -53,3 +53,14 @@ e2b
 # Youtube
 youtube-transcript-api
 pytube
+
+# langchain utils
+unstructured
+unstructured_inference
+pytesseract
+pdf2image
+pdfminer.six
+pillow_heif
+opencv-python
+pytesseract
+pikepdf

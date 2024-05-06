@@ -20,7 +20,7 @@ from langchain_core.prompts import (
 
 # *=============================================================================
 # call from main
-with open("./my_configs/vtc.yaml", 'r') as file:
+with open(f"{add_packages.APP_PATH}/my_configs/vtc.yaml", 'r') as file:
     configs_vtc = yaml.safe_load(file)
 
 qdrant_lectures_content = vectorstores.QdrantWrapper(
@@ -47,8 +47,9 @@ qdrant_faq = vectorstores.QdrantWrapper(
 # *=============================================================================
 system_message_onlinica = configs_vtc["prompts"]["system_message_onlinica"]
 
-prompt_onlinica = prompts.create_custom_prompt_tool_calling_agent(
-    system_message_onlinica)
+prompt_onlinica = prompts.create_prompt_tool_calling_agent(
+    system_message_onlinica
+)
 
 tools = [
     qdrant_lectures_content.retriever_tool,
@@ -57,6 +58,7 @@ tools = [
 ]
 
 llm = chat_models.create_chat_model(configs_vtc)
+
 agent = agents.MyAgent(
     prompt=prompt_onlinica, tools=tools,
     agent_type=configs_vtc["agents"]["agent_type_onlinica"], 

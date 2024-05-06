@@ -112,7 +112,7 @@ tools = [
   tool_search,
 ]
 
-prompt = prompts.create_custom_prompt_tool_calling_agent()
+prompt = prompts.create_prompt_tool_calling_agent()
 
 agent: agents.MyAgent = create_agent(
   _llm=llm, 

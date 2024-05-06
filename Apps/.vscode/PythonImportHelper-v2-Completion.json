@@ -2761,11 +2761,11 @@
 		"documentation": {}
 	},
 	{
-		"label": "create_custom_prompt_tool_calling_agent",
+		"label": "create_prompt_tool_calling_agent",
 		"kind": 2,
 		"importPath": "my_langchain.prompts",
 		"description": "my_langchain.prompts",
-		"peekOfCode": "def create_custom_prompt_tool_calling_agent(\n    system_message: str = \"You are a helpful assistant\"\n):\n    prompt_custom_agent_openai_tools = ChatPromptTemplate.from_messages(\n        [\n            (\"system\", system_message),\n            MessagesPlaceholder(\"chat_history\"),\n            (\"human\", \"{input}\"),\n            MessagesPlaceholder(\"agent_scratchpad\"),\n        ]",
+		"peekOfCode": "def create_prompt_tool_calling_agent(\n    system_message: str = \"You are a helpful assistant\"\n):\n    prompt_custom_agent_openai_tools = ChatPromptTemplate.from_messages(\n        [\n            (\"system\", system_message),\n            MessagesPlaceholder(\"chat_history\"),\n            (\"human\", \"{input}\"),\n            MessagesPlaceholder(\"agent_scratchpad\"),\n        ]",
 		"detail": "my_langchain.prompts",
 		"documentation": {}
 	},
@@ -3530,7 +3530,7 @@
 		"kind": 5,
 		"importPath": "use_cases.VTC",
 		"description": "use_cases.VTC",
-		"peekOfCode": "qdrant_faq = vectorstores.QdrantWrapper(\n    qdrant_host=os.getenv(\"QDRANT_HOST\"),\n    qdrant_api_key=os.getenv(\"QDRANT_API_KEY\"),\n    configs=configs_vtc,\n    **configs_vtc[\"vector_db\"][\"qdrant\"][\"faq\"]\n)\n# *=============================================================================\nsystem_message_onlinica = configs_vtc[\"prompts\"][\"system_message_onlinica\"]\nprompt_onlinica = prompts.create_custom_prompt_tool_calling_agent(\n    system_message_onlinica)",
+		"peekOfCode": "qdrant_faq = vectorstores.QdrantWrapper(\n    qdrant_host=os.getenv(\"QDRANT_HOST\"),\n    qdrant_api_key=os.getenv(\"QDRANT_API_KEY\"),\n    configs=configs_vtc,\n    **configs_vtc[\"vector_db\"][\"qdrant\"][\"faq\"]\n)\n# *=============================================================================\nsystem_message_onlinica = configs_vtc[\"prompts\"][\"system_message_onlinica\"]\nprompt_onlinica = prompts.create_prompt_tool_calling_agent(\n    system_message_onlinica)",
 		"detail": "use_cases.VTC",
 		"documentation": {}
 	},
@@ -3539,7 +3539,7 @@
 		"kind": 5,
 		"importPath": "use_cases.VTC",
 		"description": "use_cases.VTC",
-		"peekOfCode": "system_message_onlinica = configs_vtc[\"prompts\"][\"system_message_onlinica\"]\nprompt_onlinica = prompts.create_custom_prompt_tool_calling_agent(\n    system_message_onlinica)\ntools = [\n    qdrant_lectures_content.retriever_tool,\n    qdrant_faq.retriever_tool,\n    qdrant_courses_information.retriever_tool,\n]\nllm = chat_models.create_chat_model(configs_vtc)\nagent = agents.MyAgent(",
+		"peekOfCode": "system_message_onlinica = configs_vtc[\"prompts\"][\"system_message_onlinica\"]\nprompt_onlinica = prompts.create_prompt_tool_calling_agent(\n    system_message_onlinica)\ntools = [\n    qdrant_lectures_content.retriever_tool,\n    qdrant_faq.retriever_tool,\n    qdrant_courses_information.retriever_tool,\n]\nllm = chat_models.create_chat_model(configs_vtc)\nagent = agents.MyAgent(",
 		"detail": "use_cases.VTC",
 		"documentation": {}
 	},
@@ -3548,7 +3548,7 @@
 		"kind": 5,
 		"importPath": "use_cases.VTC",
 		"description": "use_cases.VTC",
-		"peekOfCode": "prompt_onlinica = prompts.create_custom_prompt_tool_calling_agent(\n    system_message_onlinica)\ntools = [\n    qdrant_lectures_content.retriever_tool,\n    qdrant_faq.retriever_tool,\n    qdrant_courses_information.retriever_tool,\n]\nllm = chat_models.create_chat_model(configs_vtc)\nagent = agents.MyAgent(\n    prompt=prompt_onlinica, tools=tools,",
+		"peekOfCode": "prompt_onlinica = prompts.create_prompt_tool_calling_agent(\n    system_message_onlinica)\ntools = [\n    qdrant_lectures_content.retriever_tool,\n    qdrant_faq.retriever_tool,\n    qdrant_courses_information.retriever_tool,\n]\nllm = chat_models.create_chat_model(configs_vtc)\nagent = agents.MyAgent(\n    prompt=prompt_onlinica, tools=tools,",
 		"detail": "use_cases.VTC",
 		"documentation": {}
 	},
