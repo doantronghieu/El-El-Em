@@ -2,8 +2,8 @@ import streamlit as st
 import add_packages
 from typing import List
 
-from my_streamlit import utils
-from my_streamlit.utils import CHAT_ROLE, MSG_ITEM
+from toolkit.streamlit import utils
+from toolkit.streamlit.utils import CHAT_ROLE, MSG_ITEM
 
 #*==============================================================================
 

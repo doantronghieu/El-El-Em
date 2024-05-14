@@ -3,8 +3,8 @@ import add_packages
 import time
 import random
 
-from my_streamlit import utils
-from my_streamlit.utils import CHAT_ROLE, MSG_ITEM
+from toolkit.streamlit import utils
+from toolkit.streamlit.utils import CHAT_ROLE, MSG_ITEM
 #*==============================================================================
 
 st.set_page_config(

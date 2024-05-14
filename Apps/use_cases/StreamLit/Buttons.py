@@ -3,7 +3,7 @@ import random
 import numpy as np
 import time
 import add_packages
-from my_streamlit import utils
+from toolkit.streamlit import utils
 
 st.set_page_config(
   layout="wide",

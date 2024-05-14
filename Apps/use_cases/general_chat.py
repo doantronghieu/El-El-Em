@@ -1,4 +1,4 @@
-from my_langchain import llms, memories, chains, prompts
+from toolkit.langchain import llms, memories, chains, prompts
 from langchain.chains import ConversationChain
 
 

@@ -4,11 +4,11 @@ from pprint import pprint
 import os
 import yaml
 
-from my_prompts import (
+from toolkit.prompts import (
     prompts_onlinica
 )
 
-from my_langchain import (
+from toolkit.langchain import (
     document_loaders, text_splitters, text_embedding_models, chat_models, prompts, utils, output_parsers, agents, documents, vectorstores
 )
 

@@ -11,7 +11,7 @@ from fastapi.responses import RedirectResponse
 
 from langserve import add_routes
 
-from my_langchain import (
+from toolkit.langchain import (
     prompts, chat_models,
 )
 

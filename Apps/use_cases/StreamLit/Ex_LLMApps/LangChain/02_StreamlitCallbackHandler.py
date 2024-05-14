@@ -1,10 +1,10 @@
 import streamlit as st
 import add_packages
 
-from my_langchain import chat_models, agent_tools, prompts, agents
+from toolkit.langchain import chat_models, agent_tools, prompts, agents
 
-from my_streamlit import utils
-from my_streamlit.utils import CHAT_ROLE, MSG_ITEM
+from toolkit.streamlit import utils
+from toolkit.streamlit.utils import CHAT_ROLE, MSG_ITEM
 #*==============================================================================
 
 st.set_page_config(

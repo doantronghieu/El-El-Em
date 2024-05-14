@@ -4,8 +4,8 @@ from crewai import Agent, Task
 from crewai import Agent, Task
 from pprint import pprint
 from bs4 import BeautifulSoup
-from my_langchain.agent_tools import tool
-from my_langchain import (
+from langchain.agent_tools import tool
+from langchain import (
   document_loaders, text_splitters, documents, agent_tools
 )
 

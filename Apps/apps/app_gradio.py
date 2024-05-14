@@ -1,7 +1,7 @@
 import add_packages
 import config
 from use_cases import VTC
-import my_gradio.chatbot as chatbot_utils
+import toolkit.gradio.chatbot as chatbot_utils
 import gradio as gr
 import warnings
 warnings.filterwarnings("ignore")

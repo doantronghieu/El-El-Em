@@ -1,5 +1,5 @@
 import gradio as gr
-import my_gradio.chatbot as chatbot_utils
+import toolkit.gradio.chatbot as chatbot_utils
 from use_cases.general_chat import conversation_chain
 
 with gr.Blocks() as demo:

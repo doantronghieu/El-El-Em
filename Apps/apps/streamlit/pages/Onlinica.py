@@ -12,15 +12,13 @@ from langchain_core.prompts.chat import ChatPromptTemplate
 from langchain_core.tools import BaseTool
 from langchain_core.runnables import Runnable
 
-from my_langchain import (
+from toolkit.langchain import (
   chat_models, agent_tools, prompts, agents, smiths, runnables
 )
 from use_cases import VTC
 
-from my_streamlit import utils
-from my_streamlit.utils import CHAT_ROLE, MSG_ITEM
-
-
+from toolkit.streamlit import utils
+from toolkit.streamlit.utils import CHAT_ROLE, MSG_ITEM
 
 #*==============================================================================
 
