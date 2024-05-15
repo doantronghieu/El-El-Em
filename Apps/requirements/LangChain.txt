@@ -14,6 +14,8 @@ langsmith >= 0.1.57
 langchain-cli >= 0.0.22
 pydantic == 2.6.1 # 2.6.1 1.10.9 1.10.13
 
+boto3
+
 lark
 
 # Retrievers

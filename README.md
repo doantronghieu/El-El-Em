@@ -16,11 +16,24 @@
 
 ```bash
 cd Apps
+
 docker build -t image-fastapi-langchain:latest -f deploy/docker_k8s/docker-files/Dockerfile.FastApi-LangChain .
+
 docker run -d --name container-fastapi-langchain -p 8000:8000 image-fastapi-langchain:latest
 
 ---
 docker run --name container-fastapi-langchain -p 8000:8000 image-fastapi-langchain:latest
+
 docker exec -ti container-fastapi-langchain bash
 
+```
+
+### For me
+
+```bash
+docker build -t doantronghieu/image-fastapi-langchain:latest -f deploy/docker_k8s/docker-files/Dockerfile.FastApi-LangChain .
+
+docker push doantronghieu/image-fastapi-langchain:latest
+
+docker run -d --name container-fastapi-langchain -p 8000:8000  doantronghieu/image-fastapi-langchain:latest
 ```

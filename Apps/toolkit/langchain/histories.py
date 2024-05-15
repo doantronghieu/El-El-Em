@@ -3,3 +3,4 @@ from langchain_community.chat_message_histories.in_memory import (
 )
 from langchain_community.chat_message_histories.streamlit import StreamlitChatMessageHistory
 from langchain_core.chat_history import BaseChatMessageHistory
+from langchain_community.chat_message_histories.dynamodb import DynamoDBChatMessageHistory

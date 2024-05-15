@@ -34,136 +34,6 @@ from langchain.agents.output_parsers.openai_tools import (
 
 #*----------------------------------------------------------------------------
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, TypeVar, Union
-from uuid import UUID
-
-from langchain_core.callbacks.base import AsyncCallbackHandler
-from langchain_core.messages import BaseMessage
-from langchain_core.outputs import ChatGenerationChunk, GenerationChunk, LLMResult
-
-class TokenByTokenHandler(AsyncCallbackHandler):
-  def __init__(self, tags_of_interest: List[str]) -> None:
-    """
-    Custom handler that will print the tokens to stdout.
-    Instead of printing to stdout you can send the data elsewhere; e.g., to a 
-    streaming API response
-  
-    Args:
-        tags_of_interest: Only LLM tokens from models with these tags will be
-                          printed.
-    """
-    self.tags_of_interest = tags_of_interest
-
-  async def on_chain_start(
-    self,
-    serialized: Dict[str, Any],
-    inputs: Dict[str, Any],
-    *,
-    run_id: UUID,
-    parent_run_id: Optional[UUID] = None,
-    tags: Optional[List[str]] = None,
-    metadata: Optional[Dict[str, Any]] = None,
-    **kwargs: Any,
-  ) -> None:
-    """Run when chain starts running."""
-    # print("on chain start: ")
-    # print(inputs)
-
-  async def on_chain_end(
-    self,
-    outputs: Dict[str, Any],
-    *,
-    run_id: UUID,
-    parent_run_id: Optional[UUID] = None,
-    tags: Optional[List[str]] = None,
-    **kwargs: Any,
-  ) -> None:
-    """Run when chain ends running."""
-    # print("On chain end")
-    # print(outputs)
-
-  async def on_chat_model_start(
-    self,
-    serialized: Dict[str, Any],
-    messages: List[List[BaseMessage]],
-    *,
-    run_id: UUID,
-    parent_run_id: Optional[UUID] = None,
-    tags: Optional[List[str]] = None,
-    metadata: Optional[Dict[str, Any]] = None,
-    **kwargs: Any,
-  ) -> Any:
-    """Run when a chat model starts running."""
-    overlap_tags = self.get_overlap_tags(tags)
-
-    # if overlap_tags:
-    # 	print(",".join(overlap_tags), end=": ", flush=True)
-
-  def on_tool_start(
-    self,
-    serialized: Dict[str, Any],
-    input_str: str,
-    *,
-    run_id: UUID,
-    parent_run_id: Optional[UUID] = None,
-    tags: Optional[List[str]] = None,
-    metadata: Optional[Dict[str, Any]] = None,
-    inputs: Optional[Dict[str, Any]] = None,
-    **kwargs: Any,
-  ) -> Any:
-    """Run when tool starts running."""
-    print(f"Tool: {serialized}")
-
-  def on_tool_end(
-    self,
-    output: Any,
-    *,
-    run_id: UUID,
-    parent_run_id: Optional[UUID] = None,
-    **kwargs: Any,
-  ) -> Any:
-    """Run when tool ends running."""
-    print(f"Result: {str(output)}")
-
-  async def on_llm_end(
-    self,
-    response: LLMResult,
-    *,
-    run_id: UUID,
-    parent_run_id: Optional[UUID] = None,
-    tags: Optional[List[str]] = None,
-    **kwargs: Any,
-  ) -> None:
-    """Run when LLM ends running."""
-    overlap_tags = self.get_overlap_tags(tags)
-
-    if overlap_tags:
-      # Who can argue with beauty?
-      print()
-      # print()
-
-  def get_overlap_tags(self, tags: Optional[List[str]]) -> List[str]:
-    """Check for overlap with filtered tags."""
-    if not tags:
-      return []
-    return sorted(set(tags or []) & set(self.tags_of_interest or []))
-
-  async def on_llm_new_token(
-    self,
-    token: str,
-    *,
-    chunk: Optional[Union[GenerationChunk, ChatGenerationChunk]] = None,
-    run_id: UUID,
-    parent_run_id: Optional[UUID] = None,
-    tags: Optional[List[str]] = None,
-    **kwargs: Any,
-) -> None:
-    """Run on new LLM token. Only available when streaming is enabled."""
-    overlap_tags = self.get_overlap_tags(tags)
-
-    if token and overlap_tags:
-      print(token, end="", flush=True)
-
 class MyAgent:
   def __init__(
     self, 
@@ -176,26 +46,23 @@ class MyAgent:
     agent_verbose: bool = False,
     history_type: Literal["in_memory", "dynamodb"] = "in_memory",
   ):
-    self.prompt = prompt
+    self.llm = llm
     self.tools = tools
+    self.prompt = prompt
+    
     self.agent_type = agent_type
     self.agent_verbose = agent_verbose
-  
-    self.llm = llm.with_config({"tags": ["agent_llm"]})
+    
+    self.history_type = history_type
+    
     self.session_id = str(uuid.uuid4())  # Generate a UUID for session_id
     self.config = {"configurable": {"session_id": self.session_id}}
 
-    self.token_handler = TokenByTokenHandler(
-      tags_of_interest=["tool_llm", "agent_llm"]
-    )
-  
     self.agent = self._create_agent()
     self.agent_executor = AgentExecutor(
       agent=self.agent, tools=self.tools, verbose=self.agent_verbose,
       handle_parsing_errors=True,
       return_intermediate_steps=False,
-    ).with_config(
-      {"run_name": "Agent"}
     )
     self.chat_history: list[Union[AIMessage, HumanMessage, ChatMessage, None]] = []
 
@@ -237,7 +104,6 @@ class MyAgent:
     
     configs = {}
     configs["callbacks"] = callbacks if callbacks else []
-    # configs["callbacks"].append(self.token_handler)
     
     if mode == "sync":
       result = self.agent_executor.invoke(input_data, configs)
