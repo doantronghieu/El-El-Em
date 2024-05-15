@@ -1,5 +1,3 @@
-# Server deploys OpenAI chat model, Anthropic chat model, and chain for joke
-# about topic.
 import add_packages
 import os
 import dotenv
@@ -14,6 +12,8 @@ from langserve import add_routes
 from toolkit.langchain import (
     prompts, chat_models,
 )
+
+from use_cases.VTC import VTC
 
 # *============================================================================
 
@@ -66,6 +66,12 @@ add_routes(
     app=app,
     runnable=chain,
     path="/joke"
+)
+
+add_routes(
+    app=app,
+    runnable=VTC.agent.agent_executor,
+    path="/vtc"
 )
 
 if __name__ == "__main__":

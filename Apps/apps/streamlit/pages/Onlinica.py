@@ -15,7 +15,7 @@ from langchain_core.runnables import Runnable
 from toolkit.langchain import (
   chat_models, agent_tools, prompts, agents, smiths, runnables
 )
-from use_cases import VTC
+from Apps.use_cases.VTC import VTC
 
 from toolkit.streamlit import utils
 from toolkit.streamlit.utils import CHAT_ROLE, MSG_ITEM

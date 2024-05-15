@@ -1,9 +1,10 @@
+from Apps.use_cases.VTC import VTC
 import add_packages
 import config
 import gradio as gr
 import time
 import uuid
-from use_cases import general_chat, VTC
+from use_cases import general_chat
 
 
 ##########

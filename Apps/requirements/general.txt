@@ -9,8 +9,8 @@ bitsandbytes
 ipykernel
 python-dotenv
 python-dateutil
+httpx
 
-chainlit
 
 streamlit
 streamlit_feedback
