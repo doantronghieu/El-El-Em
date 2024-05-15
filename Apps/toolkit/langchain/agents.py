@@ -1,4 +1,5 @@
 import uuid
+from typing import AsyncGenerator
 import add_packages
 from loguru import logger
 from typing import Union, Optional, List, Literal
@@ -251,45 +252,45 @@ class MyAgent:
 
 	async def astream_events_basic(
 		self,
-		input_message: str, 
-	):
+		input_message: str,
+		show_tool_call: bool = False,
+	) -> AsyncGenerator[str, None]:
+		"""
+		async for chunk in agent.astream_events_basic("Hello"):
+			print(chunk, end="", flush=True)
+		"""
+  
 		result = ""
 		async for event in self.agent_executor.astream_events(
 			input={"input": input_message, "chat_history": self.chat_history},
 			version="v1",
 		):
-    
 			event_event = event["event"]
 			event_name = event["name"]
-   
+
 			if event["event"] == "on_chat_model_stream":
 				chunk = dict(event["data"]["chunk"])["content"]
 				result += chunk
-	
-				print(chunk, end="", flush=True)
+				yield chunk
 
-			if event_event == "on_chain_stream" and event_name == "Agent":
+			if show_tool_call and event_event == "on_chain_stream" and event_name == "Agent":
 				if 'actions' in event['data']['chunk']:
 					event_log = dict(list(event['data']['chunk']['actions'])[0])['log']
 					chunk = event_log
 					result += chunk
-					print(chunk, end="")
-		
-		self._add_messages_to_history(input_message, result)
-  
-		return result
-  
-"""
-async def bot_APP(chat_history, human_msg):
-  chat_history[-1][1] = ""
+					yield chunk
 
-  async for event in AGENT_INSTANCE.agent.agent_executor_conversable.astream_events(
-    {"input": human_msg}, config=AGENT_INSTANCE.agent.config, version="v1"
-  ):
-    kind = event["event"]
-    if kind == "on_chat_model_stream":
-      content = event["data"]["chunk"].content
-      if content:
-        chat_history[-1][1] += content
-        yield chat_history
-"""
+		self._add_messages_to_history(input_message, result)
+
+	async def astream_events_basic_wrapper(
+			self,
+			input_message: str,
+	):
+			result = ""
+			async for chunk in self.astream_events_basic(input_message):
+					result += chunk
+					print(chunk, end="", flush=True)
+			return result
+
+	def hello():
+		...

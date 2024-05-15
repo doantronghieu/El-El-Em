@@ -5,8 +5,10 @@ from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 
-from toolkit.langchain import chat_models, agent_tools, agents, prompts, runnables
-
+from toolkit.langchain import (
+  chat_models, agent_tools, agents, prompts, runnables,
+)
+from use_cases.VTC import VTC
 #*==============================================================================
 
 app = FastAPI()
@@ -25,30 +27,19 @@ async def redirect_root_to_docs():
   return RedirectResponse("/docs")
 
 #*------------------------------------------------------------------------------
-from langchain.agents import AgentExecutor, create_tool_calling_agent
-from langchain_community.tools.tavily_search import TavilySearchResults
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_openai import ChatOpenAI
 
-llm = ChatOpenAI(model="gpt-3.5-turbo-0125")
-tools = [TavilySearchResults(max_results=1)]
-prompt = ChatPromptTemplate.from_messages(
-  [
-    (
-      "system",
-      "You are a helpful assistant. Make sure to use the tavily_search_results_json tool for information.",
-    ),
-    ("placeholder", "{chat_history}"),
-    ("human", "{input}"),
-    ("placeholder", "{agent_scratchpad}"),
-  ]
+my_llm = chat_models.chat_openai
+my_prompt = prompts.create_prompt_tool_calling_agent()
+my_tools = [
+	agent_tools.TavilySearchResults(max_results=3)
+]
+
+my_agent = agents.MyAgent(
+  llm=my_llm, tools=my_tools, prompt=my_prompt, agent_verbose=False
 )
 
-# Construct the Tools agent
-agent = create_tool_calling_agent(llm, tools, prompt)
-agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
-
 #*==============================================================================
+
 async def fake_data_streamer():
   for i in range(10):
       yield b'some fake data\n\n'
@@ -59,6 +50,7 @@ async def fake_stream():
     return StreamingResponse(fake_data_streamer(), media_type='text/event-stream')
   
 #*------------------------------------------------------------------------------
+
 def stream_generator_langchain_chat_model(
   query: str,
   chat_model: runnables.Runnable,
@@ -76,19 +68,28 @@ async def stream_langchain_chat_model(
   )
 
 #*------------------------------------------------------------------------------
+
 def stream_generator_langchain_agent(
   query: str,
-  agent: runnables.Runnable,
+  agent: agents.MyAgent,
 ):
-  for token in agent.stream({"input": query, "chat_history": []}):
-    yield(token)
+  return agent.astream_events_basic(query)
 
 @app.get("/stream-langchain-agent")
 async def stream_langchain_agent(
   query: str = "Hello",
 ):
   return StreamingResponse(
-    stream_generator_langchain_agent(query, agent_executor),
+    stream_generator_langchain_agent(query=query, agent=my_agent),
+    media_type='text/event-stream',
+  )
+
+@app.get("/stream-vtc-agent")
+async def stream_vtc_agent(
+  query: str = "Hello",
+):
+  return StreamingResponse(
+    stream_generator_langchain_agent(query=query, agent=VTC.agent),
     media_type='text/event-stream',
   )
 #*==============================================================================
