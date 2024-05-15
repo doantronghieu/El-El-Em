@@ -42,8 +42,8 @@ my_agent = agents.MyAgent(
 
 async def fake_data_streamer():
   for i in range(10):
-      yield b'some fake data\n\n'
-      await asyncio.sleep(0.5)
+    yield b'some fake data\n\n'
+    await asyncio.sleep(0.5)
 
 @app.get('/fake-stream')
 async def fake_stream():
@@ -93,8 +93,4 @@ async def stream_vtc_agent(
     media_type='text/event-stream',
   )
 #*==============================================================================
-
-if __name__ == "__main__":
-  import uvicorn
-
-  uvicorn.run(app, host="0.0.0.0", port=8000)
+# uvicorn ServerFastApi:app --host=0.0.0.0 --port=8000

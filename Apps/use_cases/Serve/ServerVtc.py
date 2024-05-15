@@ -1,23 +1,16 @@
 import add_packages
-import os
-import dotenv
-import yaml
-
 from fastapi import FastAPI
+from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 
 from toolkit.langchain import (
-    prompts, chat_models,
+  chat_models, agent_tools, agents, prompts, runnables,
 )
-
 from use_cases.VTC import VTC
+#*==============================================================================
 
-# *============================================================================
-
-app = FastAPI(
-  title="VTC Chatbot Server",
-)
+app = FastAPI()
 
 app.add_middleware(
   CORSMiddleware,
@@ -28,31 +21,27 @@ app.add_middleware(
   expose_headers=["*"],
 )
 
-
 @app.get("/")
 async def redirect_root_to_docs():
   return RedirectResponse("/docs")
 
-#*============================================================================
+#*==============================================================================
 
-@app.post("/invoke-llm")
-async def invoke_llm(
-  msg: str
+def stream_generator_langchain_agent(
+  query: str,
+  agent: agents.MyAgent,
 ):
-  ai_msg = VTC.agent.invoke_agent(msg)
-  return ai_msg
+  return agent.astream_events_basic(query)
 
-@app.post("/stream-llm")
-async def stream_llm(
-  msg: str
+@app.get("/stream-vtc-agent")
+async def stream_vtc_agent(
+  query: str = "Hello",
 ):
-  ai_msg = ""
-
-  async for chunk in VTC.agent.agent_executor.astream(msg):
-    ai_msg += chunk
-    print(chunk.content, end="|", flush=True)
-
-  return ai_msg
+  return StreamingResponse(
+    stream_generator_langchain_agent(query=query, agent=VTC.agent),
+    media_type='text/event-stream',
+  )
+#*==============================================================================
 
 if __name__ == "__main__":
   import uvicorn

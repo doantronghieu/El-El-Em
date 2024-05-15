@@ -12,6 +12,14 @@
 
 ![Agent Flow](./diagrams/Agent%20Flow.jpeg)
 
-## System Design
+## Docker
 
-![System Design](./diagrams/System%20Design.jpeg)
+```bash
+cd Apps
+docker build -t image-fastapi-langchain:latest -f deploy/docker_k8s/docker-files/Dockerfile.FastApi-LangChain .
+docker run -d --name container-fastapi-langchain -p 8000:8000 image-fastapi-langchain:latest
+docker run --name container-fastapi-langchain -p 8000:8000 image-fastapi-langchain:latest
+
+docker exec -ti container-fastapi-langchain bash
+
+```
