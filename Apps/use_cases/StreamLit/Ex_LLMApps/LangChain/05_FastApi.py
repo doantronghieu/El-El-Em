@@ -205,7 +205,6 @@ def on_change_box_selected_chat(
   model: agents.MyAgent,
 ):
   model.history.session_id = st.session_state[STATES["SELECTED_CHAT"]["KEY"]]
-  print(f"model on_change_box_selected_chat: {model.history.session_id}")
 
 #*==============================================================================
 
@@ -234,12 +233,6 @@ with st.sidebar:
     on_change=on_change_box_selected_chat,
     kwargs=dict(model=agent),
   )
-  if selected_chat:
-    print(f'SELECT, {st.session_state[STATES["SELECTED_CHAT"]["KEY"]]}')
-    st.session_state[STATES["SELECTED_CHAT"]["KEY"]] 
-  print(langchain_session_dynamodb_table.get_session_ids("admin"))
-  print(f"agent.history.session_id: {agent.history.session_id}")
-  print(f"after selected_chat: {selected_chat}")
   
   prompt_example = st.selectbox(
     label="Examples",
