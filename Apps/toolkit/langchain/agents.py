@@ -88,7 +88,7 @@ class MyAgent:
 			self.chat_history = []
 		elif self.history_type == "dynamodb":
 			self.chat_history = DynamoDBChatMessageHistory(
-				table_name="LangChainSessionTable", session_id="0",
+				table_name="LangChainSessionTable", session_id=self.session_id,
 				key={
 					"SessionId": self.session_id,
 					"UserId": self.user_id,

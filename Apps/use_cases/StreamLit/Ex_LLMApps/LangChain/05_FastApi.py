@@ -14,7 +14,7 @@ from langchain_core.tools import BaseTool
 from langchain_core.runnables import Runnable
 
 from toolkit.langchain import (
-  chat_models, agent_tools, prompts, agents, smiths, runnables
+  chat_models, agent_tools, prompts, agents, smiths, runnables, memories
 )
 
 from toolkit.streamlit import utils
@@ -76,26 +76,30 @@ def get_LC_run_url(run_id):
     
   return result
 
-@st.cache_resource
+# @st.cache_resource
 def create_agent(
-    _llm: BaseLanguageModel,
+  _llm: BaseLanguageModel,
   _tools: Sequence[BaseTool],
   _prompt: ChatPromptTemplate,
   _agent_type: str,
   _history_type: str,
-  _session_id: str,
+  session_id: str,
   _user_id: str,
 ) -> Runnable:
   agent = agents.MyAgent(
-      llm=_llm,
-      tools=_tools,
-      prompt=_prompt,
-      agent_type=_agent_type,
-      history_type=_history_type,
-      session_id=_session_id,
-      user_id=_user_id
+    llm=_llm,
+    tools=_tools,
+    prompt=_prompt,
+    agent_type=_agent_type,
+    history_type=_history_type,
+    session_id=session_id,
+    user_id=_user_id
   )
   return agent
+
+@st.cache_resource
+def get_langchain_session_dynamodb_table():
+  return memories.LangChainSessionDynamodbTable()
 
 def create_callbacks() -> list:
   st_callback = utils.StreamlitCallbackHandler(st.container())
@@ -165,6 +169,7 @@ def on_click_btn_clear_chat(
   st.toast(":red[Chat cleared]", icon="❌")
 
 #*==============================================================================
+langchain_session_dynamodb_table = get_langchain_session_dynamodb_table()
 
 llm = chat_models.chat_openai
 
@@ -181,7 +186,7 @@ llm: agents.MyAgent = create_agent(
   _prompt=prompt,
   _agent_type="tool_calling",
   _history_type="dynamodb",
-  _session_id="1",
+  session_id=st.session_state[STATES["SELECTED_CHAT"]["KEY"]],
   _user_id="admin"
 )
 
@@ -205,13 +210,21 @@ with st.sidebar:
     label_visibility="collapsed",
     help="Select Your Chat",
     placeholder="Chats",
-    options=[
-      None,
-      "Dummy Chat 1",
-      "Dummy Chat 2",
-    ],
+    options=langchain_session_dynamodb_table.get_session_ids("admin"),
     key=STATES["SELECTED_CHAT"]["KEY"],
   )
+  # if selected_chat:
+    # llm: agents.MyAgent = create_agent(
+    #   _llm=llm,
+    #   _tools=tools,
+    #   _prompt=prompt,
+    #   _agent_type="tool_calling",
+    #   _history_type="dynamodb",
+    #   _session_id=selected_chat,
+    #   _user_id="admin"
+    # )
+    # del st.session_state[STATES["SELECTED_CHAT"]["KEY"]]
+    # st.rerun()
   
   prompt_example = st.selectbox(
     label="Examples",
@@ -289,4 +302,4 @@ if st.session_state[STATES["LAST_RUN"]["KEY"]]:
     
     st.toast("Feedback recorded.", icon="📝")
 
-# st.write(st.session_state)
+st.write(st.session_state)
