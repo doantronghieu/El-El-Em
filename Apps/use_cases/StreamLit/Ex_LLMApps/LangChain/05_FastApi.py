@@ -183,9 +183,9 @@ async def render_chat_messages_on_rerun(
     st.chat_message(msg.type).markdown(msg.content)
 
 async def on_click_btn_clear_chat_history(
-  _model: agents.MyAgent,
+  model: agents.MyAgent,
 ):
-  await _model.history.clear_chat_history()
+  await model.history.clear_chat_history()
   del st.session_state[STATES["LAST_RUN"]["KEY"]]
   st.toast(":orange[History cleared]", icon="🗑️")
 
