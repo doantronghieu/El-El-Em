@@ -91,12 +91,17 @@ async def process_on_user_input(
     st.session_state.container_placeholder.empty()
   
   st.chat_message(CHAT_ROLE.user).markdown(prompt)
-  stream = client.stream_agent_sync(query=prompt)
+  stream = client.stream_agent_sync(
+    query=prompt,
+    user_id=st.session_state[STATES["USER_EMAIL"]["KEY"]],
+  )
   # stream = client.stream_agent_sync(query=prompt, user_id="admin")
   st.chat_message(CHAT_ROLE.assistant).write_stream(stream)
   
 async def render_chat_messages_on_rerun():
-  chat_history = await client.get_chat_history()
+  chat_history = await client.get_chat_history(
+    user_id=st.session_state[STATES["USER_EMAIL"]["KEY"]],
+  )
   for msg in chat_history:
     msg: Union[prompts.AIMessage, prompts.HumanMessage]
     st.chat_message(msg["type"]).markdown(msg["content"])
@@ -104,7 +109,9 @@ async def render_chat_messages_on_rerun():
 async def on_click_btn_clear_chat_history(
   
 ):
-  await client.clear_agent_chat_history()
+  await client.clear_agent_chat_history(
+    user_id=st.session_state[STATES["USER_EMAIL"]["KEY"]],
+  )
   del st.session_state[STATES["LAST_RUN"]["KEY"]]
   st.toast(":orange[History cleared]", icon="🗑️")
 #*==============================================================================
