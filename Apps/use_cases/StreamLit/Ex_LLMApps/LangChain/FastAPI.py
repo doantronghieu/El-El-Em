@@ -21,6 +21,12 @@ st.set_page_config(
 )
 
 STATES = {
+  "USER_EMAIL": {
+    "INITIAL_VALUE": None,
+  },
+  "USER_NAME": {
+    "INITIAL_VALUE": None,
+  },
   "MESSAGES": {
     "INITIAL_VALUE": [],
   },
@@ -42,7 +48,7 @@ STATES = {
   "BTN_CLEAR_CHAT_HISTORY": {
     "INITIAL_VALUE": "widget",
   },
-  "BTN_CLEAR_CHAT": {
+  "BTN_LOGOUT": {
     "INITIAL_VALUE": "widget",
   },
 }
@@ -103,40 +109,59 @@ async def on_click_btn_clear_chat_history(
   st.toast(":orange[History cleared]", icon="🗑️")
 #*==============================================================================
 
-
-asyncio.run(render_chat_messages_on_rerun())
+if st.session_state[STATES["USER_EMAIL"]["KEY"]]:
+  asyncio.run(render_chat_messages_on_rerun())
 
 with st.sidebar:
-  prompt_example = st.selectbox(
-    label="Examples",
-    label_visibility="collapsed",
-    help="Example prompts",
-    placeholder="Examples",
-    options=[
-      None,
-      "Hello",
-      "My name is Bob",
-      "What is my name?",
-      "Tell me a super long story about a dog",
-      "What is the question I just asked you?",
-    ],
-    key=STATES["PROMPT_EXAMPLE"]["KEY"],
-  )  
+  if st.session_state[STATES["USER_NAME"]["KEY"]]:
+    st.sidebar.write(f'Welcome, :green[{st.session_state[STATES["USER_NAME"]["KEY"]]}]!')
+    
+    if st.button("Logout"):
+      st.session_state[STATES["USER_EMAIL"]["KEY"]] = None
+  else:
+    email = st.sidebar.text_input("Email")
+    username = email.split("@")[0]
+    
+    if st.sidebar.button("Login"):
+      st.session_state[STATES["USER_EMAIL"]["KEY"]] = email
+      st.session_state[STATES["USER_NAME"]["KEY"]] = username
+      
+      st.rerun()
   
-  btn_clear_chat_history = st.button(
-    label="🗑️", 
-    help="Clear Chat History",
-    key=STATES["BTN_CLEAR_CHAT_HISTORY"]["KEY"],
-  )
-  if btn_clear_chat_history:
-    asyncio.run(on_click_btn_clear_chat_history())
-    st.rerun()
+  if st.session_state[STATES["USER_EMAIL"]["KEY"]]:
+    prompt_example = st.selectbox(
+      label="Examples",
+      label_visibility="collapsed",
+      help="Example prompts",
+      placeholder="Examples",
+      options=[
+        None,
+        "Hello",
+        "My name is Bob",
+        "What is my name?",
+        "Tell me a super long story about a dog",
+        "What is the question I just asked you?",
+      ],
+      key=STATES["PROMPT_EXAMPLE"]["KEY"],
+    )  
+    
+    btn_clear_chat_history = st.button(
+      label="🗑️", 
+      help="Clear Chat History",
+      key=STATES["BTN_CLEAR_CHAT_HISTORY"]["KEY"],
+    )
+    if btn_clear_chat_history:
+      asyncio.run(on_click_btn_clear_chat_history())
+      st.rerun()
   
 #*----------------------------------------------------------------------------
 
-prompt: Union[str, None] = st.chat_input("Say something")
+prompt: Union[str, None] = st.chat_input(
+  "Say something",
+  disabled=st.session_state[STATES["USER_EMAIL"]["KEY"]] is None,
+)
 
-if prompt_example:
+if st.session_state[STATES["USER_EMAIL"]["KEY"]] and prompt_example:
   prompt = prompt_example
   del st.session_state[STATES["PROMPT_EXAMPLE"]["KEY"]]
   
