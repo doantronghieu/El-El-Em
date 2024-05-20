@@ -144,18 +144,19 @@ async def process_on_user_input(
 ):
   # Clear the container before displaying user's message
   if st.session_state.container_placeholder is not None:
-      st.session_state.container_placeholder.empty()
+    st.session_state.container_placeholder.empty()
   
   st.chat_message(CHAT_ROLE.user).markdown(prompt)
-  stream = client.stream_agent(prompt)
+  stream = client.stream_agent_sync(prompt)
   st.chat_message(CHAT_ROLE.assistant).write_stream(stream)
   
   # render_last_msg_opt_btns()
   
 async def render_chat_messages_on_rerun():
-  for msg in await client.get_chat_history():
+  chat_history = await client.get_chat_history()
+  for msg in chat_history:
     msg: Union[prompts.AIMessage, prompts.HumanMessage]
-    st.chat_message(msg.type).markdown(msg.content)
+    st.chat_message(msg["type"]).markdown(msg["content"])
 
 async def on_click_btn_clear_chat_history(
   model: agents.MyAgent,
@@ -176,10 +177,10 @@ def on_click_btn_clear_chat(
 ):
   st.toast(":red[Chat cleared]", icon="❌")
 
-def on_change_box_selected_chat(
-  model: agents.MyAgent,
-):
-  model.history.session_id = st.session_state[STATES["SELECTED_CHAT"]["KEY"]]
+# def on_change_box_selected_chat(
+#   model: agents.MyAgent,
+# ):
+#   model.history.session_id = st.session_state[STATES["SELECTED_CHAT"]["KEY"]]
 
 #*==============================================================================
 
@@ -198,15 +199,15 @@ with st.sidebar:
   if btn_new_chat:
     st.rerun()
   
-  selected_chat = st.selectbox(
-    label="Chat",
-    label_visibility="collapsed",
-    help="Select Your Chat",
-    placeholder="Chats",
-    options=langchain_session_dynamodb_table.get_session_ids("admin"),
-    key=STATES["SELECTED_CHAT"]["KEY"],
-    on_change=on_change_box_selected_chat,
-  )
+  # selected_chat = st.selectbox(
+  #   label="Chat",
+  #   label_visibility="collapsed",
+  #   help="Select Your Chat",
+  #   placeholder="Chats",
+  #   options=langchain_session_dynamodb_table.get_session_ids("admin"),
+  #   key=STATES["SELECTED_CHAT"]["KEY"],
+  #   on_change=on_change_box_selected_chat,
+  # )
   
   prompt_example = st.selectbox(
     label="Examples",
@@ -254,7 +255,7 @@ if prompt_example:
   del st.session_state[STATES["PROMPT_EXAMPLE"]["KEY"]]
   
 if prompt:
-  asyncio.run(process_on_user_input(prompt, agent))
+  asyncio.run(process_on_user_input(prompt))
 
 #*------------------------------------------------------------------------------
 # Feedback

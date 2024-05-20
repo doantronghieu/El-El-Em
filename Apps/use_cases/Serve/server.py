@@ -28,7 +28,6 @@ async def redirect_root_to_docs():
 
 #*------------------------------------------------------------------------------
 
-
 my_llm = chat_models.chat_openai
 my_prompt = prompts.create_prompt_tool_calling_agent()
 my_tools = [
@@ -53,8 +52,8 @@ my_agent = agents.MyAgent(
 #*==============================================================================
 
 async def fake_data_streamer():
-  for i in range(10):
-    yield b'some fake data\n\n'
+  for i in range(5):
+    yield b'pip pip ...\n\n'
     await asyncio.sleep(0.5)
 
 @app.get('/fake-stream')

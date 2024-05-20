@@ -1,9 +1,9 @@
 import httpx
 import asyncio
 import json
+from typing import Literal
 
 server_fastapi = 'http://127.0.0.1:8000'
-
 
 async def invoke_agent(
 	query,
@@ -30,7 +30,7 @@ async def invoke_agent(
 		print(f"Request failed with status code {e.response.status_code}: {e.response.content.decode('utf-8')}")
 		return None
 
-async def stream_agent(
+async def stream_agent_async(
   query,
 	server_fastapi = 'http://127.0.0.1:8000', 
 ):
@@ -46,6 +46,19 @@ async def stream_agent(
 					yield chunk
 		except httpx.HTTPError as e:
 			print(f"Request failed with status code {e.response.status_code}: {e.response.content.decode('utf-8')}")
+
+def stream_agent_sync(
+  query,
+	server_fastapi = 'http://127.0.0.1:8000', 
+):
+	url = f"{server_fastapi}/stream-agent"
+	params = {
+		"query": query,
+	}
+
+	with httpx.stream('GET', url, params=params, timeout=60) as r:
+		for chunk in r.iter_text():  # or, for line in r.iter_lines():
+				yield chunk
 
 async def get_chat_history(
   server_fastapi = 'http://127.0.0.1:8000', 
