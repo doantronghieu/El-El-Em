@@ -5,6 +5,27 @@ from typing import Literal
 
 server_fastapi = 'http://127.0.0.1:8000'
 
+async def get_langchain_session_dynamodb_table(
+  server_fastapi = 'http://127.0.0.1:8000', 
+	user: str = "admin",
+):
+	url = f"{server_fastapi}/langchain-session-dynamodb-table"
+	headers = {
+		"accept": "application/json"
+	}
+	params = {
+		"user": user,
+	}
+
+	try:
+		response = httpx.get(url, headers=headers, params=params)
+		response.raise_for_status()  # This will raise an exception if the request failed (e.g., 404, 500, etc.)
+		data = json.loads(response.content.decode("utf-8"))
+		return data
+	except httpx.HTTPError as e:
+		print(f"Request failed with status code {e.response.status_code}: {e.response.content.decode('utf-8')}")
+		return None
+
 async def invoke_agent(
 	query,
 	server_fastapi = 'http://127.0.0.1:8000', 

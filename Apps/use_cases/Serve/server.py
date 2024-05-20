@@ -1,15 +1,28 @@
 import add_packages
 import asyncio
 import json
+import os
 from fastapi import FastAPI
 from fastapi.responses import StreamingResponse, Response, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 
 from toolkit.langchain import (
-  chat_models, agent_tools, agents, prompts, runnables,
+  chat_models, agent_tools, agents, prompts, runnables, smiths, memories
 )
 #*==============================================================================
+
+PROJECT_LS = "default" # LangSmith
+ENDPOINT_LC = "https://api.smith.langchain.com" # LangChain
+CLIENT_LC = smiths.Client(
+  api_url=ENDPOINT_LC, api_key=os.getenv("LANGCHAIN_API_KEY")
+)
+TRACER_LS = smiths.LangChainTracer(project_name=PROJECT_LS, client=CLIENT_LC)
+RUN_COLLECTOR = smiths.RunCollectorCallbackHandler()
+
+callbacks = [TRACER_LS, RUN_COLLECTOR]
+
+#*------------------------------------------------------------------------------
 
 app = FastAPI()
 
@@ -25,8 +38,6 @@ app.add_middleware(
 @app.get("/")
 async def redirect_root_to_docs():
   return RedirectResponse("/docs")
-
-#*------------------------------------------------------------------------------
 
 my_llm = chat_models.chat_openai
 my_prompt = prompts.create_prompt_tool_calling_agent()
@@ -50,6 +61,16 @@ my_agent = agents.MyAgent(
 )
 
 #*==============================================================================
+
+@app.get('/langchain-session-dynamodb-table')
+async def get_langchain_session_dynamodb_table(
+  user: str  = "admin"
+):
+  langchain_session_dynamodb_table = memories.LangChainSessionDynamodbTable()
+  result = langchain_session_dynamodb_table.get_session_ids(user)
+  return result
+
+#*------------------------------------------------------------------------------
 
 async def fake_data_streamer():
   for i in range(5):
@@ -109,9 +130,10 @@ async def get_agent_chat_history():
   return result
   # return JSONResponse(result_json)
 
-
 @app.delete("/agent-chat-history")
 async def clear_agent_chat_history():
   return await my_agent.history.clear_chat_history()
+
 #*==============================================================================
+
 # uvicorn server:app --host=0.0.0.0 --port=8000
