@@ -128,7 +128,6 @@ async def invoke_agent(
 async def get_agent_chat_history():
   result = await my_agent.history._get_chat_history()
   return result
-  # return JSONResponse(result_json)
 
 @app.delete("/agent-chat-history")
 async def clear_agent_chat_history():
