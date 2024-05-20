@@ -1,14 +1,14 @@
 import add_packages
 import asyncio
+import json
 from fastapi import FastAPI
-from fastapi.responses import StreamingResponse
+from fastapi.responses import StreamingResponse, Response, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 
 from toolkit.langchain import (
   chat_models, agent_tools, agents, prompts, runnables,
 )
-from use_cases.VTC import VTC
 #*==============================================================================
 
 app = FastAPI()
@@ -28,14 +28,26 @@ async def redirect_root_to_docs():
 
 #*------------------------------------------------------------------------------
 
+
 my_llm = chat_models.chat_openai
 my_prompt = prompts.create_prompt_tool_calling_agent()
 my_tools = [
 	agent_tools.TavilySearchResults(max_results=3)
 ]
 
+history = agents.ChatHistory(
+	history_type='in_memory',
+	user_id="admin",
+	session_id="1",
+)
+
 my_agent = agents.MyAgent(
-  llm=my_llm, tools=my_tools, prompt=my_prompt, agent_verbose=False
+	llm=my_llm,
+	tools=my_tools,
+	prompt=my_prompt,
+	history=history,
+	agent_verbose=False, # True, False
+	agent_type='tool_calling',
 )
 
 #*==============================================================================
@@ -51,46 +63,56 @@ async def fake_stream():
   
 #*------------------------------------------------------------------------------
 
-def stream_generator_langchain_chat_model(
+def stream_generator_chat_model(
   query: str,
   chat_model: runnables.Runnable,
 ):
   for token in chat_model.stream(query):
     yield(token.content)
 
-@app.get("/stream-langchain-chat-model")
-async def stream_langchain_chat_model(
+@app.get("/stream-chat-model")
+async def stream_chat_model(
   query: str = "Hello",
 ):
   return StreamingResponse(
-    stream_generator_langchain_chat_model(query, chat_models.chat_openai),
+    stream_generator_chat_model(query, chat_models.chat_openai),
     media_type='text/event-stream',
   )
 
 #*------------------------------------------------------------------------------
 
-def stream_generator_langchain_agent(
+def stream_generator_agent(
   query: str,
   agent: agents.MyAgent,
 ):
   return agent.astream_events_basic(query)
 
-@app.get("/stream-langchain-agent")
-async def stream_langchain_agent(
+@app.get("/stream-agent")
+async def stream_agent(
   query: str = "Hello",
 ):
   return StreamingResponse(
-    stream_generator_langchain_agent(query=query, agent=my_agent),
+    stream_generator_agent(query=query, agent=my_agent),
     media_type='text/event-stream',
   )
 
-@app.get("/stream-vtc-agent")
-async def stream_vtc_agent(
+@app.get("/invoke-agent")
+async def invoke_agent(
   query: str = "Hello",
 ):
-  return StreamingResponse(
-    stream_generator_langchain_agent(query=query, agent=VTC.agent),
-    media_type='text/event-stream',
+  return Response(
+    content=await my_agent.invoke_agent(query),
   )
+
+@app.get("/agent-chat-history")
+async def get_agent_chat_history():
+  result = await my_agent.history._get_chat_history()
+  return result
+  # return JSONResponse(result_json)
+
+
+@app.delete("/agent-chat-history")
+async def clear_agent_chat_history():
+  return await my_agent.history.clear_chat_history()
 #*==============================================================================
-# uvicorn ServerFastApi:app --host=0.0.0.0 --port=8000
+# uvicorn server:app --host=0.0.0.0 --port=8000

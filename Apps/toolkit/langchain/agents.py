@@ -127,7 +127,7 @@ class MyAgent:
 		self.agent_executor = AgentExecutor(
 			agent=self.agent, tools=self.tools, verbose=self.agent_verbose,
 			handle_parsing_errors=True,
-			return_intermediate_steps=False,
+			return_intermediate_steps=False, # True, False
 		)
 
 	def _create_agent(self) -> Runnable:
@@ -174,7 +174,7 @@ class MyAgent:
 	async def astream_events_basic(
 		self,
 		input_message: str,
-		show_tool_call: bool = False,
+		show_tool_call: bool = True,
 	) -> AsyncGenerator[str, None]:
 		"""
 		async for chunk in agent.astream_events_basic("Hello"):
@@ -183,7 +183,10 @@ class MyAgent:
 
 		result = ""
 		async for event in self.agent_executor.astream_events(
-			input={"input": input_message, "chat_history": await self.history._get_chat_history()},
+			input={
+     		"input": input_message, 
+       	"chat_history": await self.history._get_chat_history()
+      },
 			version="v1",
 		):
 			event_event = event["event"]

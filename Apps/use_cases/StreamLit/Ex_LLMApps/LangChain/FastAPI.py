@@ -1,7 +1,10 @@
 from typing import Union, Sequence
+import asyncio
 import uuid
 import os
 import time
+
+from regex import P
 import add_packages
 
 import streamlit as st
@@ -13,9 +16,9 @@ from langchain_core.tools import BaseTool
 from langchain_core.runnables import Runnable
 
 from toolkit.langchain import (
-  chat_models, agent_tools, prompts, agents, smiths, runnables
+  chat_models, agent_tools, prompts, agents, smiths, runnables, memories
 )
-
+from use_cases.Serve import client
 from toolkit.streamlit import utils
 from toolkit.streamlit.utils import CHAT_ROLE, MSG_ITEM
 
@@ -64,6 +67,10 @@ CLIENT_LC = smiths.Client(
 TRACER_LS = smiths.LangChainTracer(project_name=PROJECT_LS, client=CLIENT_LC)
 RUN_COLLECTOR = smiths.RunCollectorCallbackHandler()
 
+#*==============================================================================
+
+def hash_func_ChatHistory(obj: agents.ChatHistory):
+  return obj.session_id
 
 #*==============================================================================
 
@@ -76,71 +83,84 @@ def get_LC_run_url(run_id):
     
   return result
 
-@st.cache_resource
+@st.cache_resource(hash_funcs={agents.ChatHistory: hash_func_ChatHistory})
 def create_agent(
-  _llm: BaseLanguageModel, 
-  _tools: Sequence[BaseTool], 
+  _llm: BaseLanguageModel,
+  _tools: Sequence[BaseTool],
   _prompt: ChatPromptTemplate,
+  history: agents.ChatHistory,
   _agent_type: str,
 ) -> Runnable:
   agent = agents.MyAgent(
-    llm=_llm, tools=_tools, prompt=_prompt, agent_type=_agent_type
+    llm=_llm,
+    tools=_tools,
+    prompt=_prompt,
+    history=history,
+    agent_type=_agent_type,
   )
   return agent
+
+@st.cache_resource
+def get_langchain_session_dynamodb_table():
+  return memories.LangChainSessionDynamodbTable()
 
 def create_callbacks() -> list:
   st_callback = utils.StreamlitCallbackHandler(st.container())
   callbacks = [st_callback, TRACER_LS, RUN_COLLECTOR]
   return callbacks
 
-def generate_response(
-  input: str, 
-  llm: agents.MyAgent,
-):
-  response = llm.invoke_agent(
-    input_message=input, 
-    callbacks=create_callbacks()
-  )
-  
-  st.session_state[STATES["LAST_RUN"]["KEY"]] = RUN_COLLECTOR.traced_runs[0].id
-  
-  return response
+#*---------------------------------------------------------------------------
 
-def render_last_msg_opt_btns():
-    if llm.chat_history:
-        # Create a new container and store its placeholder
-        st.session_state.container_placeholder = st.empty()
-        
-        with st.session_state.container_placeholder:
-            cols_last_msg_opts = st.columns([0.94, 0.03, 0.03])
-            cols_last_msg_opts[1].button("↻", key="btn_lst_msg_regenerate")
-            cols_last_msg_opts[2].button("📋", key="btn_lst_msg_copy")
+langchain_session_dynamodb_table = get_langchain_session_dynamodb_table()
 
-def process_on_user_input(
+#*==============================================================================
+
+
+# async def generate_response(
+#   input: str, 
+# ):
+#   response = await model.invoke_agent(
+#     input_message=input, 
+#     callbacks=create_callbacks(),
+#     mode="sync",
+#   )
+  
+#   st.session_state[STATES["LAST_RUN"]["KEY"]] = RUN_COLLECTOR.traced_runs[0].id
+  
+#   return response
+
+# def render_last_msg_opt_btns():
+#   if agent.history.chat_history:
+#     # Create a new container and store its placeholder
+#     st.session_state.container_placeholder = st.empty()
+    
+#     with st.session_state.container_placeholder:
+#       cols_last_msg_opts = st.columns([0.94, 0.03, 0.03])
+#       cols_last_msg_opts[1].button("↻", key="btn_lst_msg_regenerate")
+#       cols_last_msg_opts[2].button("📋", key="btn_lst_msg_copy")
+
+async def process_on_user_input(
   prompt: str, 
-  llm: agents.MyAgent,
 ):
   # Clear the container before displaying user's message
   if st.session_state.container_placeholder is not None:
       st.session_state.container_placeholder.empty()
   
   st.chat_message(CHAT_ROLE.user).markdown(prompt)
-  stream = generate_response(prompt, llm)
-  st.chat_message(CHAT_ROLE.assistant).write(stream)
+  stream = client.stream_agent(prompt)
+  st.chat_message(CHAT_ROLE.assistant).write_stream(stream)
   
   # render_last_msg_opt_btns()
   
-def render_chat_messages_on_rerun(
-  llm: agents.MyAgent,
-):
-  for msg in llm.chat_history:
+async def render_chat_messages_on_rerun():
+  for msg in await client.get_chat_history():
     msg: Union[prompts.AIMessage, prompts.HumanMessage]
     st.chat_message(msg.type).markdown(msg.content)
 
-def on_click_btn_clear_chat_history(
-  llm: agents.MyAgent,
+async def on_click_btn_clear_chat_history(
+  model: agents.MyAgent,
 ):
-  llm.clear_chat_history()
+  await model.history.clear_chat_history()
   del st.session_state[STATES["LAST_RUN"]["KEY"]]
   st.toast(":orange[History cleared]", icon="🗑️")
 
@@ -148,38 +168,24 @@ def on_click_btn_new_chat(
   
 ):
   st.toast(":green[Chat created]", icon="✅")
-
+  st.session_state[STATES["SELECTED_CHAT"]["KEY"]] = None
+  
 
 def on_click_btn_clear_chat(
   
 ):
   st.toast(":red[Chat cleared]", icon="❌")
 
-
-#*==============================================================================
-
-llm = chat_models.chat_openai
-
-tool_search = agent_tools.TavilySearchResults(max_results=3)
-tools = [
-  tool_search,
-]
-
-prompt = prompts.create_prompt_tool_calling_agent()
-
-llm: agents.MyAgent = create_agent(
-  _llm=llm, 
-  _tools=tools, 
-  _prompt=prompt, 
-  _agent_type="tool_calling"
-)
+def on_change_box_selected_chat(
+  model: agents.MyAgent,
+):
+  model.history.session_id = st.session_state[STATES["SELECTED_CHAT"]["KEY"]]
 
 #*==============================================================================
 
 containter_empty_btn_opts_holder = st.empty()
 
-
-render_chat_messages_on_rerun(llm=llm)
+asyncio.run(render_chat_messages_on_rerun())
 
 with st.sidebar:
   btn_new_chat = st.button(
@@ -189,18 +195,17 @@ with st.sidebar:
     on_click=on_click_btn_new_chat, 
     kwargs=dict()
   )
+  if btn_new_chat:
+    st.rerun()
   
   selected_chat = st.selectbox(
     label="Chat",
     label_visibility="collapsed",
     help="Select Your Chat",
     placeholder="Chats",
-    options=[
-      None,
-      "Dummy Chat 1",
-      "Dummy Chat 2",
-    ],
+    options=langchain_session_dynamodb_table.get_session_ids("admin"),
     key=STATES["SELECTED_CHAT"]["KEY"],
+    on_change=on_change_box_selected_chat,
   )
   
   prompt_example = st.selectbox(
@@ -227,9 +232,10 @@ with st.sidebar:
     label="🗑️", 
     help="Clear Chat History",
     key=STATES["BTN_CLEAR_CHAT_HISTORY"]["KEY"],
-    on_click=on_click_btn_clear_chat_history, 
-    kwargs=dict(llm=llm)
   )
+  if btn_clear_chat_history:
+    asyncio.run(on_click_btn_clear_chat_history())
+    st.rerun()
   
   btn_clear_chat = cols_clear[1].button(
     label="❌", 
@@ -241,41 +247,40 @@ with st.sidebar:
   
 #*----------------------------------------------------------------------------
 
-prompt: Union[str, None]
-prompt = st.chat_input("Say something")
+prompt: Union[str, None] = st.chat_input("Say something")
 
 if prompt_example:
   prompt = prompt_example
   del st.session_state[STATES["PROMPT_EXAMPLE"]["KEY"]]
   
 if prompt:
-  process_on_user_input(prompt=prompt, llm=llm)
+  asyncio.run(process_on_user_input(prompt, agent))
 
 #*------------------------------------------------------------------------------
 # Feedback
 
-if st.session_state[STATES["LAST_RUN"]["KEY"]]:
-  run_url = get_LC_run_url(st.session_state[STATES["LAST_RUN"]["KEY"]])
+# if st.session_state[STATES["LAST_RUN"]["KEY"]]:
+#   run_url = get_LC_run_url(st.session_state[STATES["LAST_RUN"]["KEY"]])
   
-  if run_url is None:
-    pass
+#   if run_url is None:
+#     pass
   
-  feedback = streamlit_feedback(
-    feedback_type="faces",
-    optional_text_label="[Optional] Please provide an explanation",
-    key=f'feedback_{st.session_state[STATES["LAST_RUN"]["KEY"]]}'
-  )
+#   feedback = streamlit_feedback(
+#     feedback_type="faces",
+#     optional_text_label="[Optional] Please provide an explanation",
+#     key=f'feedback_{st.session_state[STATES["LAST_RUN"]["KEY"]]}'
+#   )
   
-  if feedback:
-    scores = {"😀": 1, "🙂": 0.75, "😐": 0.5, "🙁": 0.25, "😞": 0}
+#   if feedback:
+#     scores = {"😀": 1, "🙂": 0.75, "😐": 0.5, "🙁": 0.25, "😞": 0}
     
-    CLIENT_LC.create_feedback(
-      st.session_state[STATES["LAST_RUN"]["KEY"]],
-      feedback["type"],
-      score=scores[feedback["score"]],
-      comment=feedback.get("text", None)
-    )
+#     CLIENT_LC.create_feedback(
+#       st.session_state[STATES["LAST_RUN"]["KEY"]],
+#       feedback["type"],
+#       score=scores[feedback["score"]],
+#       comment=feedback.get("text", None)
+#     )
     
-    st.toast("Feedback recorded.", icon="📝")
+#     st.toast("Feedback recorded.", icon="📝")
 
 # st.write(st.session_state)
