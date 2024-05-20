@@ -125,6 +125,9 @@ with st.sidebar:
     
     if st.button("Logout"):
       st.session_state[STATES["USER_EMAIL"]["KEY"]] = None
+      st.session_state[STATES["USER_NAME"]["KEY"]] = None
+      st.session_state["Logout"] = False
+      st.rerun()
   else:
     email = st.sidebar.text_input("Email")
     username = email.split("@")[0]
