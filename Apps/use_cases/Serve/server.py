@@ -98,7 +98,7 @@ def stream_generator_agent(
   agent: agents.MyStatelessAgent,
   query: str,
 	history_type: str="dynamodb",
-  user_id: str=None,
+  user_id=None,
 	session_id: str="default",
 ):
   return agent.astream_events_basic(
@@ -113,7 +113,7 @@ async def stream_agent(
   request: Request,
   query: str="Hello",
   history_type: str="dynamodb",
-  user_id: str=None,
+  user_id=None,
   session_id: str="default",
 ):
   return StreamingResponse(
@@ -121,7 +121,8 @@ async def stream_agent(
       agent=my_agent,
       query=query, 
       history_type=history_type,
-      user_id=request.client.host if user_id is None else user_id,
+      user_id=request.client.host if (user_id is None or user_id == "") 
+        else user_id,
       session_id=session_id,
     ),
     media_type='text/event-stream',
@@ -132,14 +133,15 @@ async def invoke_agent(
   request: Request,
   query: str="Hello",
   history_type: str="dynamodb",
-  user_id: str=None,
+  user_id=None,
   session_id: str="default",
 ):
   return Response(
     content=await my_agent.invoke_agent(
       query,
       history_type=history_type,
-      user_id=request.client.host if user_id is None else user_id,
+      user_id=request.client.host if (user_id is None or user_id == "") 
+        else user_id,
       # user_id=str(Header(None, alias='X-Real-IP')),
       session_id=session_id,
     ),
@@ -149,12 +151,13 @@ async def invoke_agent(
 async def get_agent_chat_history(
   request: Request,
   history_type: str="dynamodb",
-  user_id: str=None,
+  user_id=None,
   session_id: str="default",
 ):
   history = my_agent._create_chat_history(
     history_type=history_type,
-    user_id=request.client.host if user_id is None else user_id,
+    user_id=request.client.host if (user_id is None or user_id == "") 
+        else user_id,
 		session_id=session_id,
   )
   result = await history._get_chat_history()
@@ -164,12 +167,13 @@ async def get_agent_chat_history(
 async def clear_agent_chat_history(
   request: Request,
   history_type: str="dynamodb",
-  user_id: str=None,
+  user_id=None,
   session_id: str="default",
 ):
   history = my_agent._create_chat_history(
     history_type=history_type,
-    user_id=request.client.host if user_id is None else user_id,
+    user_id=request.client.host if (user_id is None or user_id == "") 
+        else user_id,
 		session_id=session_id,
   )
   return await history.clear_chat_history()

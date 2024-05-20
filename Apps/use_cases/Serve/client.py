@@ -6,7 +6,7 @@ from typing import Literal
 server_fastapi = 'http://127.0.0.1:8000'
 
 async def get_langchain_session_dynamodb_table(
-  server_fastapi = 'http://127.0.0.1:8000', 
+	server_fastapi = 'http://127.0.0.1:8000', 
 	user: str = "admin",
 ):
 	url = f"{server_fastapi}/langchain-session-dynamodb-table"
@@ -28,72 +28,117 @@ async def get_langchain_session_dynamodb_table(
 
 async def invoke_agent(
 	query,
-	server_fastapi = 'http://127.0.0.1:8000', 
+	server_fastapi = 'http://127.0.0.1:8000',
+	history_type: str = "dynamodb",
+	user_id=None,
+	session_id: str = "default",
 ):
-	"""
-	await invoke_agent("Tell me a long joke")
- 	"""
-  
 	url = f"{server_fastapi}/invoke-agent"
 	headers = {
 		"accept": "application/json"
 	}
 	params = {
-		"query": query
+		"query": query,
+		"history_type": history_type,
+		"user_id": user_id,
+		"session_id": session_id,
 	}
 
 	try:
 		response = httpx.get(url, headers=headers, params=params)
-		response.raise_for_status()  
-		res_txt = response.text
-		return res_txt
+		response.raise_for_status()
+		data = json.loads(response.content.decode("utf-8"))
+		return data
 	except httpx.HTTPError as e:
 		print(f"Request failed with status code {e.response.status_code}: {e.response.content.decode('utf-8')}")
 		return None
 
 async def stream_agent_async(
-  query,
-	server_fastapi = 'http://127.0.0.1:8000', 
+	query,
+	server_fastapi = 'http://127.0.0.1:8000',
+	history_type: str = "dynamodb",
+	user_id=None,
+	session_id: str = "default",
 ):
 	url = f"{server_fastapi}/stream-agent"
 	params = {
 		"query": query,
+		"history_type": history_type,
+		"user_id": user_id,
+		"session_id": session_id,
 	}
 
 	async with httpx.AsyncClient() as client:
 		try:
 			async with client.stream('GET', url, params=params, timeout=60) as r:
-				async for chunk in r.aiter_text():  # or, async for line in r.aiter_lines():
+				async for chunk in r.aiter_text():
 					yield chunk
 		except httpx.HTTPError as e:
 			print(f"Request failed with status code {e.response.status_code}: {e.response.content.decode('utf-8')}")
 
 def stream_agent_sync(
-  query,
-	server_fastapi = 'http://127.0.0.1:8000', 
+	query,
+	server_fastapi = 'http://127.0.0.1:8000',
+	history_type: str = "dynamodb",
+	user_id=None,
+	session_id: str = "default",
 ):
 	url = f"{server_fastapi}/stream-agent"
 	params = {
 		"query": query,
+		"history_type": history_type,
+		"user_id": user_id,
+		"session_id": session_id,
 	}
 
 	with httpx.stream('GET', url, params=params, timeout=60) as r:
-		for chunk in r.iter_text():  # or, for line in r.iter_lines():
-				yield chunk
+		for chunk in r.iter_text():
+			yield chunk
 
 async def get_chat_history(
-  server_fastapi = 'http://127.0.0.1:8000', 
+	server_fastapi = 'http://127.0.0.1:8000',
+	history_type: str = "dynamodb",
+	user_id=None,
+	session_id: str = "default",
 ):
 	url = f"{server_fastapi}/agent-chat-history"
 	headers = {
 		"accept": "application/json"
 	}
 	params = {
+		"history_type": history_type,
+		"user_id": user_id,
+		"session_id": session_id,
 	}
 
 	try:
 		response = httpx.get(url, headers=headers, params=params)
-		response.raise_for_status()  # This will raise an exception if the request failed (e.g., 404, 500, etc.)
+		response.raise_for_status()
+		data = json.loads(response.content.decode("utf-8"))
+		return data
+	except httpx.HTTPError as e:
+		print(f"Request failed with status code {e.response.status_code}: {e.response.content.decode('utf-8')}")
+		return None
+
+async def clear_agent_chat_history(
+	server_fastapi = 'http://127.0.0.1:8000',
+	history_type: str = "dynamodb",
+	user_id=None,
+	session_id: str = "default",
+):
+	url = f"{server_fastapi}/agent-chat-history"
+	headers = {
+		"accept": "application/json"
+	}
+	params = {
+		"history_type": history_type,
+		"user_id": user_id,
+		"session_id": session_id,
+	}
+
+	try:
+		response = httpx.delete(url, headers=headers, params=params)
+		response.raise_for_status()
 		data = json.loads(response.content.decode("utf-8"))
 		return data
 	except httpx.HTTPError as e:

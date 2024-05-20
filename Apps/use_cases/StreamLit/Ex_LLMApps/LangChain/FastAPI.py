@@ -1,19 +1,11 @@
 from typing import Union, Sequence
 import asyncio
-import uuid
 import os
-import time
 
-from regex import P
 import add_packages
 
 import streamlit as st
 from streamlit_feedback import streamlit_feedback
-
-from langchain_core.language_models import BaseLanguageModel
-from langchain_core.prompts.chat import ChatPromptTemplate
-from langchain_core.tools import BaseTool
-from langchain_core.runnables import Runnable
 
 from toolkit.langchain import (
   chat_models, agent_tools, prompts, agents, smiths, runnables, memories
@@ -83,14 +75,6 @@ def create_callbacks() -> list:
   callbacks = [st_callback]
   return callbacks
 
-def get_langchain_session_dynamodb_table(user: str = "admin"):
-  try:
-    result = asyncio.run(client.get_langchain_session_dynamodb_table(user=user))
-  except:
-    result = None
-  return result
-
-langchain_session_dynamodb_table = get_langchain_session_dynamodb_table(user="admin")
 #*==============================================================================
 
 async def process_on_user_input(
@@ -101,7 +85,8 @@ async def process_on_user_input(
     st.session_state.container_placeholder.empty()
   
   st.chat_message(CHAT_ROLE.user).markdown(prompt)
-  stream = client.stream_agent_sync(prompt)
+  stream = client.stream_agent_sync(query=prompt)
+  # stream = client.stream_agent_sync(query=prompt, user_id="admin")
   st.chat_message(CHAT_ROLE.assistant).write_stream(stream)
   
 async def render_chat_messages_on_rerun():
@@ -111,55 +96,17 @@ async def render_chat_messages_on_rerun():
     st.chat_message(msg["type"]).markdown(msg["content"])
 
 async def on_click_btn_clear_chat_history(
-  model: agents.MyAgent,
+  
 ):
-  await model.history.clear_chat_history()
+  await client.clear_agent_chat_history()
   del st.session_state[STATES["LAST_RUN"]["KEY"]]
   st.toast(":orange[History cleared]", icon="🗑️")
-
-def on_click_btn_new_chat(
-  
-):
-  st.toast(":green[Chat created]", icon="✅")
-  st.session_state[STATES["SELECTED_CHAT"]["KEY"]] = None
-  
-def on_click_btn_clear_chat(
-  
-):
-  st.toast(":red[Chat cleared]", icon="❌")
-
-# def on_change_box_selected_chat(
-#   model: agents.MyAgent,
-# ):
-#   model.history.session_id = st.session_state[STATES["SELECTED_CHAT"]["KEY"]]
-
 #*==============================================================================
 
-containter_empty_btn_opts_holder = st.empty()
 
 asyncio.run(render_chat_messages_on_rerun())
 
 with st.sidebar:
-  btn_new_chat = st.button(
-    label="💬", 
-    key=STATES["BTN_NEW_CHAT"]["KEY"],
-    help="Create new Chat",
-    on_click=on_click_btn_new_chat, 
-    kwargs=dict()
-  )
-  if btn_new_chat:
-    st.rerun()
-  
-  selected_chat = st.selectbox(
-    label="Chat",
-    label_visibility="collapsed",
-    help="Select Your Chat",
-    placeholder="Chats",
-    options=langchain_session_dynamodb_table,
-    key=STATES["SELECTED_CHAT"]["KEY"],
-    # on_change=on_change_box_selected_chat,
-  )
-  
   prompt_example = st.selectbox(
     label="Examples",
     label_visibility="collapsed",
@@ -176,11 +123,7 @@ with st.sidebar:
     key=STATES["PROMPT_EXAMPLE"]["KEY"],
   )  
   
-  #*----------------------------------------------------------------------------
-  
-  cols_clear = st.columns([0.25, 0.25, 0.5])
-  
-  btn_clear_chat_history = cols_clear[0].button(
+  btn_clear_chat_history = st.button(
     label="🗑️", 
     help="Clear Chat History",
     key=STATES["BTN_CLEAR_CHAT_HISTORY"]["KEY"],
@@ -188,14 +131,6 @@ with st.sidebar:
   if btn_clear_chat_history:
     asyncio.run(on_click_btn_clear_chat_history())
     st.rerun()
-  
-  btn_clear_chat = cols_clear[1].button(
-    label="❌", 
-    help="Clear Chat",
-    key=STATES["BTN_CLEAR_CHAT"]["KEY"],
-    on_click=on_click_btn_clear_chat, 
-    kwargs=dict()
-  )
   
 #*----------------------------------------------------------------------------
 
