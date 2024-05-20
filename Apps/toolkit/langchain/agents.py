@@ -1,10 +1,9 @@
 import add_packages
 import boto3
-from typing import AsyncGenerator
 from loguru import logger
-from typing import Union, Optional, List, Literal
+from typing import Union, Optional, List, Literal, AsyncGenerator, TypeAlias
+from pydantic import BaseModel
 
-from toolkit.langchain import histories, runnables
 from toolkit import utils
 
 from langchain.agents import (
@@ -41,28 +40,37 @@ dynamodb = boto3.resource("dynamodb")
 
 #*==============================================================================
 
-class ChatHistory:
-	def __init__(
-		self,
-		history_type: Literal["in_memory", "dynamodb"] = "in_memory",
-		user_id: str = "admin",
-		session_id: str = None,
-	):
-		self.history_type = history_type
+TypeHistoryType: TypeAlias = Literal["in_memory", "dynamodb"]
+TypeUserId: TypeAlias = str
+TypeSessionId: TypeAlias = Union[str, None]
 
-		self.user_id = user_id
-		self.is_new_session = not bool(session_id)
-		self.session_id = session_id if session_id else utils.generate_unique_id("uuid_name")
+class SchemaChatHistory(BaseModel):
+	history_type: TypeHistoryType = "in_memory"
+	user_id: TypeUserId = "admin"
+	session_id: TypeSessionId = None
+	history_size: Union[int, None] = 10
+
+class ChatHistory:
+	def __init__(self, schema: SchemaChatHistory):
+		self.history_type = schema.history_type
+
+		self.user_id = schema.user_id
+		self.is_new_session = not bool(schema.session_id)
+		self.session_id = schema.session_id if schema.session_id else utils.generate_unique_id("uuid_name")
+
+		self.history_size = schema.history_size
   
 		if self.history_type == "in_memory":
 			self.chat_history = []
 		elif self.history_type == "dynamodb":
 			self.chat_history = DynamoDBChatMessageHistory(
-				table_name="LangChainSessionTable", session_id=self.session_id,
+				table_name="LangChainSessionTable", 
+				session_id=self.session_id,
 				key={
 					"SessionId": self.session_id,
 					"UserId": self.user_id,
-				}
+				},
+				history_size=self.history_size,
 			)
 
 		if self.is_new_session:
@@ -76,7 +84,7 @@ class ChatHistory:
 		logger.info(f"User Id: {self.user_id}")
 		logger.info(f"Session Id: {self.session_id}")
 		logger.info(f"History Type: {self.history_type}")
-	
+  
 	async def _add_messages_to_history(
 		self,
 		msg_user: str,
@@ -101,13 +109,21 @@ class ChatHistory:
 		elif self.history_type == "dynamodb":
 			await self.chat_history.aclear()
 
-class MyAgent:
+	async def _truncate_chat_history(
+		self,
+  ):
+		if self.history_type == "in_memory":
+			self.chat_history = self.chat_history[-self.history_size:]
+		elif self.history_type == "dynamodb":
+			...
+
+class MyStatelessAgent:
 	def __init__(
 		self,
 		llm: Union[BaseChatModel, None],
 		tools: list[BaseTool],
 		prompt: Union[BaseChatPromptTemplate, None],
-		history: ChatHistory,
+  
 		agent_type: Literal[
 			"tool_calling", "openai_tools", "react", "anthropic"
 		] = "tool_calling",
@@ -119,14 +135,12 @@ class MyAgent:
 
 		self.agent_type = agent_type
 		self.agent_verbose = agent_verbose
-
-		self.history = history
-
+  
 		self.agent = self._create_agent()
 		self.agent_executor = AgentExecutor(
 			agent=self.agent, tools=self.tools, verbose=self.agent_verbose,
 			handle_parsing_errors=True,
-			return_intermediate_steps=False, # True, False
+			return_intermediate_steps=False,
 		)
 
 	def _create_agent(self) -> Runnable:
@@ -144,16 +158,39 @@ class MyAgent:
 			raise ValueError(
 					"Invalid agent type. Supported types are 'openai_tools' and 'react'.")
 
+	def _create_chat_history(
+		self,
+		history_type: TypeHistoryType = "dynamodb",
+		user_id: TypeUserId = "admin",
+		session_id: TypeSessionId = None,
+		history_size: Union[int, None] = 10,
+	) -> ChatHistory:
+   
+		return ChatHistory(schema=SchemaChatHistory(
+			history_type=history_type, user_id=user_id, session_id=session_id,
+			history_size=history_size,
+		)) 
+	
 	async def invoke_agent(
 		self,
 		input_message: str,
 		callbacks: Optional[List] = None,
 		mode: Literal["sync", "async"] = "async",
+  
+		history_type: TypeHistoryType = "dynamodb",
+		user_id: TypeUserId = "admin",
+		session_id: TypeSessionId = None,
+  
+		history_size: Union[int, None] = 10,
 	):
 		result = None
 
+		history = self._create_chat_history(
+			history_type, user_id, session_id, history_size,
+		)
+
 		input_data = {
-			"input": input_message, "chat_history": await self.history._get_chat_history()
+			"input": input_message, "chat_history": await history._get_chat_history()
 		}
 
 		configs = {}
@@ -166,26 +203,35 @@ class MyAgent:
 
 		result = result["output"]
 
-		await self.history._add_messages_to_history(input_message, result)
-
+		await history._add_messages_to_history(input_message, result)
+		if history_type == "in_memory":
+			await history._truncate_chat_history()
+  
 		return result
 
 	async def astream_events_basic(
 		self,
 		input_message: str,
+
+		history_type: TypeHistoryType = "dynamodb",
+		user_id: TypeUserId = "admin",
+		session_id: TypeSessionId = None,
+  
 		show_tool_call: bool = True,
+		history_size: Union[int, None] = 10,
 	) -> AsyncGenerator[str, None]:
 		"""
 		async for chunk in agent.astream_events_basic("Hello"):
 			print(chunk, end="", flush=True)
 		"""
 
+		history = self._create_chat_history(
+			history_type, user_id, session_id, history_size,
+		)
+
 		result = ""
 		async for event in self.agent_executor.astream_events(
-			input={
-     		"input": input_message, 
-       	"chat_history": await self.history._get_chat_history()
-      },
+			input={"input": input_message, "chat_history": await history._get_chat_history()},
 			version="v1",
 		):
 			event_event = event["event"]
@@ -195,15 +241,19 @@ class MyAgent:
 				chunk = dict(event["data"]["chunk"])["content"]
 				result += chunk
 				yield chunk
-
-			if show_tool_call and event_event == "on_chain_stream" and event_name == "Agent":
-				if 'actions' in event['data']['chunk']:
-					event_log = dict(list(event['data']['chunk']['actions'])[0])['log']
+			# print(event)
+			if show_tool_call and event_event == "on_chain_stream" and event_name == "RunnableSequence":
+				try:
+					event_log = dict(event["data"]["chunk"][0])["log"]
 					chunk = event_log
 					result += chunk
 					yield chunk
+				except:
+					pass
 
-		await self.history._add_messages_to_history(input_message, result)
+		await history._add_messages_to_history(input_message, result)
+		if history_type == "in_memory":
+			await history._truncate_chat_history()
 
 	async def astream_events_basic_wrapper(
 		self,
@@ -217,4 +267,3 @@ class MyAgent:
 
 	def hello():
 		...
-  

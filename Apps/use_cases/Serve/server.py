@@ -2,7 +2,7 @@ import add_packages
 import asyncio
 import json
 import os
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, Header
 from fastapi.responses import StreamingResponse, Response, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
@@ -40,24 +40,17 @@ async def redirect_root_to_docs():
   return RedirectResponse("/docs")
 
 my_llm = chat_models.chat_openai
-my_prompt = prompts.create_prompt_tool_calling_agent()
 my_tools = [
 	agent_tools.TavilySearchResults(max_results=3)
 ]
+my_prompt = prompts.create_prompt_tool_calling_agent()
 
-history = agents.ChatHistory(
-	history_type='in_memory',
-	user_id="admin",
-	session_id="1",
-)
-
-my_agent = agents.MyAgent(
+my_agent = agents.MyStatelessAgent(
 	llm=my_llm,
 	tools=my_tools,
 	prompt=my_prompt,
-	history=history,
-	agent_verbose=False, # True, False
 	agent_type='tool_calling',
+	agent_verbose=False,
 )
 
 #*==============================================================================
@@ -102,36 +95,84 @@ async def stream_chat_model(
 #*------------------------------------------------------------------------------
 
 def stream_generator_agent(
+  agent: agents.MyStatelessAgent,
   query: str,
-  agent: agents.MyAgent,
+	history_type: str="dynamodb",
+  user_id: str=None,
+	session_id: str="default",
 ):
-  return agent.astream_events_basic(query)
+  return agent.astream_events_basic(
+    input_message=query,
+    history_type=history_type,
+    user_id=user_id,
+    session_id=session_id,
+  )
 
 @app.get("/stream-agent")
 async def stream_agent(
-  query: str = "Hello",
+  request: Request,
+  query: str="Hello",
+  history_type: str="dynamodb",
+  user_id: str=None,
+  session_id: str="default",
 ):
   return StreamingResponse(
-    stream_generator_agent(query=query, agent=my_agent),
+    stream_generator_agent(
+      agent=my_agent,
+      query=query, 
+      history_type=history_type,
+      user_id=request.client.host if user_id is None else user_id,
+      session_id=session_id,
+    ),
     media_type='text/event-stream',
   )
 
 @app.get("/invoke-agent")
 async def invoke_agent(
-  query: str = "Hello",
+  request: Request,
+  query: str="Hello",
+  history_type: str="dynamodb",
+  user_id: str=None,
+  session_id: str="default",
 ):
   return Response(
-    content=await my_agent.invoke_agent(query),
+    content=await my_agent.invoke_agent(
+      query,
+      history_type=history_type,
+      user_id=request.client.host if user_id is None else user_id,
+      # user_id=str(Header(None, alias='X-Real-IP')),
+      session_id=session_id,
+    ),
   )
 
 @app.get("/agent-chat-history")
-async def get_agent_chat_history():
-  result = await my_agent.history._get_chat_history()
+async def get_agent_chat_history(
+  request: Request,
+  history_type: str="dynamodb",
+  user_id: str=None,
+  session_id: str="default",
+):
+  history = my_agent._create_chat_history(
+    history_type=history_type,
+    user_id=request.client.host if user_id is None else user_id,
+		session_id=session_id,
+  )
+  result = await history._get_chat_history()
   return result
 
 @app.delete("/agent-chat-history")
-async def clear_agent_chat_history():
-  return await my_agent.history.clear_chat_history()
+async def clear_agent_chat_history(
+  request: Request,
+  history_type: str="dynamodb",
+  user_id: str=None,
+  session_id: str="default",
+):
+  history = my_agent._create_chat_history(
+    history_type=history_type,
+    user_id=request.client.host if user_id is None else user_id,
+		session_id=session_id,
+  )
+  return await history.clear_chat_history()
 
 #*==============================================================================
 
