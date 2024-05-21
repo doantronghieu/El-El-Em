@@ -104,7 +104,11 @@ async def render_chat_messages_on_rerun():
   )
   for msg in chat_history:
     msg: Union[prompts.AIMessage, prompts.HumanMessage]
-    st.chat_message(msg["type"]).markdown(msg["content"])
+    if "[TOOL - RESULT]" in msg["content"]:
+      with st.expander("Observation"):
+        st.chat_message(msg["type"]).markdown(msg["content"])
+    else:
+      st.chat_message(msg["type"]).markdown(msg["content"])
 
 async def on_click_btn_clear_chat_history(
   
@@ -179,3 +183,5 @@ if prompt:
   asyncio.run(process_on_user_input(prompt))
 
 # st.write(st.session_state)
+
+# streamlit run FastAPI.py

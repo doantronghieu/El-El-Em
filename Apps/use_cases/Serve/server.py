@@ -39,6 +39,8 @@ app.add_middleware(
 async def redirect_root_to_docs():
   return RedirectResponse("/docs")
 
+#*------------------------------------------------------------------------------
+
 my_llm = chat_models.chat_openai
 my_tools = [
 	agent_tools.TavilySearchResults(max_results=3)

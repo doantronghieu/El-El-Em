@@ -44,6 +44,14 @@ TypeHistoryType: TypeAlias = Literal["in_memory", "dynamodb"]
 TypeUserId: TypeAlias = str
 TypeSessionId: TypeAlias = Union[str, None]
 
+def create_markdown_textbox(input: str):
+	result = f"""\
+<div style="border: 1px solid red; padding: 10px; margin: 10px;">
+{input}
+</div>
+"""
+	return result
+
 class SchemaChatHistory(BaseModel):
 	history_type: TypeHistoryType = "in_memory"
 	user_id: TypeUserId = "admin"
@@ -59,7 +67,7 @@ class ChatHistory:
 		self.session_id = schema.session_id if schema.session_id else utils.generate_unique_id("uuid_name")
 
 		self.history_size = schema.history_size
-  
+	
 		if self.history_type == "in_memory":
 			self.chat_history = []
 		elif self.history_type == "dynamodb":
@@ -75,7 +83,7 @@ class ChatHistory:
 
 		if self.is_new_session:
 			welcome_msg = "Hello! How can I help you today?"
-   
+	
 			if self.history_type == "in_memory":
 				self.chat_history.append(AIMessage(welcome_msg))
 			elif self.history_type == "dynamodb":
@@ -84,7 +92,7 @@ class ChatHistory:
 		logger.info(f"User Id: {self.user_id}")
 		logger.info(f"Session Id: {self.session_id}")
 		logger.info(f"History Type: {self.history_type}")
-  
+	
 	async def _add_messages_to_history(
 		self,
 		msg_user: str,
@@ -111,7 +119,7 @@ class ChatHistory:
 
 	async def _truncate_chat_history(
 		self,
-  ):
+	):
 		if self.history_type == "in_memory":
 			self.chat_history = self.chat_history[-self.history_size:]
 		elif self.history_type == "dynamodb":
@@ -123,7 +131,7 @@ class MyStatelessAgent:
 		llm: Union[BaseChatModel, None],
 		tools: list[BaseTool],
 		prompt: Union[BaseChatPromptTemplate, None],
-  
+	
 		agent_type: Literal[
 			"tool_calling", "openai_tools", "react", "anthropic"
 		] = "tool_calling",
@@ -135,7 +143,7 @@ class MyStatelessAgent:
 
 		self.agent_type = agent_type
 		self.agent_verbose = agent_verbose
-  
+	
 		self.agent = self._create_agent()
 		self.agent_executor = AgentExecutor(
 			agent=self.agent, tools=self.tools, verbose=self.agent_verbose,
@@ -145,7 +153,7 @@ class MyStatelessAgent:
 
 	def _create_agent(self) -> Runnable:
 		logger.info(f"Agent type: {self.agent_type}")
-  
+	
 		if self.agent_type == "tool_calling":
 			return create_tool_calling_agent(self.llm, self.tools, self.prompt)
 		elif self.agent_type == "openai_tools":
@@ -165,22 +173,33 @@ class MyStatelessAgent:
 		session_id: TypeSessionId = None,
 		history_size: Union[int, None] = 10,
 	) -> ChatHistory:
-   
+	
 		return ChatHistory(schema=SchemaChatHistory(
 			history_type=history_type, user_id=user_id, session_id=session_id,
 			history_size=history_size,
 		)) 
 	
+	async def _add_messages_to_history(
+		self,
+		history: ChatHistory,
+		history_type: TypeHistoryType,
+		msg_user: str,
+		msg_ai: str,
+  ):
+		await history._add_messages_to_history(msg_user, msg_ai)
+		if history_type == "in_memory":
+			await history._truncate_chat_history()
+  
 	async def invoke_agent(
 		self,
 		input_message: str,
 		callbacks: Optional[List] = None,
 		mode: Literal["sync", "async"] = "async",
-  
+	
 		history_type: TypeHistoryType = "dynamodb",
 		user_id: TypeUserId = "admin",
 		session_id: TypeSessionId = None,
-  
+	
 		history_size: Union[int, None] = 10,
 	):
 		result = None
@@ -203,9 +222,12 @@ class MyStatelessAgent:
 
 		result = result["output"]
 
-		await history._add_messages_to_history(input_message, result)
-		if history_type == "in_memory":
-			await history._truncate_chat_history()
+		await self._add_messages_to_history(
+			history=history,
+			history_type=history_type,
+			msg_user=input_message,
+			msg_ai=result,
+		)
   
 		return result
 
@@ -216,7 +238,7 @@ class MyStatelessAgent:
 		history_type: TypeHistoryType = "dynamodb",
 		user_id: TypeUserId = "admin",
 		session_id: TypeSessionId = None,
-  
+	
 		show_tool_call: bool = True,
 		history_size: Union[int, None] = 10,
 	) -> AsyncGenerator[str, None]:
@@ -236,25 +258,45 @@ class MyStatelessAgent:
 		):
 			event_event = event["event"]
 			event_name = event["name"]
-
-			if event["event"] == "on_chat_model_stream":
-				chunk = dict(event["data"]["chunk"])["content"]
+   
+			try:
+				event_data_chunk = event["data"]["chunk"]
+			except:
+				pass
+  
+			if event_event == "on_chat_model_stream":
+				chunk = dict(event_data_chunk)["content"]
 				result += chunk
 				yield chunk
+		
 			# print(event)
-			if show_tool_call and event_event == "on_chain_stream" and event_name == "RunnableSequence":
-				try:
-					event_log = dict(event["data"]["chunk"][0])["log"]
-					chunk = event_log
-					result += chunk
-					yield chunk
-				except:
-					pass
-
-		await history._add_messages_to_history(input_message, result)
-		if history_type == "in_memory":
-			await history._truncate_chat_history()
-
+	
+			if show_tool_call and event_event == "on_chain_stream":
+				if event_name == "RunnableSequence":
+					try:
+						chunk: str = dict(event_data_chunk[0])["log"]
+						chunk = f"`[TOOL - CALLING]` {chunk}"
+						result += chunk
+						yield chunk
+					except:
+						pass
+			
+				elif event_name == "RunnableLambda":
+					try:
+						chunk = dict(event_data_chunk[1])["content"]
+						chunk = f"`[TOOL - RESULT]` {chunk}\n\n"
+						result += chunk
+						yield chunk
+					except:
+						pass
+						
+		await self._add_messages_to_history(
+			history=history,
+			history_type=history_type,
+			msg_user=input_message,
+			msg_ai=result,
+		)
+  
 	async def astream_events_basic_wrapper(
 		self,
 		input_message: str,
