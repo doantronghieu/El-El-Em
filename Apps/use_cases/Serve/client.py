@@ -112,7 +112,7 @@ async def get_chat_history(
 	}
 
 	try:
-		response = httpx.get(url, headers=headers, params=params)
+		response = httpx.get(url, headers=headers, params=params, timeout=60)
 		response.raise_for_status()
 		data = json.loads(response.content.decode("utf-8"))
 		return data

@@ -95,7 +95,6 @@ async def process_on_user_input(
     query=prompt,
     user_id=st.session_state[STATES["USER_EMAIL"]["KEY"]],
   )
-  # stream = client.stream_agent_sync(query=prompt, user_id="admin")
   st.chat_message(CHAT_ROLE.assistant).write_stream(stream)
   
 async def render_chat_messages_on_rerun():

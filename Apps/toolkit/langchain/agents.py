@@ -44,12 +44,8 @@ TypeHistoryType: TypeAlias = Literal["in_memory", "dynamodb"]
 TypeUserId: TypeAlias = str
 TypeSessionId: TypeAlias = Union[str, None]
 
-def create_markdown_textbox(input: str):
-	result = f"""\
-<div style="border: 1px solid red; padding: 10px; margin: 10px;">
-{input}
-</div>
-"""
+def create_md_txt_color(input: str, color: str="red"):
+	result = f'<span style="color:{color};">{input}</span>'
 	return result
 
 class SchemaChatHistory(BaseModel):
@@ -99,11 +95,15 @@ class ChatHistory:
 		msg_ai: str,
 	):
 		if self.history_type == "in_memory":
-			self.chat_history.append(HumanMessage(msg_user))
-			self.chat_history.append(AIMessage(msg_ai))
+			if msg_user:
+				self.chat_history.append(HumanMessage(msg_user))
+			if msg_ai:
+				self.chat_history.append(AIMessage(msg_ai))
 		elif self.history_type == "dynamodb":
-			await self.chat_history.aadd_messages(messages=[HumanMessage(msg_user)])
-			await self.chat_history.aadd_messages(messages=[AIMessage(msg_ai)])
+			if msg_user:
+				await self.chat_history.aadd_messages(messages=[HumanMessage(msg_user)])
+			if msg_ai:
+				await self.chat_history.aadd_messages(messages=[AIMessage(msg_ai)])
 
 	async def _get_chat_history(self):
 		if self.history_type == "in_memory":
@@ -251,7 +251,15 @@ class MyStatelessAgent:
 			history_type, user_id, session_id, history_size,
 		)
 
+		await self._add_messages_to_history(
+			history=history,
+			history_type=history_type,
+			msg_user=input_message,
+			msg_ai=None,
+		)
 		result = ""
+		res = ""
+  
 		async for event in self.agent_executor.astream_events(
 			input={"input": input_message, "chat_history": await history._get_chat_history()},
 			version="v1",
@@ -263,10 +271,12 @@ class MyStatelessAgent:
 				event_data_chunk = event["data"]["chunk"]
 			except:
 				pass
-  
+			
 			if event_event == "on_chat_model_stream":
 				chunk = dict(event_data_chunk)["content"]
+				
 				result += chunk
+				res += chunk
 				yield chunk
 		
 			# print(event)
@@ -276,6 +286,13 @@ class MyStatelessAgent:
 					try:
 						chunk: str = dict(event_data_chunk[0])["log"]
 						chunk = f"`[TOOL - CALLING]` {chunk}"
+      
+						await self._add_messages_to_history(
+							history=history,
+							history_type=history_type,
+							msg_user=None,
+							msg_ai=chunk,
+						)
 						result += chunk
 						yield chunk
 					except:
@@ -285,16 +302,31 @@ class MyStatelessAgent:
 					try:
 						chunk = dict(event_data_chunk[1])["content"]
 						chunk = f"`[TOOL - RESULT]` {chunk}\n\n"
+      
+						await self._add_messages_to_history(
+							history=history,
+							history_type=history_type,
+							msg_user=None,
+							msg_ai=chunk,
+						)
+      
 						result += chunk
 						yield chunk
 					except:
 						pass
 						
+		# await self._add_messages_to_history(
+		# 	history=history,
+		# 	history_type=history_type,
+		# 	msg_user=input_message,
+		# 	msg_ai=result,
+		# )
+  
 		await self._add_messages_to_history(
 			history=history,
 			history_type=history_type,
-			msg_user=input_message,
-			msg_ai=result,
+			msg_user=None,
+			msg_ai=res,
 		)
   
 	async def astream_events_basic_wrapper(
