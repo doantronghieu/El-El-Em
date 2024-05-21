@@ -1,3 +1,4 @@
+import json
 from typing import Union, Sequence
 import asyncio
 import os
@@ -97,6 +98,8 @@ async def process_on_user_input(
   )
   st.chat_message(CHAT_ROLE.assistant).write_stream(stream)
   
+  st.rerun()
+  
 async def render_chat_messages_on_rerun():
   chat_history = await client.get_chat_history(
     user_id=st.session_state[STATES["USER_EMAIL"]["KEY"]],
@@ -105,7 +108,9 @@ async def render_chat_messages_on_rerun():
     msg: Union[prompts.AIMessage, prompts.HumanMessage]
     if "[TOOL - RESULT]" in msg["content"]:
       with st.expander("Observation"):
-        st.chat_message(msg["type"]).markdown(msg["content"])
+        part_ignore = "`[TOOL - CALLING]`"
+        tool_output = json.loads(msg["content"][len(part_ignore):])
+        st.write(tool_output)
     else:
       st.chat_message(msg["type"]).markdown(msg["content"])
 
