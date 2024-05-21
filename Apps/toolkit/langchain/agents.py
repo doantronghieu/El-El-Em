@@ -52,7 +52,7 @@ class SchemaChatHistory(BaseModel):
 	history_type: TypeHistoryType = "in_memory"
 	user_id: TypeUserId = "admin"
 	session_id: TypeSessionId = None
-	history_size: Union[int, None] = 10
+	history_size: Union[int, None] = 20
 
 class ChatHistory:
 	def __init__(self, schema: SchemaChatHistory):
@@ -171,7 +171,7 @@ class MyStatelessAgent:
 		history_type: TypeHistoryType = "dynamodb",
 		user_id: TypeUserId = "admin",
 		session_id: TypeSessionId = None,
-		history_size: Union[int, None] = 10,
+		history_size: Union[int, None] = 20,
 	) -> ChatHistory:
 	
 		return ChatHistory(schema=SchemaChatHistory(
@@ -200,7 +200,7 @@ class MyStatelessAgent:
 		user_id: TypeUserId = "admin",
 		session_id: TypeSessionId = None,
 	
-		history_size: Union[int, None] = 10,
+		history_size: Union[int, None] = 20,
 	):
 		result = None
 
@@ -240,7 +240,7 @@ class MyStatelessAgent:
 		session_id: TypeSessionId = None,
 	
 		show_tool_call: bool = True,
-		history_size: Union[int, None] = 10,
+		history_size: Union[int, None] = 20,
 	) -> AsyncGenerator[str, None]:
 		"""
 		async for chunk in agent.astream_events_basic("Hello"):
