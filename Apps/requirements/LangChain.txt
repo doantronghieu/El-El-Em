@@ -50,11 +50,10 @@ wikipedia
 duckduckgo-search
 e2b
 
-# Youtube
+# Document Loaders
 youtube-transcript-api
+docx2txt
 pytube
-
-# langchain utils
 unstructured
 unstructured_inference
 pytesseract

@@ -31,7 +31,6 @@ if parent_dir != "pages":
   st.sidebar.page_link(f"pages/01_general_chat.py", label="General Chat")
   st.sidebar.page_link(f"pages/02_Doc_do_anything.py", label="Do Anything w/ Document")
   st.sidebar.page_link(f"pages/03_Generate_anything.py", label="Generate Anything")
-  st.sidebar.page_link(f"pages/Onlinica.py", label="Onlinica")
   st.sidebar.divider()
 
 #*==============================================================================
@@ -107,7 +106,7 @@ async def process_on_user_input(
     st.session_state.container_placeholder.empty()
   
   st.chat_message(CHAT_ROLE.user).markdown(prompt)
-  stream = client.vtc_stream_agent_sync(
+  stream = client.stream_agent_sync(
     query=prompt,
     user_id=st.session_state[STATES["USER_EMAIL"]["KEY"]],
   )
@@ -125,12 +124,12 @@ async def render_chat_messages_on_rerun():
       with st.expander("Observation"):
         part_ignore = "`[TOOL - CALLING]`"
         tool_output = msg["content"][len(part_ignore):]
+        
         try:
           tool_output_json = json.loads(tool_output)
           st.write(tool_output_json)
         except:
           st.write(tool_output)
-          
     else:
       st.chat_message(msg["type"]).markdown(msg["content"])
 

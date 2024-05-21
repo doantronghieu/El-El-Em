@@ -19,7 +19,14 @@ from toolkit.streamlit.utils import CHAT_ROLE, MSG_ITEM
 
 st.set_page_config(
   layout="wide",
+  page_title="General Chat"
 )
+
+# st.sidebar.page_link(f"main.py", label="Home")
+# st.sidebar.page_link(f"pages/01_general_chat.py", label="General Chat")
+# st.sidebar.divider()
+
+#*==============================================================================
 
 STATES = {
   "USER_EMAIL": {

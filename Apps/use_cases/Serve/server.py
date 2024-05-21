@@ -10,6 +10,7 @@ from fastapi.responses import RedirectResponse
 from toolkit.langchain import (
   chat_models, agent_tools, agents, prompts, runnables, smiths, memories
 )
+from use_cases.VTC import VTC
 #*==============================================================================
 
 PROJECT_LS = "default" # LangSmith
@@ -121,6 +122,26 @@ async def stream_agent(
   return StreamingResponse(
     stream_generator_agent(
       agent=my_agent,
+      query=query, 
+      history_type=history_type,
+      user_id=request.client.host if (user_id is None or user_id == "") 
+        else user_id,
+      session_id=session_id,
+    ),
+    media_type='text/event-stream',
+  )
+
+@app.get("/vtc-stream-agent")
+async def vtc_stream_agent(
+  request: Request,
+  query: str="Xin chào",
+  history_type: str="dynamodb",
+  user_id=None,
+  session_id: str="default",
+):
+  return StreamingResponse(
+    stream_generator_agent(
+      agent=VTC.agent,
       query=query, 
       history_type=history_type,
       user_id=request.client.host if (user_id is None or user_id == "") 
