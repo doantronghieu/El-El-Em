@@ -1,0 +1,47 @@
+# Default values for {{HELM_CHART_NAME}}
+# This is a YAML-formatted file.
+
+# Deployment parameters
+frontend:
+  # Number of replicas for the frontend Deployment
+  replicaCount: 2
+  
+  # Container image for the frontend
+  image:
+    repository: frontend
+    tag: v1
+    pullPolicy: IfNotPresent
+  
+  # Resource requests and limits for the frontend
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
+
+backend:  
+  # Number of replicas for the backend Deployment
+  replicaCount: 3
+
+  # Container image for the backend  
+  image:
+    repository: backend
+    tag: v1 
+    pullPolicy: IfNotPresent
+  
+  # Resource requests and limits for the backend
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:  
+      cpu: 250m
+      memory: 256Mi
+
+# Service parameters  
+service:
+  type: ClusterIP
+  frontendPort: 80
+  backendPort: 8000

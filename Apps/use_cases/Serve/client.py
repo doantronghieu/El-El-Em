@@ -1,9 +1,10 @@
 import httpx
 import asyncio
+import os
 import json
 from typing import Literal
 
-server_fastapi = 'http://127.0.0.1:8000'
+server_fastapi = os.environ.get('FASTAPI_ENDPOINT', 'http://127.0.0.1:8000')
 
 async def get_langchain_session_dynamodb_table(
 	server_fastapi = 'http://127.0.0.1:8000', 
@@ -28,7 +29,7 @@ async def get_langchain_session_dynamodb_table(
 
 async def invoke_agent(
 	query,
-	server_fastapi = 'http://127.0.0.1:8000',
+	server_fastapi = server_fastapi,
 	history_type: str = "dynamodb",
 	user_id=None,
 	session_id: str = "default",
@@ -55,7 +56,7 @@ async def invoke_agent(
 
 async def stream_agent_async(
 	query,
-	server_fastapi = 'http://127.0.0.1:8000',
+	server_fastapi = server_fastapi,
 	history_type: str = "dynamodb",
 	user_id=None,
 	session_id: str = "default",
@@ -78,7 +79,7 @@ async def stream_agent_async(
 
 def stream_agent_sync(
 	query,
-	server_fastapi = 'http://127.0.0.1:8000',
+	server_fastapi = server_fastapi,
 	history_type: str = "dynamodb",
 	user_id=None,
 	session_id: str = "default",
@@ -96,7 +97,7 @@ def stream_agent_sync(
 			yield chunk
 
 async def get_chat_history(
-	server_fastapi = 'http://127.0.0.1:8000',
+	server_fastapi = server_fastapi,
 	history_type: str = "dynamodb",
 	user_id=None,
 	session_id: str = "default",
@@ -121,7 +122,7 @@ async def get_chat_history(
 		return None
 
 async def clear_agent_chat_history(
-	server_fastapi = 'http://127.0.0.1:8000',
+	server_fastapi = server_fastapi,
 	history_type: str = "dynamodb",
 	user_id=None,
 	session_id: str = "default",
@@ -148,7 +149,7 @@ async def clear_agent_chat_history(
 
 def vtc_stream_agent_sync(
 	query,
-	server_fastapi = 'http://127.0.0.1:8000',
+	server_fastapi = server_fastapi,
 	history_type: str = "dynamodb",
 	user_id=None,
 	session_id: str = "default",

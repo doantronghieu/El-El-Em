@@ -17,14 +17,12 @@
 ```bash
 cd Apps
 
-docker build -t image-fastapi-langchain:latest -f deploy/docker_k8s/docker-files/Dockerfile.FastApi-LangChain .
-
-docker run -d --name container-fastapi-langchain -p 8000:8000 image-fastapi-langchain:latest
+docker compose up -d
 
 ---
 docker run --name container-fastapi-langchain -p 8000:8000 image-fastapi-langchain:latest
 
-docker exec -ti container-fastapi-langchain bash
+docker exec -ti fastapi-langchain bash
 
 ```
 
@@ -32,8 +30,11 @@ docker exec -ti container-fastapi-langchain bash
 
 ```bash
 docker build -t doantronghieu/image-fastapi-langchain:latest -f deploy/docker_k8s/docker-files/Dockerfile.FastApi-LangChain .
+docker build -t doantronghieu/image-streamlit:latest -f deploy/docker_k8s/docker-files/Dockerfile.Streamlit .
 
 docker push doantronghieu/image-fastapi-langchain:latest
+docker push doantronghieu/image-streamlit:latest
 
 docker run -d --name container-fastapi-langchain -p 8000:8000  doantronghieu/image-fastapi-langchain:latest
+docker run -d --name container-streamlit -p 8051:8051 doantronghieu/image-streamlit:latest
 ```

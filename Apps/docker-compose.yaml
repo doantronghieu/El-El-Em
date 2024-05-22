@@ -1,0 +1,30 @@
+version: '2.27.0'
+
+services:
+  fastapi-langchain:
+    image: fastapi-langchain:latest
+    container_name: fastapi-langchain
+    build:
+      context: .
+      dockerfile: deploy/docker_k8s/docker-files/Dockerfile.FastApi-LangChain
+    ports:
+      - "8000:8000"
+    networks:
+      - app-network
+
+  streamlit:
+    image: streamlit:latest
+    container_name: streamlit
+    build:
+      context: .
+      dockerfile: deploy/docker_k8s/docker-files/Dockerfile.Streamlit
+    ports:
+      - "8051:8051"
+    networks:
+      - app-network
+    environment:
+      - FASTAPI_ENDPOINT=http://fastapi-langchain:8000
+
+networks:
+  app-network:
+    driver: bridge # bridge, overlay

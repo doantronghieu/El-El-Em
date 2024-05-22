@@ -1,31 +1,49 @@
-# The builder image, used to build the virtual environment
-FROM python:3.11-buster as builder
+# Build stage
+FROM python:3.11.9-bullseye as build
 
-RUN apt-get update && apt-get install -y git
+# Create a virtual environment
+ENV VIRTUAL_ENV=/opt/venv
+RUN python3 -m venv $VIRTUAL_ENV
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
-RUN pip install poetry==1.4.2
+# Set the working directory
+WORKDIR /Apps
 
-ENV POETRY_NO_INTERACTION=1 \
-    POETRY_VIRTUALENVS_IN_PROJECT=1 \
-    POETRY_VIRTUALENVS_CREATE=1 \
-    POETRY_CACHE_DIR=/tmp/poetry_cache
+# Copy the requirements file and install dependencies
+COPY requirements/prod-LangChain.txt .
+RUN pip install --no-cache-dir -r prod-LangChain.txt
 
-# A directory to have app data 
-WORKDIR /app
+# Copy the application code (local -> container)
+COPY . .
 
-COPY pyproject.toml poetry.lock ./
+# Production stage
+FROM python:3.11.9-bullseye
 
-RUN poetry install --without dev --no-root && rm -rf $POETRY_CACHE_DIR
+# Set the working directory
+WORKDIR /Apps
 
-# The runtime image, used to just run the code provided its virtual environment
-FROM python:3.11-slim-buster as runtime
+# Create a non-root user for security
+RUN adduser --disabled-password --no-create-home app
 
-ENV VIRTUAL_ENV=/app/.venv \
-    PATH="/app/.venv/bin:$PATH"
+# Copy the virtual environment from the build stage
+COPY --from=build /opt/venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
 
-COPY --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
+# Copy the application code from the build stage
+COPY --from=build /Apps /Apps
 
-COPY ./streamlit_agent ./streamlit_agent
+# Set environment variables
+# ENV PYTHONUNBUFFERED=1 \
+#     PYTHONDONTWRITEBYTECODE=1
 
+# Switch to the non-root user
+USER app
 
-CMD ["streamlit", "run", "streamlit_agent/chat_pandas_df.py", "--server.port", "8051"]
+# Expose the port (just for documenting)
+EXPOSE 8051
+
+# Set the command to run the FastAPI app
+WORKDIR /Apps/apps/streamlit/
+
+CMD ["streamlit", "run", "main.py", "--server.port", "8051"]
+# CMD ["streamlit", "run", "main.py"]

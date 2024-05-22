@@ -10,11 +10,12 @@ ipykernel
 python-dotenv
 python-dateutil
 httpx
+faker
 
 streamlit
 streamlit_feedback
-streamlit-extras
-st-pages
+# streamlit-extras
+# st-pages
 
 watchdog
 transformers
