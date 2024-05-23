@@ -4,6 +4,7 @@ beautifulsoup4
 context-python
 tqdm
 fastapi
+uvicorn
 requests
 bitsandbytes
 ipykernel

@@ -54,10 +54,9 @@ COPY --from=build /Apps /Apps
 USER app
 
 # Expose the port (just for documenting)
-EXPOSE 8051
+EXPOSE 8000
 
 # Set the command to run the FastAPI app
-WORKDIR /Apps/apps/streamlit/
+WORKDIR /Apps/use_cases/Serve/
 
-CMD ["streamlit", "run", "main.py", "--server.port", "8051"]
-# CMD ["streamlit", "run", "main.py"]
+CMD ["uvicorn", "server:app", "--host", "0.0.0.0", "--port", "8000"]

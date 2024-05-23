@@ -9,14 +9,6 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 # Set the working directory
 WORKDIR /Apps
 
-# Install system packages
-RUN apt-get update && apt-get install -y \
-  gcc \
-  python3-dev \
-  libssl-dev && \
-  apt-get clean && \
-  rm -rf /var/lib/apt/lists/*
-
 # Copy the requirements file and install dependencies
 COPY requirements/prod-LangChain.txt .
 RUN pip install --no-cache-dir -r prod-LangChain.txt
@@ -29,12 +21,6 @@ FROM python:3.11-slim
 
 # Set the working directory
 WORKDIR /Apps
-
-# Install system packages
-RUN apt-get update && apt-get install -y \
-  libssl-dev && \
-  apt-get clean && \
-  rm -rf /var/lib/apt/lists/*
 
 # Create a non-root user for security
 RUN adduser --disabled-password --no-create-home app
@@ -54,10 +40,9 @@ COPY --from=build /Apps /Apps
 USER app
 
 # Expose the port (just for documenting)
-EXPOSE 8051
+EXPOSE 8000
 
 # Set the command to run the FastAPI app
-WORKDIR /Apps/apps/streamlit/
+WORKDIR /Apps/use_cases/Serve/
 
-CMD ["streamlit", "run", "main.py", "--server.port", "8051"]
-# CMD ["streamlit", "run", "main.py"]
+CMD ["uvicorn", "server:app", "--host", "0.0.0.0", "--port", "8000"]

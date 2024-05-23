@@ -20,21 +20,33 @@ cd Apps
 docker compose up -d
 
 ---
-docker run --name container-fastapi-langchain -p 8000:8000 image-fastapi-langchain:latest
+docker run --name container-fastapi -p 8000:8000 fastapi:latest
 
-docker exec -ti fastapi-langchain bash
+docker exec -ti fastapi bash
 
 ```
 
 ### For me
 
 ```bash
-docker build -t doantronghieu/image-fastapi-langchain:latest -f deploy/docker_k8s/docker-files/Dockerfile.FastApi-LangChain .
-docker build -t doantronghieu/image-streamlit:latest -f deploy/docker_k8s/docker-files/Dockerfile.Streamlit .
+docker build -t doantronghieu/llm-fastapi:latest -f deploy/docker_k8s/docker-files/Dockerfile.fastapi .
+docker build -t doantronghieu/llm-streamlit:latest -f deploy/docker_k8s/docker-files/Dockerfile.streamlit .
 
-docker push doantronghieu/image-fastapi-langchain:latest
-docker push doantronghieu/image-streamlit:latest
+docker push doantronghieu/llm-fastapi:latest
+docker push doantronghieu/llm-streamlit:latest
 
-docker run -d --name container-fastapi-langchain -p 8000:8000  doantronghieu/image-fastapi-langchain:latest
-docker run -d --name container-streamlit -p 8051:8051 doantronghieu/image-streamlit:latest
+docker compose up -d
+docker compose down
+
+# For AWS EC2 x86
+docker build --platform linux/amd64 -t doantronghieu/llm-fastapi:amd64 -f deploy/docker_k8s/docker-files/Dockerfile.fastapi .
+docker build --platform linux/amd64 -t doantronghieu/llm-streamlit:amd64 -f deploy/docker_k8s/docker-files/Dockerfile.streamlit .
+
+docker push doantronghieu/llm-fastapi:amd64
+docker push doantronghieu/llm-streamlit:amd64
+
+---
+
+eksctl create cluster -f deploy/docker_k8s/eks-cluster.yaml
+eksctl delete cluster --wait --disable-nodegroup-eviction -f deploy/docker_k8s/eks-cluster.yaml 
 ```

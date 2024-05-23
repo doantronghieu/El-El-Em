@@ -1,53 +1,55 @@
+# Source: helm-chart/templates/hpa.yaml
 apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: hpa-{{ .Values.services.fastapi.name }}
+  name: hpa-fastapi
   labels:
-    app: {{ .Values.services.fastapi.name }}
+    app: fastapi
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ .Values.services.fastapi.name }}
-  minReplicas: {{ .Values.hpa.minReplicas }}
-  maxReplicas: {{ .Values.hpa.maxReplicas }}
+    name: fastapi
+  minReplicas: 1
+  maxReplicas: 10
   metrics:
     - type: Resource
       resource:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: {{ .Values.hpa.cpuUtilization }}
+          averageUtilization: 80
     - type: Resource
       resource:
         name: memory
         target:
           type: Utilization
-          averageUtilization: {{ .Values.hpa.memoryUtilization }}
+          averageUtilization: 80
 ---
+# Source: helm-chart/templates/hpa.yaml
 apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: hpa-{{ .Values.services.fastapi.name }}
+  name: hpa-fastapi
   labels:
-    app: {{ .Values.services.streamlit.name }}
+    app: streamlit
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ .Values.services.streamlit.name }}
-  minReplicas: {{ .Values.hpa.minReplicas }}
-  maxReplicas: {{ .Values.hpa.maxReplicas }}
+    name: streamlit
+  minReplicas: 1
+  maxReplicas: 10
   metrics:
     - type: Resource
       resource:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: {{ .Values.hpa.cpuUtilization }}
+          averageUtilization: 80
     - type: Resource
       resource:
         name: memory
         target:
           type: Utilization
-          averageUtilization: {{ .Values.hpa.memoryUtilization }}
+          averageUtilization: 80

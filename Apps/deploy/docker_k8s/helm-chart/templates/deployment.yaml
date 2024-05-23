@@ -1,68 +1,86 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "helm-chart.fullname" . }}
+  name: {{ .Values.services.fastapi.name }}
   labels:
-    {{- include "helm-chart.labels" . | nindent 4 }}
+    app: {{ .Values.services.fastapi.name }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
-  {{- end }}
   selector:
     matchLabels:
-      {{- include "helm-chart.selectorLabels" . | nindent 6 }}
+      app: {{ .Values.services.fastapi.name }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
-      annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       labels:
-        {{- include "helm-chart.labels" . | nindent 8 }}
-        {{- with .Values.podLabels }}
-        {{- toYaml . | nindent 8 }}
-        {{- end }}
+        app: {{ .Values.services.fastapi.name }}
     spec:
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      serviceAccountName: {{ include "helm-chart.serviceAccountName" . }}
-      securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          ports:
-            - name: http
-              containerPort: {{ .Values.service.port }}
-              protocol: TCP
-          livenessProbe:
-            {{- toYaml .Values.livenessProbe | nindent 12 }}
-          readinessProbe:
-            {{- toYaml .Values.readinessProbe | nindent 12 }}
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-          {{- with .Values.volumeMounts }}
-          volumeMounts:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-      {{- with .Values.volumes }}
-      volumes:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+      - name: {{ .Values.services.fastapi.name }}
+        image: "{{ .Values.image.fastapi.repository }}:{{ .Values.image.fastapi.tag }}"
+        imagePullPolicy: {{ .Values.image.fastapi.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.services.fastapi.targetPort }}
+        resources:
+          limits:
+            cpu: {{ .Values.resources.limits.cpu }}
+            memory: {{ .Values.resources.limits.memory }}
+          requests:
+            cpu: {{ .Values.resources.requests.cpu }}
+            memory: {{ .Values.resources.requests.memory }}
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.services.fastapi.targetPort }}
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.services.fastapi.targetPort }}
+          initialDelaySeconds: 15
+          periodSeconds: 20
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.services.streamlit.name }}
+  labels:
+    app: {{ .Values.services.streamlit.name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.services.streamlit.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.services.streamlit.name }}
+    spec:
+      containers:
+      - name: {{ .Values.services.streamlit.name }}
+        image: "{{ .Values.image.streamlit.repository }}:{{ .Values.image.streamlit.tag }}"
+        imagePullPolicy: {{ .Values.image.streamlit.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.services.streamlit.targetPort }}
+        env:
+        - name: FASTAPI_ENDPOINT
+          value: "http://{{ .Values.services.fastapi.name }}:{{ .Values.services.fastapi.port }}"
+        resources:
+          limits:
+            cpu: {{ .Values.resources.limits.cpu }}
+            memory: {{ .Values.resources.limits.memory }}
+          requests:
+            cpu: {{ .Values.resources.requests.cpu }}
+            memory: {{ .Values.resources.requests.memory }}
+        readinessProbe:
+          httpGet:
+            path: /
+            port: {{ .Values.services.streamlit.targetPort }}
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /
+            port: {{ .Values.services.streamlit.targetPort }}
+          initialDelaySeconds: 15
+          periodSeconds: 20

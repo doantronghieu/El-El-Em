@@ -48,7 +48,6 @@ tools
 google-search-results
 wikipedia
 duckduckgo-search
-e2b
 
 # Document Loaders
 youtube-transcript-api
@@ -69,6 +68,7 @@ beautifulsoup4
 context-python
 tqdm
 fastapi
+uvicorn
 requests
 bitsandbytes
 ipykernel

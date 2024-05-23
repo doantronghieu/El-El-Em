@@ -1,0 +1,6 @@
+.vscode/
+backup/
+data/
+deploy/
+.git/
+.gitignore

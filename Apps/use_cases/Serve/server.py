@@ -57,7 +57,10 @@ my_agent = agents.MyStatelessAgent(
 )
 
 #*==============================================================================
-
+@app.get("/health")
+def health_check():
+  return JSONResponse(content={"status": "healthy"})
+  
 @app.get('/langchain-session-dynamodb-table')
 async def get_langchain_session_dynamodb_table(
   user: str  = "admin"

@@ -48,7 +48,6 @@ tools
 google-search-results
 wikipedia
 duckduckgo-search
-e2b
 
 # Document Loaders
 youtube-transcript-api

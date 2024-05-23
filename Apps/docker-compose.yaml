@@ -1,29 +1,33 @@
-version: '2.27.0'
+version: "2.27.0"
 
 services:
-  fastapi-langchain:
-    image: fastapi-langchain:latest
-    container_name: fastapi-langchain
+  fastapi:
+    image: doantronghieu/llm-fastapi:latest
+    container_name: llm-fastapi
     build:
       context: .
-      dockerfile: deploy/docker_k8s/docker-files/Dockerfile.FastApi-LangChain
+      dockerfile: deploy/docker_k8s/docker-files/Dockerfile.fastapi
     ports:
       - "8000:8000"
     networks:
       - app-network
+    restart: always
 
   streamlit:
-    image: streamlit:latest
-    container_name: streamlit
+    image: doantronghieu/llm-streamlit:latest
+    container_name: llm-streamlit
     build:
       context: .
-      dockerfile: deploy/docker_k8s/docker-files/Dockerfile.Streamlit
+      dockerfile: deploy/docker_k8s/docker-files/Dockerfile.streamlit
     ports:
       - "8051:8051"
     networks:
       - app-network
+    restart: always
     environment:
-      - FASTAPI_ENDPOINT=http://fastapi-langchain:8000
+      - FASTAPI_ENDPOINT=http://fastapi:8000
+    depends_on:
+      - fastapi
 
 networks:
   app-network:

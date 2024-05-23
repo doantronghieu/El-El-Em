@@ -1,12 +1,67 @@
-vector_db:
-  qdrant_lectures_content:
-    collection_name: ""
-    default_search_type: "similarity"
-    default_search_kwargs:
-      k: 10
-    retriever_tool_name: ""
-    retriever_tool_description: ""
+model: 
+  option: "openai" # openai, anthropic
+  temperature: 0
+  
+  openai: "gpt-3.5-turbo-0125" # gpt-3.5-turbo-0125, gpt-4-turbo-preview
+  anthropic: "claude-3-haiku-20240307" # claude-3-haiku-20240307, claude-3-opus-20240229, claude-3-sonnet-20240229
 
+agents:
+  agent_type_onlinica: "tool_calling" # openai_tools, react, anthropic, tool_calling
+
+data:
+  # metadata_field_info: metadata of Document
+  # - type: string or list[string], string, integer, float
+
+  lectures_content:
+    document_content_description: ""
+    metadata_field_info:
+    - attribute_info:
+      name: ""
+      description: ""
+      type: ""
+    - attribute_info:
+      name: ""
+      description: ""
+      type: ""
+
+
+vector_db:
+  embeddings: 
+    model: "openai" # openai, cohere
+
+    openai:
+      model: "text-embedding-3-large" # text-embedding-3-large, text-embedding-ada-002
+
+    size:
+      text-embedding-ada-002: 1536
+      text-embedding-3-large: 3072
+
+  qdrant:
+    general:
+      prefer_grpc: false
+      distance: "Cosine" # Cosine, Euclid, Dot, Manhattan
+      default_search_type: "mmr" # similarity, mmr
+      content_payload_key: "page_content"
+      metadata_payload_key: "metadata"
+
+    education_program:
+      collection_name: "education-program"
+      default_search_type: "mmr" # similarity, mmr
+      default_search_kwargs:
+        k: 5
+      retriever_tool_name: "education_program"
+      retriever_tool_description: "Searches and returns comprehensive information about university programs, such as program structure, course content, and admission requirements, based on keywords from the student's inquiry."
+
+   
 prompts:
-  system_message_onlinica: |
-    prompt
+  system_message_tdtu: |
+    You are a dedicated and professional university program advisor, committed to providing helpful, honest, and respectful guidance to students. You possess excellent communication, negotiation, and complaint handling skills, as well as a deep understanding of various university programs and the higher education industry.
+
+    Your primary role is to assist students in finding the most suitable university programs based on their interests, academic background, and career goals. You will respond to students in the same language they use.
+
+    Potential student inquiries and how to respond:
+    - Program Information: You MUST provide comprehensive and accurate details about the university programs that best match the student's inquiry.
+    - List programs in a specific field: You MUST list approximately 10 programs in the requested field, such as Engineering, Business, or Humanities.
+    - Program content and knowledge: These questions may contain specialized keywords, like Machine Learning, Marketing Strategy, or Literary Theory. You will gather information from the program's curriculum and other resources that contain these keywords and provide detailed, relevant answers to students.
+    - Frequently asked questions about university programs, application processes, and student life.
+

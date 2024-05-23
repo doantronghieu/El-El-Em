@@ -1,47 +1,56 @@
-# Default values for {{HELM_CHART_NAME}}
+# Default values for mychart.
 # This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
 
-# Deployment parameters
-frontend:
-  # Number of replicas for the frontend Deployment
-  replicaCount: 2
-  
-  # Container image for the frontend
-  image:
-    repository: frontend
-    tag: v1
-    pullPolicy: IfNotPresent
-  
-  # Resource requests and limits for the frontend
-  resources:
-    limits:
-      cpu: 100m
-      memory: 128Mi
-    requests:
-      cpu: 50m
-      memory: 64Mi
+replicaCount: 1
 
-backend:  
-  # Number of replicas for the backend Deployment
-  replicaCount: 3
+image:
+  fastapi:
+    repository: doantronghieu/llm-fastapi
+    tag: amd64
+    pullPolicy: Always # IfNotPresent, Always
+  streamlit:
+    repository: doantronghieu/llm-streamlit
+    tag: amd64
+    pullPolicy: Always
 
-  # Container image for the backend  
-  image:
-    repository: backend
-    tag: v1 
-    pullPolicy: IfNotPresent
-  
-  # Resource requests and limits for the backend
-  resources:
-    limits:
-      cpu: 500m
-      memory: 512Mi
-    requests:  
-      cpu: 250m
-      memory: 256Mi
+resources:
+  limits:
+    cpu: "1"
+    memory: "1Gi"
+  requests:
+    cpu: "500m"
+    memory: "500Mi"
 
-# Service parameters  
-service:
-  type: ClusterIP
-  frontendPort: 80
-  backendPort: 8000
+services:
+  fastapi:
+    name: fastapi
+    type: ClusterIP
+    port: 80
+    targetPort: 8000
+  streamlit:
+    name: streamlit
+    type: LoadBalancer
+    port: 80
+    targetPort: 8051
+    externalTrafficPolicy: Cluster
+
+ingress:
+  name: my-ingress
+  enabled: true
+  annotations:
+    rewriteTarget: /${2}
+    useRegex: "true"
+    proxyBodySize: "50m"
+    sslRedirect: "true"
+    certManagerIssuer: "letsencrypt-prod"
+  hosts: my-domain.com
+  tls:
+    secretName: my-domain-tls
+  ingressClassName: nginx
+
+hpa:
+  minReplicas: 1
+  maxReplicas: 10
+  cpuUtilization: 80
+  memoryUtilization: 80
