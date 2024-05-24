@@ -22,11 +22,11 @@ spec:
         - containerPort: {{ .Values.services.fastapi.targetPort }}
         resources:
           limits:
-            cpu: {{ .Values.resources.limits.cpu }}
-            memory: {{ .Values.resources.limits.memory }}
+            cpu: {{ .Values.resources.fastapi.limits.cpu }}
+            memory: {{ .Values.resources.fastapi.limits.memory }}
           requests:
-            cpu: {{ .Values.resources.requests.cpu }}
-            memory: {{ .Values.resources.requests.memory }}
+            cpu: {{ .Values.resources.fastapi.requests.cpu }}
+            memory: {{ .Values.resources.fastapi.requests.memory }}
         readinessProbe:
           httpGet:
             path: /health
@@ -67,11 +67,11 @@ spec:
           value: "http://{{ .Values.services.fastapi.name }}:{{ .Values.services.fastapi.port }}"
         resources:
           limits:
-            cpu: {{ .Values.resources.limits.cpu }}
-            memory: {{ .Values.resources.limits.memory }}
+            cpu: {{ .Values.resources.streamlit.limits.cpu }}
+            memory: {{ .Values.resources.streamlit.limits.memory }}
           requests:
-            cpu: {{ .Values.resources.requests.cpu }}
-            memory: {{ .Values.resources.requests.memory }}
+            cpu: {{ .Values.resources.streamlit.requests.cpu }}
+            memory: {{ .Values.resources.streamlit.requests.memory }}
         readinessProbe:
           httpGet:
             path: /

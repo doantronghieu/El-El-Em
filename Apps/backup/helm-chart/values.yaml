@@ -7,20 +7,28 @@ replicaCount: 1
 image:
   fastapi:
     repository: doantronghieu/llm-fastapi
-    tag: amd64
+    tag: latest
     pullPolicy: Always # IfNotPresent, Always
   streamlit:
     repository: doantronghieu/llm-streamlit
-    tag: amd64
+    tag: latest
     pullPolicy: Always
 
 resources:
-  limits:
-    cpu: "4"
-    memory: "8Gi"
-  requests:
-    cpu: "1"
-    memory: "4Gi" # Mi, Gi
+  fastapi:
+    limits:
+      cpu: "3"
+      memory: "8Gi"
+    requests:
+      cpu: "1"
+      memory: "1Gi" # Mi, Gi
+  streamlit:
+    limits:
+      cpu: "1"
+      memory: "8Gi"
+    requests:
+      cpu: "1"
+      memory: "1Gi"
 
 services:
   fastapi:
