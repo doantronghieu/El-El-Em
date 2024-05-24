@@ -1,5 +1,6 @@
+---
 # Source: helm-chart/templates/hpa.yaml
-apiVersion: autoscaling/v2beta2
+apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: hpa-fastapi
@@ -27,10 +28,10 @@ spec:
           averageUtilization: 80
 ---
 # Source: helm-chart/templates/hpa.yaml
-apiVersion: autoscaling/v2beta2
+apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: hpa-fastapi
+  name: hpa-streamlit
   labels:
     app: streamlit
 spec:

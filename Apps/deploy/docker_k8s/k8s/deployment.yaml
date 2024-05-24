@@ -1,3 +1,4 @@
+---
 # Source: helm-chart/templates/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -23,11 +24,11 @@ spec:
         - containerPort: 8000
         resources:
           limits:
-            cpu: 1
-            memory: 1Gi
+            cpu: 3
+            memory: 8Gi
           requests:
-            cpu: 500m
-            memory: 500Mi
+            cpu: 3
+            memory: 8Gi
         readinessProbe:
           httpGet:
             path: /health
@@ -70,10 +71,10 @@ spec:
         resources:
           limits:
             cpu: 1
-            memory: 1Gi
+            memory: 8Gi
           requests:
-            cpu: 500m
-            memory: 500Mi
+            cpu: 1
+            memory: 8Gi
         readinessProbe:
           httpGet:
             path: /

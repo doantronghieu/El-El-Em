@@ -1,3 +1,4 @@
+---
 # Source: helm-chart/templates/ingress.yaml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -13,10 +14,10 @@ spec:
   ingressClassName: nginx
   tls:
   - hosts:
-    - "my-domain.com"
+    - my-domain.com
     secretName: my-domain-tls
   rules:
-  - host: "my-domain.com"
+  - host: my-domain.com
     http:
       paths:
       - path: /fastapi(/|$)(.*)
