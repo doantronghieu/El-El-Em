@@ -2,15 +2,19 @@
 
 ## Indexing Flow
 
-![Indexing Flow](./diagrams/Indexing%20Flow.jpeg)
+![Indexing Flow](./diagrams/IndexingFlow.jpeg)
 
 ## RAG Flow
 
-![RAG Flow](./diagrams/RAG%20Flow.jpeg)
+![RAG Flow](./diagrams/RAGFlow.jpeg)
 
 ## Agent Flow
 
-![Agent Flow](./diagrams/Agent%20Flow.jpeg)
+![Agent Flow](./diagrams/AgentFlow.jpeg)
+
+## System Architecture
+
+![System Architecture](./diagrams/SystemDesign.jpeg)
 
 ## Docker
 
@@ -32,10 +36,10 @@ docker compose up -d
 docker compose down
 
 ---
+
 # For AWS EC2 arm
 docker pull doantronghieu/llm-fastapi:latest
 docker pull doantronghieu/llm-streamlit:latest
-
 
 ---
 
