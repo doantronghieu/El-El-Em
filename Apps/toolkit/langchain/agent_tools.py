@@ -7,8 +7,7 @@ from langchain_core.tools import (
   ToolException, tool
 )
 
-from langchain.agents import load_tools, Tool
-
+from langchain_community.agent_toolkits.load_tools import load_tools
 import langchain_community.tools as tools_community
 from langchain_community.tools.tavily_search import (
   TavilySearchResults, TavilyAnswer,

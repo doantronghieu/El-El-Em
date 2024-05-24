@@ -1,6 +1,11 @@
 # Build stage
 FROM python:3.11-slim as build
 
+# Create a virtual environment
+ENV VIRTUAL_ENV=/opt/venv
+RUN python3 -m venv $VIRTUAL_ENV
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
 # Set the working directory
 WORKDIR /Apps
 
@@ -11,12 +16,6 @@ RUN apt-get update && apt-get install -y \
   libssl-dev && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/*
-
-# Create a virtual environment
-RUN python3 -m venv /opt/venv
-
-# Activate the virtual environment
-ENV PATH="/opt/venv/bin:$PATH"
 
 # Copy the requirements file and install dependencies
 COPY requirements/prod-LangChain.txt .
@@ -37,20 +36,21 @@ RUN apt-get update && apt-get install -y \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/*
 
+# Create a non-root user for security
+RUN adduser --disabled-password --no-create-home app
+
 # Copy the virtual environment from the build stage
 COPY --from=build /opt/venv /opt/venv
-
-# Activate the virtual environment
 ENV PATH="/opt/venv/bin:$PATH"
 
 # Copy the application code from the build stage
 COPY --from=build /Apps /Apps
 
-# Create a non-root user for security
-RUN adduser --disabled-password --no-create-home app
+# Set environment variables
+# ENV PYTHONUNBUFFERED=1 \
+#     PYTHONDONTWRITEBYTECODE=1
 
-# Switch to the non-root user and set the PATH environment variable
-ENV PATH="/home/app/.local/bin:$PATH"
+# Switch to the non-root user
 USER app
 
 # Expose the port (just for documenting)

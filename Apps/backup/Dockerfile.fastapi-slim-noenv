@@ -1,5 +1,5 @@
 # Build stage
-FROM python:3.11-slim-bullseye as build
+FROM python:3.11-slim as build
 
 # Create a virtual environment
 ENV VIRTUAL_ENV=/opt/venv
@@ -10,7 +10,7 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 WORKDIR /Apps
 
 # Install system packages
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y \
   gcc \
   python3-dev \
   libssl-dev && \
@@ -25,13 +25,13 @@ RUN pip install --no-cache-dir -r prod-LangChain.txt
 COPY . .
 
 # Production stage
-FROM python:3.11-slim-bullseye
+FROM python:3.11-slim
 
 # Set the working directory
 WORKDIR /Apps
 
 # Install system packages
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y \
   libssl-dev && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/*

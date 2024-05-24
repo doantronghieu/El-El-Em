@@ -1,8 +1,8 @@
 from langchain.memory import (
-  ConversationBufferMemory, ChatMessageHistory,
+  ConversationBufferMemory,
 )
 
-
+from langchain_community.chat_message_histories import ChatMessageHistory
 """
 import boto3
 

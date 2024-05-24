@@ -7,6 +7,7 @@ from langchain_community.vectorstores import (
   faiss, qdrant, chroma, docarray
 )
 from langchain_openai import OpenAIEmbeddings
+from langchain_qdrant import Qdrant
 
 from langchain.tools.retriever import create_retriever_tool
 from langchain.retrievers import (
@@ -41,14 +42,14 @@ def create_qdrant_index(
   - Qdrant object
   """
   if use_memory:
-    qdrant_instance = qdrant.Qdrant.from_documents(
+    qdrant_instance = Qdrant.from_documents(
       docs,
       embeddings,
       location=":memory:",
       collection_name=collection_name,
     )
   else:
-    qdrant_instance = qdrant.Qdrant.from_documents(
+    qdrant_instance = Qdrant.from_documents(
       docs,
       embeddings,
       path=path,
@@ -113,7 +114,7 @@ class QdrantWrapper:
 
     # *---------------------------------------------------------------------
 
-    self.vector_store = qdrant.Qdrant(
+    self.vector_store = Qdrant(
       client=self.client,
       collection_name=self.collection_name,
       embeddings=self.embeddings,

@@ -15,28 +15,23 @@
 ## Docker
 
 ```bash
-cd Apps
-
-docker compose up -d
-
----
-docker run --name container-fastapi -p 8000:8000 fastapi:latest
-
-docker exec -ti fastapi bash
-
-```
-
-### For me
-
-```bash
 docker build -t doantronghieu/llm-fastapi:latest -f deploy/docker_k8s/docker-files/Dockerfile.fastapi .
 docker build -t doantronghieu/llm-streamlit:latest -f deploy/docker_k8s/docker-files/Dockerfile.streamlit .
 
 docker push doantronghieu/llm-fastapi:latest
 docker push doantronghieu/llm-streamlit:latest
 
+---
+
+# Test
+docker run -p 8000:8000 doantronghieu/llm-fastapi:latest
+
+docker exec -ti fastapi bash
+
 docker compose up -d
 docker compose down
+
+---
 
 # For AWS EC2 x86
 docker build --platform linux/amd64 -t doantronghieu/llm-fastapi:amd64 -f deploy/docker_k8s/docker-files/Dockerfile.fastapi .

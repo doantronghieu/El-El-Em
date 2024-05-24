@@ -1,16 +1,16 @@
 # Build stage
-FROM python:3.11-slim as build
+FROM python:3.11-alpine as build
+
+# Create a virtual environment
+ENV VIRTUAL_ENV=/opt/venv
+RUN python3 -m venv $VIRTUAL_ENV
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 # Set the working directory
 WORKDIR /Apps
 
 # Install system packages
-RUN apt-get update && apt-get install -y \
-  gcc \
-  python3-dev \
-  libssl-dev && \
-  apt-get clean && \
-  rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache gcc python3-dev libressl-dev
 
 # Copy the requirements file and install dependencies
 COPY requirements/prod-LangChain.txt .
@@ -20,25 +20,29 @@ RUN pip install --no-cache-dir -r prod-LangChain.txt
 COPY . .
 
 # Production stage
-FROM python:3.11-slim
+FROM python:3.11-alpine
 
 # Set the working directory
 WORKDIR /Apps
 
 # Install system packages
-RUN apt-get update && apt-get install -y \
-  libssl-dev && \
-  apt-get clean && \
-  rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache libressl-dev
+
+# Create a non-root user for security
+RUN addgroup -S app && adduser -S app -G app
+
+# Copy the virtual environment from the build stage
+COPY --from=build /opt/venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
 
 # Copy the application code from the build stage
 COPY --from=build /Apps /Apps
 
-# Create a non-root user for security
-RUN adduser --disabled-password --no-create-home app
+# Set environment variables
+# ENV PYTHONUNBUFFERED=1 \
+#     PYTHONDONTWRITEBYTECODE=1
 
-# Switch to the non-root user and set the PATH environment variable
-ENV PATH="/home/app/.local/bin:$PATH"
+# Switch to the non-root user
 USER app
 
 # Expose the port (just for documenting)
