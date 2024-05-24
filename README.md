@@ -36,18 +36,16 @@ docker compose down
 docker pull doantronghieu/llm-fastapi:latest
 docker pull doantronghieu/llm-streamlit:latest
 
-# For AWS EC2 amd
-docker build --platform linux/amd64 -t doantronghieu/llm-fastapi:amd64 -f deploy/docker_k8s/docker-files/Dockerfile.fastapi .
-docker build --platform linux/amd64 -t doantronghieu/llm-streamlit:amd64 -f deploy/docker_k8s/docker-files/Dockerfile.streamlit .
-
-docker push doantronghieu/llm-fastapi:amd64
-docker push doantronghieu/llm-streamlit:amd64
 
 ---
 
-eksctl create cluster -f deploy/docker_k8s/eks-cluster.yaml
-eksctl delete cluster --wait --disable-nodegroup-eviction -f deploy/docker_k8s/eks-cluster.yaml 
-eksctl upgrade cluster --config-file deploy/docker_k8s/eks-cluster.yaml
 eksctl create cluster -f deploy/docker_k8s/eks-cluster.yaml --dry-run
+
+eksctl create cluster -f deploy/docker_k8s/eks-cluster.yaml
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+eksctl upgrade cluster --config-file deploy/docker_k8s/eks-cluster.yaml
+
+eksctl delete cluster --wait --disable-nodegroup-eviction -f deploy/docker_k8s/eks-cluster.yaml 
 
 ```
