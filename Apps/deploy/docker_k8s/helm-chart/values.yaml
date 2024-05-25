@@ -17,17 +17,17 @@ image:
 resources:
   fastapi:
     limits:
-      cpu: "3"
+      cpu: "3000m" # 1000m = 1cpu
       memory: "8Gi"
     requests:
-      cpu: "1"
+      cpu: "1000m"
       memory: "1Gi" # Mi, Gi
   streamlit:
     limits:
-      cpu: "1"
+      cpu: "1000m"
       memory: "8Gi"
     requests:
-      cpu: "1"
+      cpu: "1000m"
       memory: "1Gi"
 
 services:
