@@ -3557,7 +3557,7 @@
 		"kind": 5,
 		"importPath": "use_cases.VTC",
 		"description": "use_cases.VTC",
-		"peekOfCode": "tools = [\n    qdrant_lectures_content.retriever_tool,\n    qdrant_faq.retriever_tool,\n    qdrant_courses_information.retriever_tool,\n]\nllm = chat_models.create_chat_model(configs_vtc)\nagent = agents.MyAgent(\n    prompt=prompt_onlinica, tools=tools,\n    agent_type=configs_vtc[\"agents\"][\"agent_type_onlinica\"], \n    llm=llm",
+		"peekOfCode": "tools = [\n    qdrant_lectures_content.retriever_tool,\n    qdrant_faq.retriever_tool,\n    qdrant_courses_information.retriever_tool,\n]\nllm = chat_models.create_chat_model(configs_vtc)\nagent = agents.MyAgent(\n    prompt=prompt_onlinica, tools=tools,\n    agent_type=configs_vtc[\"agents\"][\"type\"], \n    llm=llm",
 		"detail": "use_cases.VTC",
 		"documentation": {}
 	},
@@ -3566,7 +3566,7 @@
 		"kind": 5,
 		"importPath": "use_cases.VTC",
 		"description": "use_cases.VTC",
-		"peekOfCode": "llm = chat_models.create_chat_model(configs_vtc)\nagent = agents.MyAgent(\n    prompt=prompt_onlinica, tools=tools,\n    agent_type=configs_vtc[\"agents\"][\"agent_type_onlinica\"], \n    llm=llm\n)",
+		"peekOfCode": "llm = chat_models.create_chat_model(configs_vtc)\nagent = agents.MyAgent(\n    prompt=prompt_onlinica, tools=tools,\n    agent_type=configs_vtc[\"agents\"][\"type\"], \n    llm=llm\n)",
 		"detail": "use_cases.VTC",
 		"documentation": {}
 	},
@@ -3575,7 +3575,7 @@
 		"kind": 5,
 		"importPath": "use_cases.VTC",
 		"description": "use_cases.VTC",
-		"peekOfCode": "agent = agents.MyAgent(\n    prompt=prompt_onlinica, tools=tools,\n    agent_type=configs_vtc[\"agents\"][\"agent_type_onlinica\"], \n    llm=llm\n)",
+		"peekOfCode": "agent = agents.MyAgent(\n    prompt=prompt_onlinica, tools=tools,\n    agent_type=configs_vtc[\"agents\"][\"type\"], \n    llm=llm\n)",
 		"detail": "use_cases.VTC",
 		"documentation": {}
 	},

@@ -4,7 +4,7 @@ langchain-community >= 0.0.38
 langchain-openai >= 0.1.6 # == 0.0.5 (crewai), >= 0.1.1
 langchain-anthropic >= 0.1.11
 langchain-qdrant >= 0.1.0
-langchain_cohere
+langchain_cohere >= 0.1.5
 langchain-groq
 langgraph >= 0.0.49
 

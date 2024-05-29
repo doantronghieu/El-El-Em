@@ -15,6 +15,7 @@ MODELS = {
   "COHERE": {
     "COMMAND": "command",
     "COMMAND-R": "command-r",
+    "COMMAND-R-PLUS": "command-r-plus",
     "RERANK-ENGLISH-V3.0": "rerank-english-v3.0",
     "RERANK-MULTILINGUAL-V3.0": "rerank-multilingual-v3.0",
   }

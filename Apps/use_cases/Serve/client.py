@@ -165,4 +165,23 @@ def vtc_stream_agent_sync(
 	with httpx.stream('GET', url, params=params, timeout=60) as r:
 		for chunk in r.iter_text():
 			yield chunk
+  
+def tdtu_stream_agent_sync(
+	query,
+	server_fastapi = server_fastapi,
+	history_type: str = "dynamodb",
+	user_id=None,
+	session_id: str = "default",
+):
+	url = f"{server_fastapi}/tdtu-stream-agent"
+	params = {
+		"query": query,
+		"history_type": history_type,
+		"user_id": user_id,
+		"session_id": session_id,
+	}
+
+	with httpx.stream('GET', url, params=params, timeout=60) as r:
+		for chunk in r.iter_text():
+			yield chunk
 ...

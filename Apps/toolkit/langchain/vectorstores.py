@@ -11,7 +11,7 @@ from langchain_qdrant import Qdrant
 
 from langchain.tools.retriever import create_retriever_tool
 from langchain.retrievers import (
-    ContextualCompressionRetriever,
+  ContextualCompressionRetriever,
 )
 from langchain_core.documents import Document
 
@@ -23,7 +23,6 @@ from pprint import pprint
 from tqdm import tqdm
 
 # -------------------------------------------------------------------------------
-
 
 def create_qdrant_index(
   docs, embeddings, use_memory=True, path=None, collection_name="my_documents"
@@ -57,7 +56,6 @@ def create_qdrant_index(
     )
 
   return qdrant_instance
-
 
 class QdrantWrapper:
   def __init__(
@@ -128,7 +126,7 @@ class QdrantWrapper:
       search_type=default_search_type,
       search_kwargs=default_search_kwargs,
     )
-
+    
     # *---------------------------------------------------------------------
     self.retriever_tool = create_retriever_tool(
       retriever=self.retriever,

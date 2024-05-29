@@ -1,0 +1,33 @@
+---
+# Source: helm-chart/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: fastapi
+  labels:
+    app: fastapi
+spec:
+  selector:
+    app: fastapi
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
+  type: ClusterIP
+---
+# Source: helm-chart/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: streamlit
+  labels:
+    app: streamlit
+spec:
+  selector:
+    app: streamlit
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8051
+  type: LoadBalancer
+  externalTrafficPolicy: Cluster

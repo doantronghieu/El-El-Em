@@ -4,48 +4,39 @@ from pprint import pprint
 import os
 import yaml
 
-from toolkit.prompts import (
-    prompts_onlinica
-)
-
 from toolkit.langchain import (
-  document_loaders, text_splitters, text_embedding_models, chat_models, prompts, utils, output_parsers, agents, documents, vectorstores
+  chat_models, prompts, agents, vectorstores
 )
 
-from langchain_core.prompts import (
-  ChatPromptTemplate, PromptTemplate, MessagesPlaceholder,
-  SystemMessagePromptTemplate, AIMessagePromptTemplate,
-  HumanMessagePromptTemplate
-)
 
 # *=============================================================================
 # call from main
 with open(f"{add_packages.APP_PATH}/my_configs/vtc.yaml", 'r') as file:
-  configs_vtc = yaml.safe_load(file)
+  configs = yaml.safe_load(file)
 
 qdrant_lectures_content = vectorstores.QdrantWrapper(
   qdrant_host=os.getenv("QDRANT_HOST"),
   qdrant_api_key=os.getenv("QDRANT_API_KEY"),
-  configs=configs_vtc,
-  **configs_vtc["vector_db"]["qdrant"]["lectures_content"],
+  configs=configs,
+  **configs["vector_db"]["qdrant"]["lectures_content"],
 )
 
 qdrant_courses_information = vectorstores.QdrantWrapper(
   qdrant_host=os.getenv("QDRANT_HOST"),
   qdrant_api_key=os.getenv("QDRANT_API_KEY"),
-  configs=configs_vtc,
-  **configs_vtc["vector_db"]["qdrant"]["courses_information"]
+  configs=configs,
+  **configs["vector_db"]["qdrant"]["courses_information"]
 )
 
 qdrant_faq = vectorstores.QdrantWrapper(
   qdrant_host=os.getenv("QDRANT_HOST"),
   qdrant_api_key=os.getenv("QDRANT_API_KEY"),
-  configs=configs_vtc,
-  **configs_vtc["vector_db"]["qdrant"]["faq"]
+  configs=configs,
+  **configs["vector_db"]["qdrant"]["faq"]
 )
 
 # *=============================================================================
-system_message_onlinica = configs_vtc["prompts"]["system_message_onlinica"]
+system_message_onlinica = configs["prompts"]["system_message_onlinica"]
 
 prompt_onlinica = prompts.create_prompt_tool_calling_agent(
   system_message_onlinica
@@ -57,7 +48,7 @@ tools = [
   qdrant_courses_information.retriever_tool,
 ]
 
-llm = chat_models.create_chat_model(configs_vtc)
+llm = chat_models.create_chat_model(configs)
 
 agent = agents.MyStatelessAgent(
 	llm=llm,

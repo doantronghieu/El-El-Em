@@ -14,8 +14,7 @@ from langchain.retrievers.document_compressors import (
   LLMChainExtractor, LLMChainFilter, EmbeddingsFilter, DocumentCompressorPipeline
 )
 from langchain_community.document_transformers.embeddings_redundant_filter import EmbeddingsRedundantFilter
-from langchain_cohere import CohereRerank, CohereRagRetriever, CohereEmbeddings
-
+from langchain_cohere import CohereRerank, CohereEmbeddings
 
 logging.basicConfig()
 logging.getLogger("langchain.retrievers.re_phraser").setLevel(logging.INFO)
@@ -64,35 +63,35 @@ def create_retriever(
     search_kwargs=search_kwargs,
   )
   
-  for retriever_type in lst_type_retriever:
-    if retriever_type == "base":
-      my_retrievers.append(retriever_base)
-    elif retriever_type == "SelfQueryRetriever":
-      my_retrievers.append(SelfQueryRetriever.from_llm(
-        llm=llm,
-        vectorstore=vectorstore,
-        document_contents=document_content_description,
-        metadata_field_info=metadata_field_info,
-        verbose=True,
-      ))
-    elif retriever_type == "MultiQueryRetriever":
-      my_retrievers.append(MultiQueryRetriever.from_llm(
-        retriever=retriever_base, llm=llm,
-      ))
-    elif retriever_type == "CohereRerank":
-      logger.warning(f"Remember to use CohereEmbeddings for Vectorstore.")
-      embeddings = CohereEmbeddings(
-        model=constants.EMBEDDINGS["COHERE"]["EMBED-MULTILINGUAL-V3.0"]
-      )
-      my_retrievers.append(ContextualCompressionRetriever(
-        base_compressor=CohereRerank(), base_retriever=retriever_base,
-      ))
-    elif retriever_type == "RePhraseQueryRetriever":
-      my_retrievers.append(RePhraseQueryRetriever.from_llm(
-        retriever=retriever_base, llm=llm
-      ))
-    elif retriever_type == "BM25Retriever":
-      my_retrievers.append(BM25Retriever()) # todo
+  if "base" in retriever_types:
+    my_retrievers.append(retriever_base)
+  if "SelfQueryRetriever" in retriever_types:
+    my_retrievers.append(SelfQueryRetriever.from_llm(
+      llm=llm,
+      vectorstore=vectorstore,
+      document_contents=document_content_description,
+      metadata_field_info=metadata_field_info,
+      verbose=True,
+    ))
+  if "MultiQueryRetriever" in retriever_types:
+    my_retrievers.append(MultiQueryRetriever.from_llm(
+      retriever=retriever_base, llm=llm,
+    ))
+  if "CohereRerank" in retriever_types:
+    logger.warning(f"Remember to use CohereEmbeddings for Vectorstore.")
+    embeddings = CohereEmbeddings(
+      model=constants.EMBEDDINGS["COHERE"]["EMBED-MULTILINGUAL-V3.0"]
+    )
+    my_retrievers.append(ContextualCompressionRetriever(
+      base_compressor=CohereRerank(), base_retriever=retriever_base,
+    ))
+  if "RePhraseQueryRetriever" in retriever_types:
+    my_retrievers.append(RePhraseQueryRetriever.from_llm(
+      retriever=retriever_base, llm=llm
+    ))
+  if "BM25Retriever" in retriever_types:
+    my_retrievers.append(BM25Retriever()) # todo
+    
   #*----------------------------------------------------------------------------
 
   if "ContextualCompressionRetriever" in retriever_types:

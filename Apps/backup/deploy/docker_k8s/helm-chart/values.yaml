@@ -17,7 +17,7 @@ image:
 resources:
   fastapi:
     limits:
-      cpu: "3"
+      cpu: "3" # 1000m = 1cpu, or "1"
       memory: "8Gi"
     requests:
       cpu: "1"
