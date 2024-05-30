@@ -1,5 +1,11 @@
-**/.env
-**/cache
-**/__pycache__/
 **/data
+**/__pycache__
+**/cache
+**/.env
 **/.vscode
+
+Apps/data
+Apps/__pycache__
+Apps/cache
+Apps/.env
+Apps/.vscode
