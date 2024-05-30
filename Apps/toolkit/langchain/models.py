@@ -1,4 +1,3 @@
-import config
 import os, dotenv, yaml
 from loguru import logger
 from langchain_openai import ChatOpenAI

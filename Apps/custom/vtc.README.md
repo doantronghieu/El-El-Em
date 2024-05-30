@@ -47,7 +47,7 @@ docker run -p 8000:8000 doantronghieu/vtc-llm-fastapi:latest
 
 docker compose -f custom/vtc.docker-compose.yaml up -d
 docker compose -f custom/vtc.docker-compose.yaml down
-Apps/
+
 ---
 
 eksctl create cluster -f deploy/docker_k8s/custom/vtc.eks-cluster.yaml --dry-run

@@ -19,7 +19,7 @@ from toolkit.streamlit.utils import CHAT_ROLE
 
 st.set_page_config(
   layout="wide",
-  page_title="General Chat"
+  page_title="TDTU AI"
 )
 
 current_file_path = os.path.abspath(__file__)

@@ -1,5 +1,4 @@
 import add_packages
-import config
 from Apps.use_cases.VTC import VTC
 import toolkit.gradio.chatbot as chatbot_utils
 import gradio as gr

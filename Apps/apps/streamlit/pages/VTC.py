@@ -19,7 +19,7 @@ from toolkit.streamlit.utils import CHAT_ROLE
 
 st.set_page_config(
   layout="wide",
-  page_title="General Chat"
+  page_title="VTC AI"
 )
 
 current_file_path = os.path.abspath(__file__)
@@ -40,6 +40,7 @@ if parent_dir != "pages":
   
   st.sidebar.divider()
 
+st.sidebar.image(f"{add_packages.APP_PATH}/assets/logo-vtc.png")
 #*==============================================================================
 
 STATES = {
