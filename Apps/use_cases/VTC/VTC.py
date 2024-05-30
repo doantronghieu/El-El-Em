@@ -1,34 +1,34 @@
 import add_packages
+from toolkit.langchain import models
 import config
 from pprint import pprint
 import os
 import yaml
 
 from toolkit.langchain import (
-  chat_models, prompts, agents, vectorstores
+  prompts, agents, stores
 )
-
 
 # *=============================================================================
 # call from main
 with open(f"{add_packages.APP_PATH}/my_configs/vtc.yaml", 'r') as file:
   configs = yaml.safe_load(file)
 
-qdrant_lectures_content = vectorstores.QdrantWrapper(
+qdrant_lectures_content = stores.QdrantWrapper(
   qdrant_host=os.getenv("QDRANT_HOST"),
   qdrant_api_key=os.getenv("QDRANT_API_KEY"),
   configs=configs,
   **configs["vector_db"]["qdrant"]["lectures_content"],
 )
 
-qdrant_courses_information = vectorstores.QdrantWrapper(
+qdrant_courses_information = stores.QdrantWrapper(
   qdrant_host=os.getenv("QDRANT_HOST"),
   qdrant_api_key=os.getenv("QDRANT_API_KEY"),
   configs=configs,
   **configs["vector_db"]["qdrant"]["courses_information"]
 )
 
-qdrant_faq = vectorstores.QdrantWrapper(
+qdrant_faq = stores.QdrantWrapper(
   qdrant_host=os.getenv("QDRANT_HOST"),
   qdrant_api_key=os.getenv("QDRANT_API_KEY"),
   configs=configs,
@@ -48,7 +48,7 @@ tools = [
   qdrant_courses_information.retriever_tool,
 ]
 
-llm = chat_models.create_chat_model(configs)
+llm = models.create_chat_model(configs)
 
 agent = agents.MyStatelessAgent(
 	llm=llm,

@@ -17,9 +17,16 @@ parent_dir = parent_path.split("/")[-1]
 
 if parent_dir != "pages":
   st.sidebar.page_link(f"main.py", label="Home")
-  st.sidebar.page_link(f"pages/01_general_chat.py", label="General Chat")
-  st.sidebar.page_link(f"pages/02_Doc_do_anything.py", label="Do Anything w/ Document")
-  st.sidebar.page_link(f"pages/03_Generate_anything.py", label="Generate Anything")
+  
+  if os.getenv("STREAMLIT_GENERAL_CHAT"):
+    st.sidebar.page_link(f"pages/01_general_chat.py", label="General Chat")
+  if os.getenv("STREAMLIT_DATA_DO_ANYTHING"):
+    st.sidebar.page_link(f"pages/02_Data_do_anything.py", label="Do Anything w/ Data")
+  if os.getenv("STREAMLIT_GENERATE_ANYTHING"):
+    st.sidebar.page_link(f"pages/03_Generate_anything.py", label="Generate Anything")
+  if os.getenv("STREAMLIT_VTC"):
+    st.sidebar.page_link(f"pages/VTC.py", label="VTC")
+  
   st.sidebar.divider()
 
 #*==============================================================================

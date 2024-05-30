@@ -169,66 +169,66 @@
 	},
 	{
 		"label": "faiss",
-		"importPath": "langchain_community.vectorstores",
-		"description": "langchain_community.vectorstores",
+		"importPath": "langchain_community.stores",
+		"description": "langchain_community.stores",
 		"isExtraImport": true,
-		"detail": "langchain_community.vectorstores",
+		"detail": "langchain_community.stores",
 		"documentation": {}
 	},
 	{
 		"label": "qdrant",
-		"importPath": "langchain_community.vectorstores",
-		"description": "langchain_community.vectorstores",
+		"importPath": "langchain_community.stores",
+		"description": "langchain_community.stores",
 		"isExtraImport": true,
-		"detail": "langchain_community.vectorstores",
+		"detail": "langchain_community.stores",
 		"documentation": {}
 	},
 	{
 		"label": "chroma",
-		"importPath": "langchain_community.vectorstores",
-		"description": "langchain_community.vectorstores",
+		"importPath": "langchain_community.stores",
+		"description": "langchain_community.stores",
 		"isExtraImport": true,
-		"detail": "langchain_community.vectorstores",
+		"detail": "langchain_community.stores",
 		"documentation": {}
 	},
 	{
 		"label": "docarray",
-		"importPath": "langchain_community.vectorstores",
-		"description": "langchain_community.vectorstores",
+		"importPath": "langchain_community.stores",
+		"description": "langchain_community.stores",
 		"isExtraImport": true,
-		"detail": "langchain_community.vectorstores",
+		"detail": "langchain_community.stores",
 		"documentation": {}
 	},
 	{
 		"label": "faiss",
-		"importPath": "langchain_community.vectorstores",
-		"description": "langchain_community.vectorstores",
+		"importPath": "langchain_community.stores",
+		"description": "langchain_community.stores",
 		"isExtraImport": true,
-		"detail": "langchain_community.vectorstores",
+		"detail": "langchain_community.stores",
 		"documentation": {}
 	},
 	{
 		"label": "qdrant",
-		"importPath": "langchain_community.vectorstores",
-		"description": "langchain_community.vectorstores",
+		"importPath": "langchain_community.stores",
+		"description": "langchain_community.stores",
 		"isExtraImport": true,
-		"detail": "langchain_community.vectorstores",
+		"detail": "langchain_community.stores",
 		"documentation": {}
 	},
 	{
 		"label": "chroma",
-		"importPath": "langchain_community.vectorstores",
-		"description": "langchain_community.vectorstores",
+		"importPath": "langchain_community.stores",
+		"description": "langchain_community.stores",
 		"isExtraImport": true,
-		"detail": "langchain_community.vectorstores",
+		"detail": "langchain_community.stores",
 		"documentation": {}
 	},
 	{
 		"label": "docarray",
-		"importPath": "langchain_community.vectorstores",
-		"description": "langchain_community.vectorstores",
+		"importPath": "langchain_community.stores",
+		"description": "langchain_community.stores",
 		"isExtraImport": true,
-		"detail": "langchain_community.vectorstores",
+		"detail": "langchain_community.stores",
 		"documentation": {}
 	},
 	{
@@ -948,7 +948,7 @@
 		"documentation": {}
 	},
 	{
-		"label": "vectorstores",
+		"label": "stores",
 		"importPath": "toolkit.langchain",
 		"description": "toolkit.langchain",
 		"isExtraImport": true,
@@ -2304,19 +2304,19 @@
 	{
 		"label": "QdrantWrapper",
 		"kind": 6,
-		"importPath": "backup.vectorstores",
-		"description": "backup.vectorstores",
+		"importPath": "backup.stores",
+		"description": "backup.stores",
 		"peekOfCode": "class QdrantWrapper:\n  def __init__(\n    self,\n    qdrant_host: str,\n    qdrant_api_key: str,\n    configs: dict,\n    collection_name: str = \"\",\n    default_search_type: str = \"similarity\",  # \"mmr\"\n    default_search_kwargs: dict = {\n      \"k\": 6,",
-		"detail": "backup.vectorstores",
+		"detail": "backup.stores",
 		"documentation": {}
 	},
 	{
 		"label": "create_qdrant_index",
 		"kind": 2,
-		"importPath": "backup.vectorstores",
-		"description": "backup.vectorstores",
+		"importPath": "backup.stores",
+		"description": "backup.stores",
 		"peekOfCode": "def create_qdrant_index(\n  docs, embeddings, use_memory=True, path=None, collection_name=\"my_documents\"\n  ):\n  \"\"\"\n  Create a Qdrant index and return the Qdrant object.\n  Parameters:\n  - docs: List of documents to index\n  - embeddings: List of corresponding document embeddings\n  - use_memory: Flag to indicate whether to use in-memory storage (default is True)\n  - path: Path for on-disk storage (if using file-based storage)",
-		"detail": "backup.vectorstores",
+		"detail": "backup.stores",
 		"documentation": {}
 	},
 	{
@@ -2934,19 +2934,19 @@
 	{
 		"label": "QdrantWrapper",
 		"kind": 6,
-		"importPath": "toolkit.langchain.vectorstores",
-		"description": "toolkit.langchain.vectorstores",
+		"importPath": "toolkit.langchain.stores",
+		"description": "toolkit.langchain.stores",
 		"peekOfCode": "class QdrantWrapper:\n  def __init__(\n    self,\n    qdrant_host: str,\n    qdrant_api_key: str,\n    configs: dict,\n    collection_name: str = \"\",\n    default_search_type: str = \"similarity\",  # \"mmr\"\n    default_search_kwargs: dict = {\n      \"k\": 6,",
-		"detail": "toolkit.langchain.vectorstores",
+		"detail": "toolkit.langchain.stores",
 		"documentation": {}
 	},
 	{
 		"label": "create_qdrant_index",
 		"kind": 2,
-		"importPath": "toolkit.langchain.vectorstores",
-		"description": "toolkit.langchain.vectorstores",
+		"importPath": "toolkit.langchain.stores",
+		"description": "toolkit.langchain.stores",
 		"peekOfCode": "def create_qdrant_index(\n  docs, embeddings, use_memory=True, path=None, collection_name=\"my_documents\"\n  ):\n  \"\"\"\n  Create a Qdrant index and return the Qdrant object.\n  Parameters:\n  - docs: List of documents to index\n  - embeddings: List of corresponding document embeddings\n  - use_memory: Flag to indicate whether to use in-memory storage (default is True)\n  - path: Path for on-disk storage (if using file-based storage)",
-		"detail": "toolkit.langchain.vectorstores",
+		"detail": "toolkit.langchain.stores",
 		"documentation": {}
 	},
 	{
@@ -3204,46 +3204,46 @@
 	{
 		"label": "current_file_path",
 		"kind": 5,
-		"importPath": "use_cases.LangChain.vectorstores.add_packages",
-		"description": "use_cases.LangChain.vectorstores.add_packages",
+		"importPath": "use_cases.LangChain.stores.add_packages",
+		"description": "use_cases.LangChain.stores.add_packages",
 		"peekOfCode": "current_file_path = os.path.abspath(__file__)\nparent_directory = os.path.dirname(current_file_path)\nwhile True:\n  # print(parent_directory)\n  sys.path.append(parent_directory)\n  parent_folder = parent_directory.split(\"/\")[-1]\n  if parent_folder == \"Apps\":\n    break\n  parent_directory = os.path.dirname(parent_directory)\n# pprint(sys.path)",
-		"detail": "use_cases.LangChain.vectorstores.add_packages",
+		"detail": "use_cases.LangChain.stores.add_packages",
 		"documentation": {}
 	},
 	{
 		"label": "parent_directory",
 		"kind": 5,
-		"importPath": "use_cases.LangChain.vectorstores.add_packages",
-		"description": "use_cases.LangChain.vectorstores.add_packages",
+		"importPath": "use_cases.LangChain.stores.add_packages",
+		"description": "use_cases.LangChain.stores.add_packages",
 		"peekOfCode": "parent_directory = os.path.dirname(current_file_path)\nwhile True:\n  # print(parent_directory)\n  sys.path.append(parent_directory)\n  parent_folder = parent_directory.split(\"/\")[-1]\n  if parent_folder == \"Apps\":\n    break\n  parent_directory = os.path.dirname(parent_directory)\n# pprint(sys.path)\ncwd = os.getcwd()",
-		"detail": "use_cases.LangChain.vectorstores.add_packages",
+		"detail": "use_cases.LangChain.stores.add_packages",
 		"documentation": {}
 	},
 	{
 		"label": "cwd",
 		"kind": 5,
-		"importPath": "use_cases.LangChain.vectorstores.add_packages",
-		"description": "use_cases.LangChain.vectorstores.add_packages",
+		"importPath": "use_cases.LangChain.stores.add_packages",
+		"description": "use_cases.LangChain.stores.add_packages",
 		"peekOfCode": "cwd = os.getcwd()\ncwd_parent = os.path.dirname(cwd)\nwhile cwd_parent.split(\"/\")[-1] != \"Apps\":\n  cwd_parent = os.path.dirname(cwd_parent)\nAPP_PATH = cwd_parent\nload_dotenv()",
-		"detail": "use_cases.LangChain.vectorstores.add_packages",
+		"detail": "use_cases.LangChain.stores.add_packages",
 		"documentation": {}
 	},
 	{
 		"label": "cwd_parent",
 		"kind": 5,
-		"importPath": "use_cases.LangChain.vectorstores.add_packages",
-		"description": "use_cases.LangChain.vectorstores.add_packages",
+		"importPath": "use_cases.LangChain.stores.add_packages",
+		"description": "use_cases.LangChain.stores.add_packages",
 		"peekOfCode": "cwd_parent = os.path.dirname(cwd)\nwhile cwd_parent.split(\"/\")[-1] != \"Apps\":\n  cwd_parent = os.path.dirname(cwd_parent)\nAPP_PATH = cwd_parent\nload_dotenv()",
-		"detail": "use_cases.LangChain.vectorstores.add_packages",
+		"detail": "use_cases.LangChain.stores.add_packages",
 		"documentation": {}
 	},
 	{
 		"label": "APP_PATH",
 		"kind": 5,
-		"importPath": "use_cases.LangChain.vectorstores.add_packages",
-		"description": "use_cases.LangChain.vectorstores.add_packages",
+		"importPath": "use_cases.LangChain.stores.add_packages",
+		"description": "use_cases.LangChain.stores.add_packages",
 		"peekOfCode": "APP_PATH = cwd_parent\nload_dotenv()",
-		"detail": "use_cases.LangChain.vectorstores.add_packages",
+		"detail": "use_cases.LangChain.stores.add_packages",
 		"documentation": {}
 	},
 	{
@@ -3512,7 +3512,7 @@
 		"kind": 5,
 		"importPath": "use_cases.VTC",
 		"description": "use_cases.VTC",
-		"peekOfCode": "qdrant_lectures_content = vectorstores.QdrantWrapper(\n    qdrant_host=os.getenv(\"QDRANT_HOST\"),\n    qdrant_api_key=os.getenv(\"QDRANT_API_KEY\"),\n    configs=configs_vtc,\n    **configs_vtc[\"vector_db\"][\"qdrant\"][\"lectures_content\"],\n)\nqdrant_courses_information = vectorstores.QdrantWrapper(\n    qdrant_host=os.getenv(\"QDRANT_HOST\"),\n    qdrant_api_key=os.getenv(\"QDRANT_API_KEY\"),\n    configs=configs_vtc,",
+		"peekOfCode": "qdrant_lectures_content = stores.QdrantWrapper(\n    qdrant_host=os.getenv(\"QDRANT_HOST\"),\n    qdrant_api_key=os.getenv(\"QDRANT_API_KEY\"),\n    configs=configs_vtc,\n    **configs_vtc[\"vector_db\"][\"qdrant\"][\"lectures_content\"],\n)\nqdrant_courses_information = stores.QdrantWrapper(\n    qdrant_host=os.getenv(\"QDRANT_HOST\"),\n    qdrant_api_key=os.getenv(\"QDRANT_API_KEY\"),\n    configs=configs_vtc,",
 		"detail": "use_cases.VTC",
 		"documentation": {}
 	},
@@ -3521,7 +3521,7 @@
 		"kind": 5,
 		"importPath": "use_cases.VTC",
 		"description": "use_cases.VTC",
-		"peekOfCode": "qdrant_courses_information = vectorstores.QdrantWrapper(\n    qdrant_host=os.getenv(\"QDRANT_HOST\"),\n    qdrant_api_key=os.getenv(\"QDRANT_API_KEY\"),\n    configs=configs_vtc,\n    **configs_vtc[\"vector_db\"][\"qdrant\"][\"courses_information\"]\n)\nqdrant_faq = vectorstores.QdrantWrapper(\n    qdrant_host=os.getenv(\"QDRANT_HOST\"),\n    qdrant_api_key=os.getenv(\"QDRANT_API_KEY\"),\n    configs=configs_vtc,",
+		"peekOfCode": "qdrant_courses_information = stores.QdrantWrapper(\n    qdrant_host=os.getenv(\"QDRANT_HOST\"),\n    qdrant_api_key=os.getenv(\"QDRANT_API_KEY\"),\n    configs=configs_vtc,\n    **configs_vtc[\"vector_db\"][\"qdrant\"][\"courses_information\"]\n)\nqdrant_faq = stores.QdrantWrapper(\n    qdrant_host=os.getenv(\"QDRANT_HOST\"),\n    qdrant_api_key=os.getenv(\"QDRANT_API_KEY\"),\n    configs=configs_vtc,",
 		"detail": "use_cases.VTC",
 		"documentation": {}
 	},
@@ -3530,7 +3530,7 @@
 		"kind": 5,
 		"importPath": "use_cases.VTC",
 		"description": "use_cases.VTC",
-		"peekOfCode": "qdrant_faq = vectorstores.QdrantWrapper(\n    qdrant_host=os.getenv(\"QDRANT_HOST\"),\n    qdrant_api_key=os.getenv(\"QDRANT_API_KEY\"),\n    configs=configs_vtc,\n    **configs_vtc[\"vector_db\"][\"qdrant\"][\"faq\"]\n)\n# *=============================================================================\nsystem_message_onlinica = configs_vtc[\"prompts\"][\"system_message_onlinica\"]\nprompt_onlinica = prompts.create_prompt_tool_calling_agent(\n    system_message_onlinica)",
+		"peekOfCode": "qdrant_faq = stores.QdrantWrapper(\n    qdrant_host=os.getenv(\"QDRANT_HOST\"),\n    qdrant_api_key=os.getenv(\"QDRANT_API_KEY\"),\n    configs=configs_vtc,\n    **configs_vtc[\"vector_db\"][\"qdrant\"][\"faq\"]\n)\n# *=============================================================================\nsystem_message_onlinica = configs_vtc[\"prompts\"][\"system_message_onlinica\"]\nprompt_onlinica = prompts.create_prompt_tool_calling_agent(\n    system_message_onlinica)",
 		"detail": "use_cases.VTC",
 		"documentation": {}
 	},
@@ -3629,7 +3629,7 @@
 		"kind": 2,
 		"importPath": "use_cases.general_chat",
 		"description": "use_cases.general_chat",
-		"peekOfCode": "def create_conversation_chain(\n    prompt=prompts.general_prompt,\n    llm=llms.llm_openai,\n    memory=memories.ConversationBufferMemory(ai_prefix=\"AI Assistant\"),\n    verbose=False,\n):\n    return chains.ConversationChain(\n        prompt=prompt,\n        llm=llm,\n        memory=memory,",
+		"peekOfCode": "def create_conversation_chain(\n    prompt=prompts.general_prompt,\n    llm=chat_models.chat_openai,\n    memory=memories.ConversationBufferMemory(ai_prefix=\"AI Assistant\"),\n    verbose=False,\n):\n    return chains.ConversationChain(\n        prompt=prompt,\n        llm=llm,\n        memory=memory,",
 		"detail": "use_cases.general_chat",
 		"documentation": {}
 	},

@@ -32,7 +32,7 @@ from langchain.retrievers.multi_query import MultiQueryRetriever
 from langchain.retrievers import (
   ContextualCompressionRetriever, EnsembleRetriever, RePhraseQueryRetriever
 )
-from langchain.retrievers.bm25 import BM25Retriever
+from langchain_community.retrievers import BM25Retriever
 from langchain.retrievers.document_compressors import (
   LLMChainExtractor, LLMChainFilter, EmbeddingsFilter, DocumentCompressorPipeline
 )

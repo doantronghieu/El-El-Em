@@ -12,6 +12,8 @@ services:
     networks:
       - app-network
     restart: always
+    environment:
+      - IN_PROD=True
 
   streamlit:
     image: doantronghieu/llm-streamlit:latest
@@ -26,6 +28,10 @@ services:
     restart: always
     environment:
       - FASTAPI_ENDPOINT=http://fastapi:8000
+      - STREAMLIT_GENERAL_CHAT=True
+      - STREAMLIT_DATA_DO_ANYTHING=True
+      - STREAMLIT_GENERATE_ANYTHING=True
+      - STREAMLIT_VTC=True
     depends_on:
       - fastapi
 

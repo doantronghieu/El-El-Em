@@ -3,7 +3,7 @@ You are an AI programming assistant. Follow the user's requirements carefully an
 Base on this, create a full-fledged Python class for general usage: 
 
 Overview
-LangGraph is a library for building stateful, multi-actor applications with LLMs, built on top of (and intended to be used with) LangChain. It extends the LangChain Expression Language with the ability to coordinate multiple chains (or actors) across multiple steps of computation in a cyclic manner. It is inspired by Pregel and Apache Beam. The current interface exposed is one inspired by NetworkX.
+LangGraph is a library for building stateful, multi-actor applications with built on top of (and intended to be used with) LangChain. It extends the LangChain Expression Language with the ability to coordinate multiple chains (or actors) across multiple steps of computation in a cyclic manner. It is inspired by Pregel and Apache Beam. The current interface exposed is one inspired by NetworkX.
 
 The main use is for adding cycles to your LLM application. Crucially, LangGraph is NOT optimized for only DAG workflows. If you want to build a DAG, you should just use LangChain Expression Language.
 
@@ -98,7 +98,7 @@ API Reference:
 ChatPromptTemplate
 MessagesPlaceholder
 Conditional edges
-Now, let's move onto something a little bit less trivial. Because math can be difficult for LLMs, let's allow the LLM to conditionally call a "multiply" node using tool calling.
+Now, let's move onto something a little bit less trivial. Because math can be difficult for let's allow the LLM to conditionally call a "multiply" node using tool calling.
 
 We'll recreate our graph with an additional "multiply" that will take the result of the most recent message, if it is a tool call, and calculate the result. We'll also bind the calculator to the OpenAI model as a tool to allow the model to optionally use the tool necessary to respond to the current state:
 
@@ -431,7 +431,7 @@ async for output in app.astream_log(inputs, include_types=["llm"]):
         elif op["path"].startswith("/logs/") and op["path"].endswith(
             "/streamed_output/-"
         ):
-            # because we chose to only include LLMs, these are LLM tokens
+            # because we chose to only include these are LLM tokens
             print(op["value"])
 
 content='' additional_kwargs={'function_call': {'arguments': '', 'name': 'tavily_search_results_json'}}

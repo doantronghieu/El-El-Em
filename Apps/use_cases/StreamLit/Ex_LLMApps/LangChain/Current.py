@@ -5,6 +5,8 @@ import os
 import time
 
 from regex import P
+from toolkit.langchain import models
+
 import add_packages
 
 import streamlit as st
@@ -16,7 +18,7 @@ from langchain_core.tools import BaseTool
 from langchain_core.runnables import Runnable
 
 from toolkit.langchain import (
-  chat_models, agent_tools, prompts, agents, smiths, runnables, memories
+  agent_tools, prompts, agents, smiths, runnables, memories
 )
 
 from toolkit.streamlit import utils
@@ -113,7 +115,7 @@ def create_callbacks() -> list:
 
 langchain_session_dynamodb_table = get_langchain_session_dynamodb_table()
 
-llm = chat_models.chat_openai
+llm = models.chat_openai
 tools = [
   agent_tools.TavilySearchResults(max_results=3)
 ]

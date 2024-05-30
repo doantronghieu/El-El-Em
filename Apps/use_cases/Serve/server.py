@@ -1,6 +1,5 @@
 import add_packages
 import asyncio
-import json
 import os
 from fastapi import FastAPI, Request, Header
 from fastapi.responses import StreamingResponse, Response, JSONResponse
@@ -8,9 +7,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 
 from toolkit.langchain import (
-  chat_models, agent_tools, agents, prompts, runnables, smiths, memories
+  models, agent_tools, agents, prompts, runnables, smiths, memories
 )
-from use_cases.VTC import VTC
+
 from use_cases.TDTU import TDTU
 #*==============================================================================
 
@@ -43,7 +42,7 @@ async def redirect_root_to_docs():
 
 #*------------------------------------------------------------------------------
 
-my_llm = chat_models.chat_openai
+my_llm = models.chat_openai
 my_tools = [
 	agent_tools.TavilySearchResults(max_results=3)
 ]
@@ -95,7 +94,7 @@ async def stream_chat_model(
   query: str = "Hello",
 ):
   return StreamingResponse(
-    stream_generator_chat_model(query, chat_models.chat_openai),
+    stream_generator_chat_model(query, models.chat_openai),
     media_type='text/event-stream',
   )
 
@@ -113,6 +112,7 @@ def stream_generator_agent(
     history_type=history_type,
     user_id=user_id,
     session_id=session_id,
+    show_tool_call=False if os.getenv("IN_PROD") else True,
   )
 
 @app.get("/stream-agent")
@@ -135,25 +135,6 @@ async def stream_agent(
     media_type='text/event-stream',
   )
 
-@app.get("/vtc-stream-agent")
-async def vtc_stream_agent(
-  request: Request,
-  query: str="Xin chào",
-  history_type: str="dynamodb",
-  user_id=None,
-  session_id: str="default",
-):
-  return StreamingResponse(
-    stream_generator_agent(
-      agent=VTC.agent,
-      query=query, 
-      history_type=history_type,
-      user_id=request.client.host if (user_id is None or user_id == "") 
-        else user_id,
-      session_id=session_id,
-    ),
-    media_type='text/event-stream',
-  )
 
 @app.get("/tdtu-stream-agent")
 async def tdtu_stream_agent(

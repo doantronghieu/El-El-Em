@@ -1,3 +1,5 @@
+from toolkit.langchain import models
+
 import add_packages
 import os
 import dotenv
@@ -10,7 +12,7 @@ from fastapi.responses import RedirectResponse
 from langserve import add_routes
 
 from toolkit.langchain import (
-    prompts, chat_models,
+    prompts,
 )
 
 from use_cases.VTC import VTC
@@ -48,20 +50,20 @@ async def redirect_root_to_docs():
 
 add_routes(
     app=app,
-    runnable=chat_models.chat_openai,
+    runnable=models.chat_openai,
     path="/openai"
 )
 
 add_routes(
     app=app,
-    runnable=chat_models.chat_anthropic,
+    runnable=models.chat_anthropic,
     path="/anthropic"
 )
 
 prompt = prompts.ChatPromptTemplate.from_template(
     "tell me a joke about {topic}"
 )
-chain = prompt | chat_models.chat_anthropic
+chain = prompt | models.chat_anthropic
 add_routes(
     app=app,
     runnable=chain,
