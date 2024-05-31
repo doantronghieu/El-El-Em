@@ -13,6 +13,10 @@ python-dateutil
 httpx
 faker
 
+# Postgresql
+# psycopg2
+psycopg2-binary
+
 streamlit
 streamlit_feedback
 # streamlit-extras
