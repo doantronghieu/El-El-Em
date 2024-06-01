@@ -5,6 +5,7 @@ import os
 import time
 
 from regex import P
+
 from toolkit.langchain import models
 
 import add_packages
@@ -18,7 +19,7 @@ from langchain_core.tools import BaseTool
 from langchain_core.runnables import Runnable
 
 from toolkit.langchain import (
-  agent_tools, prompts, agents, smiths, runnables, memories
+  prompts, agents, smiths, runnables, memories
 )
 
 from toolkit.streamlit import utils
@@ -117,7 +118,7 @@ langchain_session_dynamodb_table = get_langchain_session_dynamodb_table()
 
 llm = models.chat_openai
 tools = [
-  agent_tools.TavilySearchResults(max_results=3)
+  tools.TavilySearchResults(max_results=3)
 ]
 prompt = prompts.create_prompt_tool_calling_agent()
 

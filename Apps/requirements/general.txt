@@ -10,6 +10,7 @@ bitsandbytes
 ipykernel
 python-dotenv
 python-dateutil
+openpyxl
 httpx
 faker
 

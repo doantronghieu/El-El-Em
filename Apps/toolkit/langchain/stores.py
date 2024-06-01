@@ -1,50 +1,48 @@
 import add_packages
-import os
-from loguru import logger
+from my_configs import constants
 
-from langchain_community.vectorstores import (
-  faiss, qdrant, chroma, docarray
-)
+import logging
+from loguru import logger
+from tqdm import tqdm
+import typing_inspect
+from typing import Literal, Union
+
+
+from langchain_community.vectorstores import chroma, docarray, faiss, qdrant
+from langchain_community.document_transformers.embeddings_redundant_filter import EmbeddingsRedundantFilter
+from langchain_community.retrievers import BM25Retriever
+from langchain_community.utilities import SQLDatabase
+
+from langchain_core.documents import Document
+from langchain_core.embeddings import Embeddings
+from langchain_core.language_models.chat_models import BaseChatModel
+from langchain_core.vectorstores import VectorStore
 from langchain_openai import OpenAIEmbeddings
 from langchain_qdrant import Qdrant
-
-from langchain.tools.retriever import create_retriever_tool
 from langchain.retrievers import (
   ContextualCompressionRetriever,
+  EnsembleRetriever,
+  MultiQueryRetriever,
+  RePhraseQueryRetriever,
+  SelfQueryRetriever
 )
-from langchain_core.documents import Document
+from langchain.retrievers.document_compressors import (
+  DocumentCompressorPipeline,
+  EmbeddingsFilter,
+  LLMChainExtractor,
+  LLMChainFilter
+)
+from langchain.tools.retriever import create_retriever_tool
 
+from langchain_cohere import CohereEmbeddings, CohereRerank
 
+# Qdrant client imports
 import qdrant_client
 from qdrant_client.http import models
 
-from pprint import pprint
-from tqdm import tqdm
-import add_packages
-from my_configs import constants
-import logging
-from typing import Literal, Union
-import typing_inspect
-
-from langchain.retrievers.self_query.base import SelfQueryRetriever
-from langchain.retrievers.multi_query import MultiQueryRetriever
-from langchain.retrievers import (
-  ContextualCompressionRetriever, EnsembleRetriever, RePhraseQueryRetriever
-)
-from langchain_community.retrievers import BM25Retriever
-from langchain.retrievers.document_compressors import (
-  LLMChainExtractor, LLMChainFilter, EmbeddingsFilter, DocumentCompressorPipeline
-)
-from langchain_community.document_transformers.embeddings_redundant_filter import EmbeddingsRedundantFilter
-from langchain_cohere import CohereRerank, CohereEmbeddings
-
+# Logging setup
 logging.basicConfig()
 logging.getLogger("langchain.retrievers.re_phraser").setLevel(logging.INFO)
-
-from loguru import logger
-from langchain_core.language_models.chat_models import BaseChatModel
-from langchain_core.vectorstores import VectorStore
-from langchain_core.embeddings import Embeddings
 # -------------------------------------------------------------------------------
 
 def create_qdrant_index(

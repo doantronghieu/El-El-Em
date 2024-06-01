@@ -4,3 +4,5 @@ from langgraph.graph import (
 from langgraph.prebuilt import (
   ToolExecutor, ToolInvocation, chat_agent_executor, create_agent_executor
 )
+
+from langgraph.prebuilt import chat_agent_executor

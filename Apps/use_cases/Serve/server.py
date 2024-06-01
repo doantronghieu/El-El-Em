@@ -1,3 +1,4 @@
+
 import add_packages
 import asyncio
 import os
@@ -7,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 
 from toolkit.langchain import (
-  models, agent_tools, agents, prompts, runnables, smiths, memories
+  models, agents, prompts, runnables, smiths, memories, tools
 )
 
 from use_cases.TDTU import TDTU
@@ -44,7 +45,7 @@ async def redirect_root_to_docs():
 
 my_llm = models.chat_openai
 my_tools = [
-	agent_tools.TavilySearchResults(max_results=3)
+	tools.TavilySearchResults(max_results=3)
 ]
 my_prompt = prompts.create_prompt_tool_calling_agent()
 

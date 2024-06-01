@@ -8,9 +8,6 @@ from langchain_core.language_models.chat_models import BaseChatModel
 
 dotenv.load_dotenv()
 
-# with open("../my_configs/vtc.yaml") as file:
-#   configs = yaml.safe_load(file)
-
 chat_openai = ChatOpenAI(temperature=0, model="gpt-3.5-turbo-0125", streaming=True)
 
 chat_anthropic = ChatAnthropic(
@@ -19,6 +16,10 @@ chat_anthropic = ChatAnthropic(
 
 chat_groq_mixtral = ChatGroq(
   temperature=0, model_name="mixtral-8x7b-32768",
+)
+
+chat_groq_llama3 = ChatGroq(
+  temperature=0, model_name="llama3-70b-8192",
 )
 
 chat_cohere = ChatCohere(

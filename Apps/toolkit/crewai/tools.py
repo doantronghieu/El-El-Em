@@ -4,9 +4,9 @@ from crewai import Agent, Task
 from crewai import Agent, Task
 from pprint import pprint
 from bs4 import BeautifulSoup
-from langchain.agent_tools import tool
-from langchain import (
-  document_loaders, text_splitters, documents, agent_tools
+from toolkit.langchain.tools import tool
+from toolkit.langchain import (
+  document_loaders, text_splitters, documents, tools,
 )
 
 #*==============================================================================
@@ -130,7 +130,7 @@ class ToolsBrowser():
     
     return "\n".join(result_str)
 
-  search_duckduckgo = agent_tools.DuckDuckGoSearchRun()
+  search_duckduckgo = tools.DuckDuckGoSearchRun()
   
 #*==============================================================================
 class ToolsCalculator():
@@ -221,7 +221,7 @@ class ToolsCalculator():
     - `min(8, 2, 6, 4)` (minimum of a set of numbers)\n
     - `sum([1, 2, 3, 4, 5])` (sum of a list of numbers)\n
     """
-    my_python_repl = agent_tools.PythonREPL()
+    my_python_repl = tools.PythonREPL()
     return my_python_repl.run(operation)
   
 #*==============================================================================
@@ -239,4 +239,4 @@ class ToolsContent:
 
 #*==============================================================================
 
-tools_human = agent_tools.tools_human
+tools_human = tools.tools_human

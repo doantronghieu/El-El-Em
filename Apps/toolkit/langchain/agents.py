@@ -138,7 +138,7 @@ class MyStatelessAgent:
 		agent_verbose: bool = False,
 	):
 		self.llm = llm
-		self.tools = tools
+		self.my_tools = tools
 		self.prompt = prompt
 
 		self.agent_type = agent_type
@@ -146,7 +146,7 @@ class MyStatelessAgent:
 	
 		self.agent = self._create_agent()
 		self.agent_executor = AgentExecutor(
-			agent=self.agent, tools=self.tools, verbose=self.agent_verbose,
+			agent=self.agent, tools=self.my_tools, verbose=self.agent_verbose,
 			handle_parsing_errors=True,
 			return_intermediate_steps=False,
 		)
@@ -155,13 +155,13 @@ class MyStatelessAgent:
 		logger.info(f"Agent type: {self.agent_type}")
 	
 		if self.agent_type == "tool_calling":
-			return create_tool_calling_agent(self.llm, self.tools, self.prompt)
+			return create_tool_calling_agent(self.llm, self.my_tools, self.prompt)
 		elif self.agent_type == "openai_tools":
-			return create_openai_tools_agent(self.llm, self.tools, self.prompt)
+			return create_openai_tools_agent(self.llm, self.my_tools, self.prompt)
 		elif self.agent_type == "react":
-			return create_react_agent(llm=self.llm, tools=self.tools, prompt=self.prompt)
+			return create_react_agent(llm=self.llm, tools=self.my_tools, prompt=self.prompt)
 		elif self.agent_type == "anthropic": # todo
-			return create_xml_agent(llm=self.llm, tools=self.tools, prompt=self.prompt)
+			return create_xml_agent(llm=self.llm, tools=self.my_tools, prompt=self.prompt)
 		else:
 			raise ValueError(
 					"Invalid agent type. Supported types are 'openai_tools' and 'react'.")

@@ -1,5 +1,5 @@
 import add_packages
-from Apps.use_cases.VTC import VTC
+from use_cases.VTC import VTC
 import toolkit.gradio.chatbot as chatbot_utils
 import gradio as gr
 import warnings

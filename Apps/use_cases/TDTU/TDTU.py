@@ -39,7 +39,7 @@ qdrant_txt_info = stores.QdrantWrapper(
 llm = models.chat_openai
 
 tools = [
-	# agent_tools.TavilySearchResults(max_results=3),
+	# tools.TavilySearchResults(max_results=3),
 	qdrant_csv_admission.retriever_tool,
 	qdrant_csv_personnel.retriever_tool,
 	qdrant_txt_info.retriever_tool,

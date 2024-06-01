@@ -1,5 +1,5 @@
 from curses.ascii import VT
-from Apps.use_cases.VTC import VTC
+from use_cases.VTC import VTC
 import add_packages
 import gradio as gr
 import time

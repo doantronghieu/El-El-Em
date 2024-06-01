@@ -1,4 +1,3 @@
-
 from langchain.tools import (
   BaseTool, StructuredTool, 
 )
@@ -9,6 +8,8 @@ from langchain_core.tools import (
 
 from langchain_community.agent_toolkits.load_tools import load_tools
 import langchain_community.tools as tools_community
+from langchain_community.tools.sql_database.tool import QuerySQLDataBaseTool
+from langchain_community.agent_toolkits import SQLDatabaseToolkit
 from langchain_community.tools.tavily_search import (
   TavilySearchResults, TavilyAnswer,
 )

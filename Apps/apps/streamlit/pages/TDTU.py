@@ -40,6 +40,8 @@ if parent_dir != "pages":
   
   st.sidebar.divider()
 
+st.sidebar.image(f"{add_packages.APP_PATH}/assets/logo-tdtu.png")
+
 #*==============================================================================
 
 STATES = {

@@ -6,7 +6,7 @@ from langchain.chains.conversation.base import ConversationChain
 from langchain.chains.combine_documents import (
     create_stuff_documents_chain,
 )
-
+from langchain.chains.sql_database.query import create_sql_query_chain
 from langchain_core.runnables import Runnable
 from langchain.chains.query_constructor.schema import AttributeInfo
 
