@@ -6,7 +6,7 @@ langchain-anthropic >= 0.1.11
 langchain-qdrant >= 0.1.0
 langchain_cohere >= 0.1.5
 langchain-groq >= 0.1.4
-langgraph >= 0.0.49
+langgraph >= 0.0.60
 
 # langchain-google-genai
 langchainhub >= 0.1.15

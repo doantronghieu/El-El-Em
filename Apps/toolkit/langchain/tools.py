@@ -7,9 +7,9 @@ from langchain_core.tools import (
 )
 
 from langchain_community.agent_toolkits.load_tools import load_tools
+from langchain_community.agent_toolkits import SQLDatabaseToolkit
 import langchain_community.tools as tools_community
 from langchain_community.tools.sql_database.tool import QuerySQLDataBaseTool
-from langchain_community.agent_toolkits import SQLDatabaseToolkit
 from langchain_community.tools.tavily_search import (
   TavilySearchResults, TavilyAnswer,
 )
@@ -20,6 +20,7 @@ from langchain_community.tools.wikipedia.tool import WikipediaQueryRun
 from langchain_community.utilities.wikipedia import WikipediaAPIWrapper
 
 from langchain.pydantic_v1 import BaseModel, Field
+from langchain_core.output_parsers.openai_tools import PydanticToolsParser
 
 from langchain.callbacks.manager import (
   AsyncCallbackManagerForToolRun, CallbackManagerForToolRun,

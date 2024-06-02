@@ -12,6 +12,8 @@ from langchain.agents import (
 	create_xml_agent, create_tool_calling_agent,
 	AgentExecutor
 )
+from langchain_community.agent_toolkits import create_sql_agent
+
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.prompts.chat import BaseChatPromptTemplate
 from langchain_core.runnables import Runnable

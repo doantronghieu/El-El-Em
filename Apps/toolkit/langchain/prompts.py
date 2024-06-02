@@ -1,13 +1,19 @@
 from langchain_core.prompts import (
   ChatPromptTemplate, PromptTemplate, MessagesPlaceholder,
   SystemMessagePromptTemplate, AIMessagePromptTemplate,
-  HumanMessagePromptTemplate
+  HumanMessagePromptTemplate,
+  FewShotPromptTemplate,
 )
 from langchain_core.messages import (
   SystemMessage, AIMessage, HumanMessage, ToolMessage, BaseMessage, FunctionMessage
 )
 from langchain.schema import ChatMessage
 from langchain import hub
+
+from langchain_core.example_selectors import SemanticSimilarityExampleSelector
+
+from langchain_community.agent_toolkits.sql.prompt import SQL_FUNCTIONS_SUFFIX
+from langchain.chains.sql_database.prompt import SQL_PROMPTS
 # *-----------------------------------------------------------------------------
 
 prompt_template = PromptTemplate

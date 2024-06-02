@@ -11,7 +11,7 @@ from psycopg2.extras import RealDictCursor
 from psycopg2.pool import SimpleConnectionPool
 
 
-class SQLDatabase:
+class MySQLDatabase:
 	def __init__(
 		self,
 		dbname: str = os.getenv("SQL_DB"),
@@ -95,8 +95,8 @@ class SQLDatabase:
 
 
 
-class SQLTable:
-		def __init__(self, name: str, schema: list[str], db: SQLDatabase):
+class MySQLTable:
+		def __init__(self, name: str, schema: list[str], db: MySQLDatabase):
 				self.name = name
 				self.schema = schema
 				self.db = db
@@ -284,5 +284,18 @@ class SQLTable:
 
 				# Insert the rows from the DataFrame into the table
 				self.insert_from_dataframe(df)
-    
+
+		def get_discrete_values_col(self, col: str):
+				"""Get the distinct values of a specified column."""
+				query = f"SELECT DISTINCT {col} FROM {self.name}"
+				results = self.db.execute_query(query, fetch_option="all")
+				return [row[col] for row in results]
+
+		def get_discrete_values_cols(self, cols: list[str]):
+				"""Get the distinct values of a specified list of columns."""
+				cols_str = ", ".join(cols)
+				query = f"SELECT DISTINCT {cols_str} FROM {self.name}"
+				results = self.db.execute_query(query, fetch_option="all")
+				return [{col: row[col] for col in cols} for row in results]
+
 ...
