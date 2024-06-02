@@ -3,16 +3,21 @@ import add_packages
 from operator import itemgetter
 from toolkit import sql 
 import typing
+from typing import Optional, Type, Union
+
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains.conversation.base import ConversationChain
 from langchain.chains.llm import LLMChain
 from langchain.chains.query_constructor.schema import AttributeInfo
 from langchain.chains.retrieval_qa.base import RetrievalQA
 from langchain.chains.sql_database.query import create_sql_query_chain
-from langchain.tools import tool, StructuredTool
+from langchain.tools import BaseTool, tool
 from langchain.pydantic_v1 import BaseModel, Field
 from langchain_community.tools.sql_database.tool import QuerySQLDataBaseTool
 from langchain_community.utilities import SQLDatabase
+from langchain_core.callbacks import (
+  AsyncCallbackManagerForToolRun, CallbackManagerForToolRun
+)
 from langchain_core.embeddings import Embeddings
 from langchain_core.example_selectors import SemanticSimilarityExampleSelector
 from langchain_core.language_models.chat_models import  BaseChatModel
@@ -42,9 +47,6 @@ class Table(BaseModel):
   """Table in SQL database."""
 
   name: str = Field(description="Name of table in SQL database.")
-
-class InputChainSql(BaseModel):
-  user_input: str = Field(description="user question about data")
 
 class MySqlChain:
   def __init__(
@@ -204,11 +206,7 @@ class MySqlChain:
       .assign(output=self.chain_answer)
     ).with_retry()
 
-    self.tool_chain_sql = StructuredTool.from_function(
-      func=self.invoke_chain,
-      name="SQL executor",
-      description="generate sql query base on user question and execute sql query"
-    )
+    
     
   def chain_process_get_tables(self, tables: list):
     result = [table.name for table in tables]
@@ -217,17 +215,16 @@ class MySqlChain:
   def chain_process_parse_final_answer(self, output: str) -> str:
     return output.split("Final answer: ")[1]
 
-  def prepare_chain_input(self, user_input: str):
+  def prepare_chain_input(self, question: str):
     result = {
-      "question": user_input,
+      "question": question,
     }
     return result
 
-  
-  def invoke_chain(self, user_input: str):
+  def invoke_chain(self, question: str) -> Union[str, dict]:
     """Get natural user question, turn it into SQL query and execute"""
-    user_input = self.prepare_chain_input(user_input)
-    result = self.chain_sql.invoke(user_input)
+    question = self.prepare_chain_input(question)
+    result = self.chain_sql.invoke(question)
     
     if not self.is_debug:
       result = result["output"]

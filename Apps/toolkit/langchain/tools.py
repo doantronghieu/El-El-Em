@@ -31,7 +31,7 @@ from langchain_core.utils.function_calling import (
 )
 from langchain.tools.render import format_tool_to_openai_function
 
-import typing
+
 
 wikipedia_api_wrapper = WikipediaAPIWrapper(top_k_results=1, 
                                             doc_content_chars_max=100)
