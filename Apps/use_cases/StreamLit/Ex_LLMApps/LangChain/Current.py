@@ -4,9 +4,6 @@ import uuid
 import os
 import time
 
-from regex import P
-
-from toolkit.langchain import models
 
 import add_packages
 
@@ -19,7 +16,7 @@ from langchain_core.tools import BaseTool
 from langchain_core.runnables import Runnable
 
 from toolkit.langchain import (
-  prompts, agents, smiths, runnables, memories
+  prompts, agents, smiths, runnables, memories, models, tools
 )
 
 from toolkit.streamlit import utils

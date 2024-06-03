@@ -1,5 +1,3 @@
-from toolkit.langchain import models
-
 import add_packages
 import os
 import dotenv
@@ -12,7 +10,7 @@ from fastapi.responses import RedirectResponse
 from langserve import add_routes
 
 from toolkit.langchain import (
-    prompts,
+    prompts, models
 )
 
 from use_cases.VTC import VTC

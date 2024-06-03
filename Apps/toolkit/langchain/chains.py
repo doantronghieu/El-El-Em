@@ -1,9 +1,7 @@
-from unittest import result
 import add_packages
 from operator import itemgetter
 from toolkit import sql 
-import typing
-from typing import Optional, Type, Union
+from typing import Any, Awaitable, Callable, Optional, Type, Union, Dict, List
 
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains.conversation.base import ConversationChain
@@ -11,25 +9,25 @@ from langchain.chains.llm import LLMChain
 from langchain.chains.query_constructor.schema import AttributeInfo
 from langchain.chains.retrieval_qa.base import RetrievalQA
 from langchain.chains.sql_database.query import create_sql_query_chain
-from langchain.tools import BaseTool, tool
 from langchain.pydantic_v1 import BaseModel, Field
+from langchain.tools import BaseTool, tool
+from langchain.tools import StructuredTool
 from langchain_community.tools.sql_database.tool import QuerySQLDataBaseTool
 from langchain_community.utilities import SQLDatabase
-from langchain_core.callbacks import (
-  AsyncCallbackManagerForToolRun, CallbackManagerForToolRun
-)
+from langchain_core.callbacks import AsyncCallbackManagerForToolRun, CallbackManagerForToolRun
 from langchain_core.embeddings import Embeddings
 from langchain_core.example_selectors import SemanticSimilarityExampleSelector
 from langchain_core.language_models.chat_models import  BaseChatModel
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.output_parsers.openai_tools import PydanticToolsParser
 from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
+from langchain_core.pydantic_v1 import BaseModel, Field
 from langchain_core.runnables import RunnableLambda, RunnablePassthrough, Runnable
+from langchain_core.tools import ToolException, ValidationError
 from langchain_core.vectorstores import VectorStore
 
-
 #*------------------------------------------------------------------------------
-def parse_retriever_input(params: typing.Dict):
+def parse_retriever_input(params: Dict):
     return params["messages"][-1].content
 
 #*------------------------------------------------------------------------------
@@ -40,9 +38,13 @@ async def invoke_chain(chain: Runnable, input, is_async: bool = False):
 
   chain.invoke(input)
 
+#*------------------------------------------------------------------------------
 
 
 #*------------------------------------------------------------------------------
+class InputChainSql(BaseModel):
+  question: str = Field(description="user question, natural language, NOT sql query")
+
 class Table(BaseModel):
   """Table in SQL database."""
 
@@ -64,6 +66,11 @@ class MySqlChain:
     k_few_shot_examples: int, # 5
     
     is_debug: bool = True,
+    
+    tool_name: str = None,
+    tool_description: str = None,
+    tool_metadata: Optional[Dict[str, Any]] = None,
+    tool_tags: Optional[List[str]] = None,
   ) -> None:
     self.is_debug = is_debug
     
@@ -75,6 +82,7 @@ class MySqlChain:
     self.embeddings = embeddings
 
     self.vectorstore = vectorstore
+    
     self.vectorstore_nouns = self.vectorstore.from_texts(
       proper_nouns, self.embeddings,
     )
@@ -82,6 +90,11 @@ class MySqlChain:
       search_kwargs={"k": k_retriever_proper_nouns}
     )
   
+    self.tool_name = tool_name
+    self.tool_description = tool_description
+    self.tool_metadata = tool_metadata
+    self.tool_tags = tool_tags
+
     self.context = self.db.get_context()
     self.table_info = self.context['table_info']
     self.table_schema = self.db.table_info
@@ -206,8 +219,6 @@ class MySqlChain:
       .assign(output=self.chain_answer)
     ).with_retry()
 
-    
-    
   def chain_process_get_tables(self, tables: list):
     result = [table.name for table in tables]
     return result
@@ -230,3 +241,131 @@ class MySqlChain:
       result = result["output"]
 
     return result
+  
+  async def ainvoke_chain(self, question: str) -> Union[str, dict]:
+    """Get natural user question, turn it into SQL query and execute"""
+    question = self.prepare_chain_input(question)
+    result = await self.chain_sql.ainvoke(question)
+    
+    if not self.is_debug:
+      result = result["output"]
+
+    return result
+  
+  def create_tool_chain_sql(
+    self,
+    func: Callable = None,
+    args_schema: Type[BaseModel] = None,
+    coroutine: Optional[Callable[..., Awaitable[Any]]] = None,
+    name: str = None,
+    description: str = None,
+    return_direct: bool = False, # True: Agent will stop after tool completed
+    handle_tool_error: Optional[Union[bool, str, Callable[[ToolException], str]]] = True,
+    handle_validation_error: Optional[Union[bool, str, Callable[[ValidationError], str]]] = True,
+    verbose: bool = False,
+    metadata: Optional[Dict[str, Any]] = None,
+    tags: Optional[List[str]] = None,
+  ):
+    func = self.invoke_chain if func is None else func
+    args_schema = InputChainSql if args_schema is None else args_schema
+    coroutine = self.ainvoke_chain if coroutine is None else coroutine
+    
+    name = self.tool_name if name is None else name
+    description = self.tool_description if description is None else description
+    metadata = self.tool_metadata if metadata is None else metadata
+    tags = self.tool_tags if tags is None else tags
+    
+    tool_chain_sql = StructuredTool.from_function(
+      func=func,
+      args_schema=args_schema,
+      coroutine=coroutine,
+      name=name,
+      description=description,
+      return_direct=return_direct,
+      handle_tool_error=handle_tool_error,
+      handle_validation_error=handle_validation_error,
+      verbose=verbose,
+      metadata=metadata,
+      tags=tags,
+    )
+
+    return tool_chain_sql
+
+class MyRoutableChain:
+    def __init__(
+      self, 
+      categories: list[str], 
+      chains: dict[str, Runnable],
+      llm: BaseChatModel,
+    ):
+        self.llm = llm
+      
+        self.categories = categories
+        self.chains = chains
+        
+        self.prompt_tpl_extract_category = self.create_prompt_tpl_extract_category()
+        self.prompt_extract_category = PromptTemplate.from_template(self.prompt_tpl_extract_category)
+        
+        self.chain_extract_category = (
+            self.prompt_extract_category
+            | self.llm
+            | StrOutputParser()
+        )
+        
+        self.chain_routable = (
+            {
+                "question": lambda x: x["question"],
+                "category": self.chain_extract_category,
+            }
+            | RunnableLambda(self.route_chains)
+        )
+
+    def create_prompt_tpl_extract_category(self):
+        categories = ", ".join([f"{cate}" for cate in self.categories])
+        prompt_tpl_extract_category = """\
+        You will be given a list of categories and a question. Your task is to determine which category the question falls into and respond with only the name of that category. Do not include any other words in your response.
+
+        Here is the list of categories:
+        <categories>
+        {{CATEGORIES}}
+        </categories>
+
+        Here is the question to classify:
+        <question>
+        {{QUESTION}}
+        </question>
+
+        <example>
+        <categories>
+        science, history, math, literature
+        </categories>
+
+        <question>
+        What is the chemical formula for water?
+        </question>
+
+        science
+        </example>
+
+        Now classify the provided question into one of the given categories. Remember, respond with only a single word - the name of the category.
+
+        <question>
+        {question}
+        </question>
+
+        Classification:
+        """
+
+        prompt_tpl_extract_category = prompt_tpl_extract_category.replace("{{CATEGORIES}}", categories)
+        return prompt_tpl_extract_category
+
+    def route_chains(self, chain_vars):
+        for cat, chain in self.chains.items():
+            if cat.lower() == chain_vars["category"]:
+                return chain
+    
+    def get_chain(self):
+        return self.chain_routable
+
+
+...

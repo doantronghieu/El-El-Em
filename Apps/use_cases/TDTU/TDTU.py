@@ -1,11 +1,10 @@
 import add_packages
-from toolkit.langchain import models
 from pprint import pprint
 import os
 import yaml
 
 from toolkit.langchain import (
-  prompts, agents, stores
+  prompts, agents, stores, models
 )
 
 
