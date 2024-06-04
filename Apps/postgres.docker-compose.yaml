@@ -1,18 +1,23 @@
-version: '3.9'
-
 services:
   postgres:
     image: postgres:latest
+    container_name: postgres
     restart: always
     # shm_size: 128mb # shared memory limit
     volumes:
-      - ./data/postgres:/var/lib/postgresql/data
+      - ./data/postgres:/var/lib/postgresql/data # Apps/data/
     environment:
       POSTGRES_USER: myuser
       POSTGRES_PASSWORD: mysecretpassword
       POSTGRES_DB: mydatabase
     ports:
       - 5432:5432
+    networks:
+    - app-network
+  
+networks:
+  app-network:
+    driver: bridge
 
 # docker compose -f postgres.docker-compose.yaml up -d
 # docker compose -f postgres.docker-compose.yaml down

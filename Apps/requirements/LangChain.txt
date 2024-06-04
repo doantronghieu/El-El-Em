@@ -1,47 +1,30 @@
-langchain >= 0.1.20
-langchain-core >= 0.1.52
-langchain-community >= 0.0.38
-langchain-openai >= 0.1.6 # == 0.0.5 (crewai), >= 0.1.1
-langchain-anthropic >= 0.1.11
+langchain >= 0.2.1
+langchain-core >= 0.2.3
+langchain-community >= 0.2.1
+langchain-openai >= 0.1.8 # == 0.0.5 (crewai), >= 0.1.1
+openai >= 1.30.5
+tiktoken >= 0.7.0 # >=0.5.2 | >= 0.6.0
+langchain-anthropic >= 0.1.15
 langchain-qdrant >= 0.1.0
+qdrant-client >= 1.9.1
 langchain_cohere >= 0.1.5
+cohere >= 5.5.4
 langchain-groq >= 0.1.4
-langgraph >= 0.0.60
+groq >= 0.8.0
+langgraph >= 0.0.61
 
-# langchain-google-genai
 langchainhub >= 0.1.15
-# langserve[all] >= 0.0.51
 langsmith >= 0.1.57
-langchain-cli >= 0.0.22
 pydantic == 2.6.1 # 2.6.1 1.10.9 1.10.13
-
-boto3
 
 lark
 
 # Retrievers
 rank-bm25
 
-# Third parties
-cohere >= 5.1.7
-groq >= 0.4.2
-
-#*-----------------------------------------------------------------------------
-# CrewAI
-# crewai >= 0.22.5
-# crewai-tools >= 0.1.1 # 0.1.1
-# embedchain  # 0.1.99
-
-#*-----------------------------------------------------------------------------
-openai >= 1.30.1
-tiktoken >= 0.6.0 # >=0.5.2 | >= 0.6.0
-
-# predictionguard
-
-
 # Store
 chromadb >= 0.5.0
-qdrant-client >= 1.9.1
+faiss-cpu >= 1.8.0
 
 # Tools
 tools
@@ -63,17 +46,4 @@ opencv-python
 pytesseract
 pikepdf
 
-loguru
 beautifulsoup4
-context-python
-tqdm
-fastapi
-requests
-bitsandbytes
-ipykernel
-python-dotenv
-python-dateutil
-httpx
-
-watchdog
-transformers

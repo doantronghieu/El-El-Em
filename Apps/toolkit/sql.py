@@ -17,7 +17,7 @@ class MySQLDatabase:
 		dbname: str = os.getenv("SQL_DB"),
 		user: str = os.getenv("SQL_USER"),
 		password: str = os.getenv("SQL_PASSWORD"),
-		host: str = os.getenv("SQL_HOST"),
+		host: str = "postgres" if os.getenv("IN_PROD") else os.getenv("SQL_HOST"),
 		port: str = os.getenv("SQL_PORT"),
 		min_conn: int = 1,
 		max_conn: int = 1,

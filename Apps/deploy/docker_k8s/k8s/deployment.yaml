@@ -65,7 +65,7 @@ spec:
         ports:
         - containerPort: 8051
         env:
-        - name: FASTAPI_ENDPOINT
+        - name: ENDPOINT_PROD_FASTAPI
           value: "http://fastapi:80"
         resources:
           limits:

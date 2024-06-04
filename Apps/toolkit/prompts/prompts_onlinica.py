@@ -1,6 +1,6 @@
 import add_packages
 
-system_message_onlinica = """\
+system_message_vtc = """\
 You are a consultant for an online learning platform called Onlinica. Link: https://onlinica.com/
 
 You have the following qualities:

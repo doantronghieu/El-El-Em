@@ -1,4 +1,3 @@
----
 # Source: helm-chart/templates/service.yaml
 apiVersion: v1
 kind: Service
@@ -10,9 +9,9 @@ spec:
   selector:
     app: fastapi
   ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 8000
+  - protocol: TCP
+    port: 80
+    targetPort: 8000
   type: ClusterIP
 ---
 # Source: helm-chart/templates/service.yaml
@@ -26,9 +25,9 @@ spec:
   selector:
     app: streamlit
   ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 8051
+  - protocol: TCP
+    port: 80
+    targetPort: 8051
   type: LoadBalancer
   externalTrafficPolicy: Cluster
 ---
@@ -99,7 +98,7 @@ spec:
         ports:
         - containerPort: 8051
         env:
-        - name: FASTAPI_ENDPOINT
+        - name: ENDPOINT_PROD_FASTAPI
           value: "http://fastapi:80"
         resources:
           limits:
@@ -136,18 +135,18 @@ spec:
   minReplicas: 1
   maxReplicas: 10
   metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target:
-          type: Utilization
-          averageUtilization: 80
-    - type: Resource
-      resource:
-        name: memory
-        target:
-          type: Utilization
-          averageUtilization: 80
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 80
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
 ---
 # Source: helm-chart/templates/hpa.yaml
 apiVersion: autoscaling/v2
@@ -164,18 +163,18 @@ spec:
   minReplicas: 1
   maxReplicas: 10
   metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target:
-          type: Utilization
-          averageUtilization: 80
-    - type: Resource
-      resource:
-        name: memory
-        target:
-          type: Utilization
-          averageUtilization: 80
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 80
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
 ---
 # Source: helm-chart/templates/ingress.yaml
 apiVersion: networking.k8s.io/v1

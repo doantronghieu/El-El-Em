@@ -1,5 +1,3 @@
-version: "2.27.0"
-
 services:
   fastapi:
     image: doantronghieu/llm-fastapi:latest
@@ -8,12 +6,12 @@ services:
       context: .
       dockerfile: deploy/docker_k8s/docker-files/Dockerfile.fastapi
     ports:
-      - "8000:8000"
+    - "8000:8000"
     networks:
-      - app-network
+    - app-network
     restart: always
     environment:
-      - IN_PROD=True
+    - IN_PROD=True
 
   streamlit:
     image: doantronghieu/llm-streamlit:latest
@@ -22,18 +20,35 @@ services:
       context: .
       dockerfile: deploy/docker_k8s/docker-files/Dockerfile.streamlit
     ports:
-      - "8051:8051"
+    - "8051:8051"
     networks:
-      - app-network
+    - app-network
     restart: always
     environment:
-      - FASTAPI_ENDPOINT=http://fastapi:8000
-      - STREAMLIT_GENERAL_CHAT=True
-      - STREAMLIT_DATA_DO_ANYTHING=True
-      - STREAMLIT_GENERATE_ANYTHING=True
-      - STREAMLIT_VTC=True
+    - ENDPOINT_PROD_FASTAPI=http://fastapi:8000
+    - STREAMLIT_GENERAL_CHAT=True
+    - STREAMLIT_DATA_DO_ANYTHING=True
+    - STREAMLIT_GENERATE_ANYTHING=True
+    - STREAMLIT_VTC=True
     depends_on:
-      - fastapi
+    - fastapi
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    restart: always
+    # shm_size: 128mb # shared memory limit
+    volumes:
+    - ./data/postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_DB: mydatabase
+    ports:
+    - 5432:5432
+    networks:
+    - app-network
+    
 
 networks:
   app-network:

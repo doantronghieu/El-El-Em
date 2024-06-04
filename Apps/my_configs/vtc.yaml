@@ -52,41 +52,212 @@ vector_db:
       retriever_tool_name: "lectures_content"
       retriever_tool_description: "Searches and returns content, knowledge from the lecture scripts based on specialized keywords from user's question like Typography, Lazada, Premiere, Unity ..."
 
-    courses_information:
-      collection_name: "vtc-courses-information-3072-v1" # vtc-courses-information-2, vtc-courses-information-3072
+    vtc_faq:
+      collection_name: "vtc_faq"
       default_search_type: "mmr"
       default_search_kwargs:
         k: 10
-      retriever_tool_name: "courses_information"
-      retriever_tool_description: "Searches and returns information about courses of Onlinica like course name, course category, course link, course description, total number of courses ..."
+      retriever_tool_name: "vtca_frequently_asked_questions"
+      retriever_tool_description: "Searches and returns answer for frequently asked questions about VTCA information likeadmission requirements, course offerings, fees, scholarships, age requirements, online learning, dual enrollment, job placement guarantees, financial assistance, admission deadlines, transfer policies, tuition increases, academic programs, curriculum, eligibility, admission process, course duration, payment options, program benefits, and student support"
 
-    faq:
-      collection_name: "vtc-faq-3072-v1" # vtc-faq, vtc-faq-3072
+    onli_faq:
+      collection_name: "onli_faq"
       default_search_type: "mmr"
       default_search_kwargs:
         k: 10
-      retriever_tool_name: "frequently_asked_questions"
-      retriever_tool_description: "Searches and returns answer for frequently asked questions about Onlinica information like accounts, fees, courses, payments, certificates ..."
+      retriever_tool_name: "onlinica_frequently_asked_questions"
+      retriever_tool_description: "Searches and returns answer for frequently asked questions about Onlinica platform information like account registration, types of accounts, course availability and pricing, course duration, account deletion, VIP trial period, available courses, certification, and payment methods"
 
 prompts:
-  system_message_onlinica: |
-    You are a consultant for an online learning platform called Onlinica. Link: https://onlinica.com/
-        
-    You have the following qualities:
-    - Helpful
-    - Extremely dedicated and hardworking
-    - Professionalism, respect, sincerity and honesty
-    - Standard thinking
-    - Excellent communication, negotiation and complaint handling skills
-    - Excellent sales skills
-    - Deep understanding of products/services. Strong knowledge of the industry
-    - Optimistic and positive spirit. Ability to create a positive customer experience
-    - Sensitive to customers' requests and desires
-        
-    You will help users answer questions about the courses on the platform. The language in which you respond will be the same as the user's language.
-        
-    Questions users might ask and how to answer:
-    - Course Information: You MUST list ALL available courses (and their information) that MOST MATCH the user's question.
-    - List courses in a certain category: You MUST list about 10 courses in that category. 
-    - Content and knowledge of the lecture: These questions will often contain specialized keywords such as Typography, Lazada, Premiere, Unity,... You will synthesize information from the scripts of the lectures that contain keywords that major and give detailed answers to users. 
-    - Frequently asked questions.
+  system_message_vtc: |
+    You are a dedicated and professional consultant for both VTC Academy, an offline learning institution (link: https://vtc.edu.vn/), and Onlinica, an online learning platform (link: https://onlinica.com/).
+
+    You possess the following admirable qualities:
+
+    - A helpful and supportive nature
+    - An extremely dedicated and hardworking work ethic
+    - Professionalism, respect, sincerity, and honesty in all interactions
+    - Standard and methodical thinking
+    - Excellent communication, negotiation, and complaint handling skills
+    - Exceptional sales skills
+    - A deep understanding of the products/services offered by both institutions, along with a strong knowledge of the education industry
+    - An optimistic and positive spirit, with the ability to create a positive customer experience
+    - Sensitivity to customers' requests and desires
+
+    Your role will involve assisting users in both Vietnamese and English, answering their questions about the courses offered by both VTC Academy and Onlinica.
+
+    The types of questions users might ask and how to answer them include:
+
+    - Course Information: You MUST list ALL available courses (and their relevant information) that MOST MATCH the user's question for both VTC Academy and Onlinica.
+    - List courses in a certain category: You MUST list approximately 10 courses in that category for both VTC Academy and Onlinica.
+    - Content and knowledge of the lecture: These questions will often contain specialized keywords such as Typography, Lazada, Premiere, Unity, etc. You will synthesize information from the scripts of the lectures that contain keywords that are most relevant and provide detailed answers to users for both VTC Academy and Onlinica.
+    - Frequently asked questions for both VTC Academy and Onlinica.
+
+sql:
+  examples_questions_to_sql:
+    onli_course_list:
+      - input: "Which courses are available in the Design category?"
+        query: "SELECT course_name FROM courses WHERE course_category = 'Design';"
+      - input: "Who are the instructors for the Personal Development courses?"
+        query: "SELECT DISTINCT instructor_name FROM courses WHERE course_category = 'Personal Development';"
+      - input: "Can you provide a summary of the course descriptions for the Digital Marketing category?"
+        query: "SELECT course_name, SUBSTRING(course_description, 1, 100) AS summary FROM courses WHERE course_category = 'Digital Marketing';"
+      - input: "Which courses have the longest descriptions?"
+        query: "SELECT course_name, LENGTH(course_description) AS description_length FROM courses ORDER BY description_length DESC LIMIT 5;"
+      - input: "How many courses are offered by each instructor?"
+        query: "SELECT instructor_name, COUNT(course_id) AS num_courses FROM courses GROUP BY instructor_name;"
+      - input: "Which course categories have the most number of courses?"
+        query: "SELECT course_category, COUNT(course_id) AS num_courses FROM courses GROUP BY course_category ORDER BY num_courses DESC LIMIT 5;"
+      - input: "Can you tell me about the course 'Kỹ năng quản lý thời gian'?"
+        query: "SELECT * FROM courses WHERE course_name = 'Kỹ năng quản lý thời gian';"
+      - input: "Which courses have the shortest descriptions?"
+        query: "SELECT course_name, LENGTH(course_description) AS description_length FROM courses ORDER BY description_length ASC LIMIT 5;"
+      - input: "Which instructors have the most number of courses?"
+        query: "SELECT instructor_name, COUNT(course_id) AS num_courses FROM courses GROUP BY instructor_name ORDER BY num_courses DESC LIMIT 5;"
+      - input: "Can you list all the courses that are related to Personal Development?"
+        query: "SELECT course_name FROM courses WHERE course_category = 'Personal Development';"
+
+    vtc_course_list:
+      - input: "What are the different courses offered?"
+        query: "SELECT DISTINCT course_name FROM courses;"
+      - input: "Which semester has the most number of courses?"
+        query: "SELECT semester_no, COUNT(course_name) AS num_courses FROM courses GROUP BY semester_no ORDER BY num_courses DESC LIMIT 1;"
+      - input: "What is the distribution of course hours across different subjects?"
+        query: "SELECT subject, SUM(hour) AS total_hours FROM courses GROUP BY subject;"
+      - input: "Can you provide a breakdown of learning outcomes for each course?"
+        query: "SELECT course_name, learning_outcome FROM courses;"
+      - input: "Which courses have the longest learning duration?"
+        query: "SELECT course_name, SUM(hour) AS total_hours FROM courses GROUP BY course_name ORDER BY total_hours DESC;"
+      - input: "How many unique learning outcomes are there across all courses?"
+        query: "SELECT COUNT(DISTINCT learning_outcome) AS num_unique_outcomes FROM courses;"
+      - input: "Which semester has the highest total number of hours for all courses?"
+        query: "SELECT semester_no, SUM(hour) AS total_hours FROM courses GROUP BY semester_no ORDER BY total_hours DESC LIMIT 1;"
+      - input: "Can you tell me about the learning outcomes for the 'Advanced 3D Animation' course?"
+        query: "SELECT learning_outcome FROM courses WHERE course_name = 'Advanced 3D Animation';"
+      - input: "Which subject has the most number of courses?"
+        query: "SELECT subject, COUNT(course_name) AS num_courses FROM courses GROUP BY subject ORDER BY num_courses DESC LIMIT 1;"
+      - input: "How does the learning outcome 'Ability to research' appear across different courses and subjects?"
+        query: "SELECT course_name, subject FROM courses WHERE learning_outcome LIKE '%Ability to research%';"
+
+  proper_nouns:
+  - Lập trình
+  - Digital Marketing
+  - Trí tuệ nhân tạo A.I
+  - Soft Skills
+  - Personal Development
+  - Design
+  - Ms. Nguyễn Mỹ Hạnh
+  - Ms. Cao Thị Thùy Trang
+  - Ms. Đoàn Phương Trúc
+  - Mr. Dương Hoàng Thanh
+  - Ms. Lương Bảo Trâm
+  - Mr. Nguyễn Phúc Luân
+  - Ms. Lê Thị Minh Thư
+  - Mr. Khang Nguyễn
+  - Ms. My Dương
+  - Ms. Lê Thị Cẩm Thi
+  - Mr. Lê Hoàng Anh Thi
+  - Mr. Đỗ Đức Anh
+  - Mr. Kỷ Thế Vinh\nMr. Lê Vũ Quang
+  - Ms. Nguyễn Hải Uyên
+  - Ms. Trần Thị Thúy Hằng
+  - Mr. Guy-Roger Duvert
+  - Mr. Hoàng Phúc Lộc
+  - Ms. Đinh Hoàng Dung
+  - Ms. Trần Hải Bình
+  - Ms. Nguyễn Tường Vi
+  - Mr. Nguyễn Thiên Ân
+  - Ths. Võ Minh Thành
+  - Ms. Kim Phương
+  - Mr. Lê Hoàng Anh Thi
+  - Ms. Nguyễn Ngọc Tú Uyên
+  - Mr. Đinh Nguyễn Trọng Nghĩa
+  - Ms. Bùi Vĩnh Nghi
+  - Ms. Bảo Trâm
+  - Ms. Nguyễn Kim Phượng
+  - Ms. Huỳnh Thị Ngọc Tuyền
+  - Mr. Patrick Larochelle
+  - Ms. Lê Diệu Hiền
+  - Ms. Junie Đinh
+  - Ms. Annie Nguyễn
+  - Ms. Tracy Nguyễn
+  - Ms. Trần Nguyễn Hoàng Ngân
+  - Ms. Thanh Trà
+  - Giảng viên Onlinica (AI)
+  - Mr. Nguyễn Đình Cường
+  - Mr. Trịnh Trung Hậu
+  - Mr. Hoàng Khắc Huyên
+  - Ms. Doris
+  - Mr. Thái Bằng Phi (John Thai)
+  - Ms. Đặng Nguyễn Thiên An
+  - Ms. Bùi Thương Huyền
+  - Mr. Huỳnh Nguyên Bảo
+  - Ms. Nguyễn Hải Huyền Trang
+  - Giảng viên Onlinica
+  - Ms. Nguyễn Khánh Ly
+  - Ms. Nguyễn Ngọc Tú Nguyên
+  - Mr. Trần Nguyễn Hoài Nam
+  - Ms. Ngô Thị Ngọc Phượng
+  - Ms. Huỳnh Vũ Thủy Tiên (Tienee)
+  - Mr. Ngô Đình Sơn Thái
+  - Mr. Nguyễn Huỳnh Thiên An
+  - Mr. Bùi Nguyễn Ngọc Dương
+  - Mr. Nguyễn Trọng Tiến
+  - Mr. Trần Anh Tuấn
+  - Ms. Phạm Quỳnh Anh
+  - Ms. Nguyễn Lệ Chi
+  - Ms. Chế Dạ Thảo
+  - ThS. Nguyễn Hải Uyên
+  - Ms. Võ Ngọc Tuyền
+  - Mr. Nguyễn Tấn Huynh
+  - Mr. Nguyễn Đức Giang
+  - Ms. Đỗ Phương Thảo
+  - Ms. Nguyễn Thu Hà
+  - Ms. Trần Thị Phương Thảo
+  - Advanced 3D Animation
+  - Advanced 3D Animation
+  - 3D Design
+  - Art Fundamentals
+  - Professional Animation
+  - Advanced Body Mechanics
+  - 3D Animation Fundamental
+  - Game Animation
+  - Basic Concept Art
+  - Soft Skills
+  - Semester Orientation Session
+  - Acting Shot
+  - Character Rigging
+  - English IELTS 3
+  - English IELTS 1
+  - English IELTS 2
+  - Dynamic FX
+  - Overview - Semester 2 - 3D Design
+  - Sketchbook
+  - Learning How to Learn
+  - Pantomime
+  - Art theory (Perspective, Color, Proportions & Anatomy of Human)
+  - Personal and Career Development
+  - Drawing
+  - Project 1 (Individual)
+  - Overview - Semester 4 - Professional Animation
+  - Motion Capture
+  - Character Creation
+  - Basic Lighting and Rendering
+  - Storyboard
+  - Capstone Project (Team)
+  - Creature Animation
+  - Compositing Basic
+  - Overview - Semester 3 - Advanced 3D Animation
+  - Texture Painting
+  - Working with Game Engine
+  - Computer Fundamentals
+  - 3D Modeling Fundamental
+  - Project 2 (Team)
+  - Grand Project (Team)
+  - Overview - Semester 1 - Art Fundamentals
+
+  tool:
+    name: "sql_executor"
+    description: "Searches and returns detail information about learning courses of Onlinica and VTCA like course_name, course_category, course_link, course_description, instructor_name, semester_name, semester_no, subject, learing hour ... Generate SQL based on user question and execute it"
+    metadata: {"detail information_data": ["vtc", "onlinica"]}
+    tags: ["detail_information_vtc", "detail information_onlinica"]

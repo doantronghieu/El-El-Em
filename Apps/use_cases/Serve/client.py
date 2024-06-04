@@ -4,7 +4,7 @@ import os
 import json
 from typing import Literal
 
-server_fastapi = os.environ.get('FASTAPI_ENDPOINT', 'http://127.0.0.1:8000')
+server_fastapi = os.environ.get('ENDPOINT_PROD_FASTAPI', 'http://127.0.0.1:8000')
 
 async def get_langchain_session_dynamodb_table(
 	server_fastapi = server_fastapi, 

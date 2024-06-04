@@ -1,27 +1,19 @@
-gradio
-loguru
-beautifulsoup4
+boto3 >= 1.34.117
 context-python
-tqdm
-fastapi
-uvicorn
-requests
-bitsandbytes
-ipykernel
-python-dotenv
-python-dateutil
-openpyxl
-httpx
 faker
-
-# Postgresql
-# psycopg2
-psycopg2-binary
-
-streamlit
+fastapi >= 0.111.0
+uvicorn
+httpx >= 0.27.0
+ipykernel
+loguru
+openpyxl
+psycopg2-binary >= 2.9.9 # Postgresql
+python-dateutil
+python-dotenv
+requests
+streamlit >= 1.35.0
 streamlit_feedback
-# streamlit-extras
-# st-pages
-
+tqdm
+# transformers
+urllib3
 watchdog
-transformers
