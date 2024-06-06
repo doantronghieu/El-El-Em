@@ -63,6 +63,7 @@ docker push doantronghieu/llm-streamlit:latest
 # Test
 docker run -p 8000:8000 doantronghieu/llm-fastapi:latest
 
+
 docker compose -f docker-compose.yaml up -d
 docker compose -f docker-compose.yaml down
 ---

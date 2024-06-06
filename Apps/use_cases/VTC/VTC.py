@@ -16,7 +16,6 @@ llm = models.chat_openai
 embeddings = text_embedding_models.OpenAIEmbeddings()
 vectorstore = stores.faiss.FAISS
 
-
 #*------------------------------------------------------------------------------
 
 examples_fewshot_tmp = dict(configs["sql"]["examples_questions_to_sql"]).values()

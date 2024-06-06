@@ -13,8 +13,8 @@ langchain-groq >= 0.1.4
 groq >= 0.8.0
 langgraph >= 0.0.61
 
-langchainhub >= 0.1.15
-langsmith >= 0.1.57
+langchainhub >= 0.1.17
+langsmith >= 0.1.69
 pydantic == 2.6.1 # 2.6.1 1.10.9 1.10.13
 
 lark
@@ -45,5 +45,8 @@ pillow_heif
 opencv-python
 pytesseract
 pikepdf
+
+# Others
+
 
 beautifulsoup4

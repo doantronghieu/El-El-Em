@@ -187,11 +187,11 @@ class MyStatelessAgent:
 		history_type: TypeHistoryType,
 		msg_user: str,
 		msg_ai: str,
-  ):
+	):
 		await history._add_messages_to_history(msg_user, msg_ai)
 		if history_type == "in_memory":
 			await history._truncate_chat_history()
-  
+	
 	async def invoke_agent(
 		self,
 		input_message: str,
@@ -230,7 +230,7 @@ class MyStatelessAgent:
 			msg_user=input_message,
 			msg_ai=result,
 		)
-  
+	
 		return result
 
 	async def astream_events_basic(
@@ -241,7 +241,7 @@ class MyStatelessAgent:
 		user_id: TypeUserId = "admin",
 		session_id: TypeSessionId = None,
 	
-		show_tool_call: bool = True,
+		show_tool_call: bool = False,
 		history_size: Union[int, None] = 20,
 	) -> AsyncGenerator[str, None]:
 		"""
@@ -261,34 +261,52 @@ class MyStatelessAgent:
 		)
 		result = ""
 		res = ""
+
+		""" used for debugging
+		a = agent.events
+		a = [x for x in agent.events if x["event"] == "on_chat_model_stream"]
+		a_data = [x["data"] for x in a]
+		a_data_chunk = [x["chunk"] for x in a_data]
+		a_data_chunk_tool = [x for x in a if dict(a_data_chunk)["tool_call_chunks"]]
+		a_metadata_sql_chain = [x for x in a if "..." in x["metadata"].keys()]
+		"""
+  
+		# self.events = [] # debug
   
 		async for event in self.agent_executor.astream_events(
 			input={"input": input_message, "chat_history": await history._get_chat_history()},
-			version="v1",
+			version="v2",
 		):
+			# self.events.append(event) # debug
 			event_event = event["event"]
 			event_name = event["name"]
-   
-			try:
-				event_data_chunk = event["data"]["chunk"]
-			except:
-				pass
+	
+			try: event_data_chunk = event["data"]["chunk"]
+			except: pass
 			
 			if event_event == "on_chat_model_stream":
 				chunk = dict(event_data_chunk)["content"]
-				
+		
+				# try:
+				# 	if event["metadata"]["ls_stop"] == ['\nSQLResult:']:	continue
+				# except: pass
+				# try:
+				# 	if "is_my_sql_chain_run" in event["metadata"].keys(): continue
+				# except: pass
+				if (event.get("metadata", {}).get("ls_stop") == ['\nSQLResult:']) \
+						or ("is_my_sql_chain_run" in event.get("metadata", {})):
+					continue
+
 				result += chunk
 				res += chunk
 				yield chunk
 		
-			# print(event)
-	
 			if show_tool_call and event_event == "on_chain_stream":
 				if event_name == "RunnableSequence":
 					try:
 						chunk: str = dict(event_data_chunk[0])["log"]
 						chunk = f"`[TOOL - CALLING]` {chunk}"
-      
+			
 						await self._add_messages_to_history(
 							history=history,
 							history_type=history_type,
@@ -304,33 +322,33 @@ class MyStatelessAgent:
 					try:
 						chunk = dict(event_data_chunk[1])["content"]
 						chunk = f"`[TOOL - RESULT]` {chunk}\n\n"
-      
+			
 						await self._add_messages_to_history(
 							history=history,
 							history_type=history_type,
 							msg_user=None,
 							msg_ai=chunk,
 						)
-      
+			
 						result += chunk
 						yield chunk
 					except:
 						pass
 						
-		# await self._add_messages_to_history(
-		# 	history=history,
-		# 	history_type=history_type,
-		# 	msg_user=input_message,
-		# 	msg_ai=result,
-		# )
-  
+		await self._add_messages_to_history(
+			history=history,
+			history_type=history_type,
+			msg_user=input_message,
+			msg_ai=result,
+		)
+	
 		await self._add_messages_to_history(
 			history=history,
 			history_type=history_type,
 			msg_user=None,
 			msg_ai=res,
 		)
-  
+	
 	async def astream_events_basic_wrapper(
 		self,
 		input_message: str,

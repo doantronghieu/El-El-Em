@@ -92,169 +92,323 @@ prompts:
     - List courses in a certain category: You MUST list approximately 10 courses in that category for both VTC Academy and Onlinica.
     - Content and knowledge of the lecture: These questions will often contain specialized keywords such as Typography, Lazada, Premiere, Unity, etc. You will synthesize information from the scripts of the lectures that contain keywords that are most relevant and provide detailed answers to users for both VTC Academy and Onlinica.
     - Frequently asked questions for both VTC Academy and Onlinica.
+    
+    Your response must be in Vietnamese.
 
 sql:
   examples_questions_to_sql:
     onli_course_list:
-      - input: "Which courses are available in the Design category?"
-        query: "SELECT course_name FROM courses WHERE course_category = 'Design';"
-      - input: "Who are the instructors for the Personal Development courses?"
-        query: "SELECT DISTINCT instructor_name FROM courses WHERE course_category = 'Personal Development';"
-      - input: "Can you provide a summary of the course descriptions for the Digital Marketing category?"
-        query: "SELECT course_name, SUBSTRING(course_description, 1, 100) AS summary FROM courses WHERE course_category = 'Digital Marketing';"
-      - input: "Which courses have the longest descriptions?"
-        query: "SELECT course_name, LENGTH(course_description) AS description_length FROM courses ORDER BY description_length DESC LIMIT 5;"
-      - input: "How many courses are offered by each instructor?"
-        query: "SELECT instructor_name, COUNT(course_id) AS num_courses FROM courses GROUP BY instructor_name;"
-      - input: "Which course categories have the most number of courses?"
-        query: "SELECT course_category, COUNT(course_id) AS num_courses FROM courses GROUP BY course_category ORDER BY num_courses DESC LIMIT 5;"
-      - input: "Can you tell me about the course 'Kỹ năng quản lý thời gian'?"
-        query: "SELECT * FROM courses WHERE course_name = 'Kỹ năng quản lý thời gian';"
-      - input: "Which courses have the shortest descriptions?"
-        query: "SELECT course_name, LENGTH(course_description) AS description_length FROM courses ORDER BY description_length ASC LIMIT 5;"
-      - input: "Which instructors have the most number of courses?"
-        query: "SELECT instructor_name, COUNT(course_id) AS num_courses FROM courses GROUP BY instructor_name ORDER BY num_courses DESC LIMIT 5;"
-      - input: "Can you list all the courses that are related to Personal Development?"
-        query: "SELECT course_name FROM courses WHERE course_category = 'Personal Development';"
+      - input: "Các thể loại khoá học ở Onlinica"
+        query: "SELECT DISTINCT course_category FROM onli_course_list;"
+      - input: "Giảng viên nào có nhiều khoá học nhất ở Onlinica"
+        query: "SELECT instructor_name, COUNT(course_id) as course_count FROM onli_course_list GROUP BY instructor_name ORDER BY course_count DESC LIMIT 3;"
+      - input: "Thể loại khoá học nào có nhiều khoá học nhất ở Onlinica?"
+        query: "SELECT course_category, COUNT(course_id) AS num_courses FROM onli_course_list GROUP BY course_category ORDER BY num_courses DESC LIMIT 3;"
+      - input: "Các khoá học của thầy Trần Anh Tuấn ở Onlinica"
+        query: "SELECT course_name, course_category, course_link, course_description FROM onli_course_list WHERE LOWER(instructor_name) LIKE '%trần anh tuấn%';"
+      - input: "Các khoá học về lập trình ở Onlninica"
+        query: "SELECT course_name, instructor_name, course_link, course_description FROM onli_course_list WHERE LOWER(course_category) LIKE '%lập trình%';"
+      - input: "Các giảng viên dạy về lập trình ở Onlninica"
+        query: "SELECT DISTINCT instructor_name FROM onli_course_list WHERE LOWER(course_category) LIKE '%lập trình%';"
+      - input: "Thông tin khoá học kỹ năng quản lý thời gian ở Onlinica?"
+        query: "SELECT course_name, course_category, instructor_name, course_link, course_description FROM onli_course_list WHERE LOWER(course_name) LIKE '%quản lý thời gian%';"
+      - input: "Giảng viên của khoá học 'Kỹ Năng Giao Tiếp Hiệu Quả' ở Onlinica"
+        query: "SELECT instructor_name, course_link, course_description FROM onli_course_list WHERE LOWER(course_name) LIKE '%giao tiếp hiệu quả%';"
+      - input: "Các khoá học về game ở Onlinica"
+        query: "SELECT * FROM onli_course_list WHERE LOWER(course_name) LIKE '%game%';"
 
     vtc_course_list:
-      - input: "What are the different courses offered?"
-        query: "SELECT DISTINCT course_name FROM courses;"
-      - input: "Which semester has the most number of courses?"
-        query: "SELECT semester_no, COUNT(course_name) AS num_courses FROM courses GROUP BY semester_no ORDER BY num_courses DESC LIMIT 1;"
-      - input: "What is the distribution of course hours across different subjects?"
-        query: "SELECT subject, SUM(hour) AS total_hours FROM courses GROUP BY subject;"
-      - input: "Can you provide a breakdown of learning outcomes for each course?"
-        query: "SELECT course_name, learning_outcome FROM courses;"
-      - input: "Which courses have the longest learning duration?"
-        query: "SELECT course_name, SUM(hour) AS total_hours FROM courses GROUP BY course_name ORDER BY total_hours DESC;"
-      - input: "How many unique learning outcomes are there across all courses?"
-        query: "SELECT COUNT(DISTINCT learning_outcome) AS num_unique_outcomes FROM courses;"
-      - input: "Which semester has the highest total number of hours for all courses?"
-        query: "SELECT semester_no, SUM(hour) AS total_hours FROM courses GROUP BY semester_no ORDER BY total_hours DESC LIMIT 1;"
-      - input: "Can you tell me about the learning outcomes for the 'Advanced 3D Animation' course?"
-        query: "SELECT learning_outcome FROM courses WHERE course_name = 'Advanced 3D Animation';"
-      - input: "Which subject has the most number of courses?"
-        query: "SELECT subject, COUNT(course_name) AS num_courses FROM courses GROUP BY subject ORDER BY num_courses DESC LIMIT 1;"
-      - input: "How does the learning outcome 'Ability to research' appear across different courses and subjects?"
-        query: "SELECT course_name, subject FROM courses WHERE learning_outcome LIKE '%Ability to research%';"
+      - input: "Các khối ngành đào tạo tại VTCA?"
+        query: "SELECT DISTINCT category FROM vtc_course_list;"
+      - input: "Khối ngành thiết kế tại VTC Academy có những chuyên ngành nào?"
+        query: "SELECT academic_program, program_type, reference_link, program_format, program_duration, program_time FROM vtc_course_list WHERE LOWER(category) LIKE '%thiết kế%';"
+      - input: "Thời lượng và hình thức học của khóa học lập trình phần mềm tại VTCA"
+        query: "SELECT * FROM vtc_course_list WHERE LOWER(academic_program) LIKE '%lập trình%';"
+      - input: "Ở VTCA có những khoá học dài hạn nào?"
+        query: "SELECT academic_program, program_type, program_duration, reference_link FROM vtc_course_list WHERE LOWER(program_duration) LIKE '%dài%';"
+      - input: "Ở VTCA có những khoá học trung hạn nào?"
+        query: "SELECT academic_program, program_type, program_duration, reference_link FROM vtc_course_list WHERE LOWER(program_duration) LIKE '%trung%';"
+      - input: "Đối tượng nhập học của khóa học thiết kế 3D tại VTC Academy"
+        query: "SELECT admission_targets FROM vtc_course_list WHERE LOWER(academic_program) LIKE '%thiết kế%';"
+      - input: "Các khoá học tại VTCA có hình thức học tập trung"
+        query: "SELECT academic_program, program_type, reference_link FROM vtc_course_list WHERE LOWER(program_format) LIKE '%tập trung%';"
+      - input: "Link tham khảo khóa học quản lý chuỗi ứng dụng và logistic tại VTC Academy"
+        query: "SELECT reference_link FROM vtc_course_list WHERE LOWER(academic_program) LIKE '%logistic%';"
+      - input: "Học phí cho khóa học Digital Marketing VTCA"
+        query: "SELECT tuition FROM vtc_course_list WHERE LOWER(academic_program) LIKE '%marketing%';"
+      - input: "Thời gian khai giảng khóa học 3D Modeling tại VTCA"
+        query: "SELECT * FROM vtc_course_list WHERE LOWER(academic_program) LIKE '%3d%' AND LOWER(program_type) LIKE '%tiêu chuẩn%';"
+      - input: "Cơ hội nghề nghiệp của ngành học digital marketing ở VTCA?"
+        query: "SELECT program_outcomes FROM vtc_course_list WHERE LOWER(academic_program) LIKE '%marketing%';"
+      - input: "Các chương trình học tiêu chuẩn tại VTCA"
+        query: "SELECT * FROM vtc_course_list WHERE LOWER(program_type) LIKE '%tiêu chuẩn%';"
+      - input: "Các chương trình học plus của VTCA"
+        query: "SELECT * FROM vtc_course_list WHERE LOWER(program_type) LIKE '%plus%';"
+
 
   proper_nouns:
-  - Lập trình
-  - Digital Marketing
-  - Trí tuệ nhân tạo A.I
-  - Soft Skills
-  - Personal Development
-  - Design
-  - Ms. Nguyễn Mỹ Hạnh
-  - Ms. Cao Thị Thùy Trang
-  - Ms. Đoàn Phương Trúc
-  - Mr. Dương Hoàng Thanh
-  - Ms. Lương Bảo Trâm
-  - Mr. Nguyễn Phúc Luân
-  - Ms. Lê Thị Minh Thư
-  - Mr. Khang Nguyễn
-  - Ms. My Dương
-  - Ms. Lê Thị Cẩm Thi
-  - Mr. Lê Hoàng Anh Thi
-  - Mr. Đỗ Đức Anh
-  - Mr. Kỷ Thế Vinh\nMr. Lê Vũ Quang
-  - Ms. Nguyễn Hải Uyên
-  - Ms. Trần Thị Thúy Hằng
-  - Mr. Guy-Roger Duvert
-  - Mr. Hoàng Phúc Lộc
-  - Ms. Đinh Hoàng Dung
-  - Ms. Trần Hải Bình
-  - Ms. Nguyễn Tường Vi
-  - Mr. Nguyễn Thiên Ân
-  - Ths. Võ Minh Thành
-  - Ms. Kim Phương
-  - Mr. Lê Hoàng Anh Thi
-  - Ms. Nguyễn Ngọc Tú Uyên
-  - Mr. Đinh Nguyễn Trọng Nghĩa
-  - Ms. Bùi Vĩnh Nghi
-  - Ms. Bảo Trâm
-  - Ms. Nguyễn Kim Phượng
-  - Ms. Huỳnh Thị Ngọc Tuyền
-  - Mr. Patrick Larochelle
-  - Ms. Lê Diệu Hiền
-  - Ms. Junie Đinh
-  - Ms. Annie Nguyễn
-  - Ms. Tracy Nguyễn
-  - Ms. Trần Nguyễn Hoàng Ngân
-  - Ms. Thanh Trà
-  - Giảng viên Onlinica (AI)
-  - Mr. Nguyễn Đình Cường
-  - Mr. Trịnh Trung Hậu
-  - Mr. Hoàng Khắc Huyên
-  - Ms. Doris
-  - Mr. Thái Bằng Phi (John Thai)
-  - Ms. Đặng Nguyễn Thiên An
-  - Ms. Bùi Thương Huyền
-  - Mr. Huỳnh Nguyên Bảo
-  - Ms. Nguyễn Hải Huyền Trang
-  - Giảng viên Onlinica
-  - Ms. Nguyễn Khánh Ly
-  - Ms. Nguyễn Ngọc Tú Nguyên
-  - Mr. Trần Nguyễn Hoài Nam
-  - Ms. Ngô Thị Ngọc Phượng
-  - Ms. Huỳnh Vũ Thủy Tiên (Tienee)
-  - Mr. Ngô Đình Sơn Thái
-  - Mr. Nguyễn Huỳnh Thiên An
-  - Mr. Bùi Nguyễn Ngọc Dương
-  - Mr. Nguyễn Trọng Tiến
-  - Mr. Trần Anh Tuấn
-  - Ms. Phạm Quỳnh Anh
-  - Ms. Nguyễn Lệ Chi
-  - Ms. Chế Dạ Thảo
-  - ThS. Nguyễn Hải Uyên
-  - Ms. Võ Ngọc Tuyền
-  - Mr. Nguyễn Tấn Huynh
-  - Mr. Nguyễn Đức Giang
-  - Ms. Đỗ Phương Thảo
-  - Ms. Nguyễn Thu Hà
-  - Ms. Trần Thị Phương Thảo
-  - Advanced 3D Animation
-  - Advanced 3D Animation
-  - 3D Design
-  - Art Fundamentals
-  - Professional Animation
-  - Advanced Body Mechanics
-  - 3D Animation Fundamental
-  - Game Animation
-  - Basic Concept Art
-  - Soft Skills
-  - Semester Orientation Session
-  - Acting Shot
-  - Character Rigging
-  - English IELTS 3
-  - English IELTS 1
-  - English IELTS 2
-  - Dynamic FX
-  - Overview - Semester 2 - 3D Design
-  - Sketchbook
-  - Learning How to Learn
-  - Pantomime
-  - Art theory (Perspective, Color, Proportions & Anatomy of Human)
-  - Personal and Career Development
-  - Drawing
-  - Project 1 (Individual)
-  - Overview - Semester 4 - Professional Animation
-  - Motion Capture
-  - Character Creation
-  - Basic Lighting and Rendering
-  - Storyboard
-  - Capstone Project (Team)
-  - Creature Animation
-  - Compositing Basic
-  - Overview - Semester 3 - Advanced 3D Animation
-  - Texture Painting
-  - Working with Game Engine
-  - Computer Fundamentals
-  - 3D Modeling Fundamental
-  - Project 2 (Team)
-  - Grand Project (Team)
-  - Overview - Semester 1 - Art Fundamentals
+    - 'Lý Thuyết Nghệ Thuật Về Cách Phối Cảnh - Phần 01'
+    - 'Tối Ưu Bán Hàng Trên Tiktok Shop'
+    - 'Bí Quyết Chinh Phục Bài Thi Toeic'
+    - 'Nền Tảng Truyền Thông Xã Hội (social Media Plaforms) - Phần 01'
+    - 'Giải Mã Nghề Data Scientist (nhà Khoa Học Dữ Liệu)'
+    - 'Thiết Lập Unique Selling Point (usp) Cho Thương Hiệu'
+    - 'Nhập Môn Digital Marketing'
+    - 'Ngành Trí Tuệ Nhân Tạo Ai - Nghề Của Tương Lai'
+    - 'Nhập Môn Trí Tuệ Nhân Tạo - Phần 01'
+    - 'Phương Pháp Xây Dựng Kế Hoạch Quảng Cáo Bán Hàng - Phần 01'
+    - 'Sáng Tạo Hình Ảnh - Food Stylist'
+    - 'Thiết Kế Thời Trang Chuyên Nghiệp Trên Adobe Illustrator (ai)'
+    - 'Làm Quen Với Quảng Cáo Facebook (facebook Ads) - Phần 01'
+    - 'Chinh Phục Nghệ Thuật Kể Chuyện (storytelling) Cùng Đạo Diễn Guy-roger Duvert'
+    - 'Bắt Đầu Với Sketchbook - Phần 01'
+    - 'Hội Họa: Màu Sắc Và Phối Màu Cơ Bản'
+    - 'Giới Thiệu Về Storyboarding'
+    - 'Nghệ Thuật Quản Lý Cảm Xúc'
+    - 'Phương Pháp Bước Ra Khỏi Vùng An Toàn & Bứt Phá'
+    - 'Biên Tập Nội Dung Thương Mại - Làm Chủ Chatgpt (phần 1)'
+    - 'Vẽ Chân Dung Theo Phong Cách Semi - Realistic Bằng Procreate (phần 01)'
+    - 'Adobe Premiere Cho Người Mới Bắt Đầu: Color Grading'
+    - 'Trở Thành Phiên Bản Tốt Nhất Của Chính Mình'
+    - 'Tổng Quan Về Quảng Cáo Mạng Tìm Kiếm (google Search Ads)'
+    - 'Tiên Phong Trong Thương Mại Điện Tử (e-commerce Leaders) - Phần 01'
+    - 'Dựng Và Biên Tập Phim Với Premiere'
+    - 'Sáng Tạo Và Sản Xuất Phim Animation'
+    - 'Computer Fundamentals - Phần 02'
+    - 'Nền Tảng Truyền Thông Xã Hội (social Media Plaforms) - Phần 02'
+    - 'Thấu Hiểu Insight - Chinh Phục Khách Hàng'
+    - 'Vẽ Mỹ Thuật Cơ Bản - Phần 1'
+    - 'Kỹ Năng Viết Cv Tìm Việc'
+    - 'Kỹ Năng Lắng Nghe & Phản Hồi Hiệu Quả'
+    - 'Lý Thuyết Nghệ Thuật Về Cách Phối Cảnh - Phần 02'
+    - 'Những Kiến Thức "vỡ Lòng" Khi Sử Dụng Google Suggest'
+    - 'Thiết Kế Game Chuyên Nghiệp Với Unity'
+    - 'Cách Trở Thành Một Nhà Văn'
+    - 'Vẽ Chân Dung Theo Phong Cách Semi - Realistic Bằng Procreate (phần 02)'
+    - 'Kỹ Năng Lựa Chọn Và Xác Định Mục Tiêu Nghề Nghiệp'
+    - 'Sáng Tạo Nội Dung Video Bằng Phần Mềm Capcut'
+    - 'Kỹ Năng Thuyết Trình Ấn Tượng'
+    - 'Kỹ Năng Định Vị Và Phát Triển Bản Thân'
+    - 'Xây Dựng Hành Trình Trải Nghiệm Khách Hàng'
+    - 'Dựng Hình 3d Cơ Bản Với Phần Mềm Autodesk Maya'
+    - 'Ứng Dụng Typography Trong Thiết Kế Poster'
+    - 'Kỹ Năng Quản Lý Thời Gian'
+    - 'Tìm Hiểu Về Aso (app Store Optimization)'
+    - 'Thổi Hồn Cho Chất Liệu'
+    - 'Minh Hoạ Ý Tưởng Cơ Bản'
+    - 'Khai Phá Tiềm Năng Của Người Hướng Nội'
+    - 'Chìa Khóa Trở Thành Công Dân Toàn Cầu'
+    - 'Bắt Đầu Với Sketchbook - Phần 02'
+    - 'Nghệ Thuật Kể Chuyện Cá Nhân - Personal Storytelling'
+    - 'Phương Pháp Tăng Khả Năng Ghi Nhớ'
+    - 'Sáng Tạo Nội Dung Trên Nền Tảng Số'
+    - 'Kỹ Năng Thiết Kế Cv Trên Adobe Illustrator'
+    - 'Sáng Tạo Nội Dung Trên Youtube'
+    - 'Nghệ Thuật Lãnh Đạo Đội Nhóm'
+    - 'Ý Nghĩa Màu Sắc Trong Xây Dựng Thương Hiệu'
+    - 'Hành Trình Khám Phá Art Direction Cùng Giám Đốc Nghệ Thuật Patrick Larochelle'
+    - 'Khám Phá Ngành Game Developer - Nhập Môn'
+    - 'Lý Thuyết Nghệ Thuật Về Tỉ Lệ & Giải Phẫu Người - Phần 01'
+    - 'Nhập Môn Lập Trình Trí Tuệ Nhân Tạo'
+    - 'Kỹ Năng Thiết Lập Mục Tiêu Cuộc Đời'
+    - 'Tổng Quan Về Content Marketing'
+    - 'Kỹ Năng Giao Tiếp Hiệu Quả'
+    - 'Podcast Cho Người Mới Bắt Đầu'
+    - 'Lý Thuyết Về Màu Sắc - Phần 01'
+    - 'Thiết Kế Cơ Sở Dữ Liệu'
+    - 'Xây Dựng Hình Ảnh Thương Hiệu Qua Instagram'
+    - 'Ngôn Ngữ Lập Trình Cơ Bản - Phần 02'
+    - 'Nằm Lòng Các Thuật Ngữ Màu Sắc Hữu Dụng Cho Designer'
+    - 'Content Marketing Trên Social Media'
+    - 'Thiết Kế Ui/ux Dành Cho Lập Trình Viên'
+    - 'Vẽ Mỹ Thuật Cơ Bản - Phần 2'
+    - 'Thiết Kế Website Chuẩn Responsive Để Tối Ưu Seo'
+    - 'Kỹ Năng Đọc Hiệu Quả'
+    - 'Adobe Premiere Cho Người Mới Bắt Đầu: Effect Control'
+    - 'Xây Dựng Một Game Đơn Giản Bằng Python'
+    - 'Kết Nối Khách Hàng Hiệu Quả Với Ứng Dụng Zalo'
+    - 'Làm Quen Với Quảng Cáo Facebook (facebook Ads) - Phần 02'
+    - 'Khám Phá Quy Trình Seo'
+    - 'Kỹ Năng Phỏng Vấn Tìm Việc Làm'
+    - 'Kỹ Năng Tự Học Bền Vững'
+    - 'Tổng Quan Về Business Intelligence & Business Analytics (bi/ba Fundamentals)'
+    - 'Phương Pháp Giải Tỏa Căng Thẳng Trước Kỳ Thi Thpt Quốc Gia'
+    - 'Cấu Trúc Dữ Liệu Và Giải Thuật (phần 2)'
+    - 'Quảng Cáo Trên Mobile App'
+    - 'Xây Dựng Profile Doanh Nghiệp Thu Hút Trên Linkedin'
+    - 'Lập Trình Python Căn Bản Với Biến Và Vòng Lặp'
+    - 'Art Theory - Lý Thuyết Về Hội Hoạ'
+    - 'Adobe Premiere Cho Người Mới Bắt Đầu: Transition'
+    - 'Tối Ưu Bán Hàng Trên Shopee'
+    - 'Tự Xuất Bản Cuốn Sách Của Riêng Mình'
+    - 'Procreate - Sáng Tạo Không Giới Hạn'
+    - 'Biên Tập Nội Dung Thương Mại - Làm Chủ Chatgpt (phần 2)'
+    - 'Tìm Hiểu Về Data Engineer (kỹ Sư Khoa Học Dữ Liệu)'
+    - 'Hệ Quản Trị Cơ Sở Dữ Liệu Mysql (phần 1) - Lý Thuyết'
+    - 'Tiên Phong Trong Thương Mại Điện Tử (e-commerce Leaders) - Phần 02'
+    - 'Kỹ Năng Tìm Việc Làm Thêm'
+    - 'Thiết Kế 3d Căn Bản'
+    - 'Phác Họa Và Những Điều Cần Biết'
+    - 'Computer Fundamentals - Phần 01'
+    - 'Kỹ Năng Ứng Phó Với Căng Thẳng'
+    - 'Chiến Thuật Seo Hiệu Quả Trên Instagram'
+    - 'Khám Phá Ngành Digital Marketing'
+    - 'Cấu Trúc Dữ Liệu Và Giải Thuật (phần 1)'
+    - 'Nghệ Thuật Xây Dựng Bộ Nhận Diện Thương Hiệu Cho Doanh Nghiệp'
+    - 'Ngôn Ngữ Lập Trình Cơ Bản - Phần 01'
+    - 'Tổng Quan Về Shopper Marketing'
+    - 'Vẽ Minh Hoạ Cơ Bản Bằng Photoshop'
+    - 'Nắm Bắt Tâm Lý & Hành Vi Khách Hàng'
+    - 'Nghệ Thuật Sống: Tỉnh Thức Cùng Mindfulness'
+    - 'Kỹ Năng Sinh Tồn Trong Thành Phố'
+    - 'Tối Ưu Gian Hàng Trên Lazada'
+    - 'Lý Thuyết Về Màu Sắc - Phần 02'
+    - 'Procreate Đơn Giản Cho Người Mới Bắt Đầu'
+    - 'Nhập Môn Ngành Lập Trình Web Full-stack'
+    - 'Typography Foundation: Typography Cơ Bản'
+    - 'Lập trình'
+    - 'Digital Marketing'
+    - 'Trí tuệ nhân tạo A.I'
+    - 'Soft Skills'
+    - 'Personal Development'
+    - 'Design'
+    - 'Ms. Nguyễn Mỹ Hạnh'
+    - 'Ms. Cao Thị Thùy Trang'
+    - 'Ms. Đoàn Phương Trúc'
+    - 'Mr. Dương Hoàng Thanh'
+    - 'Ms. Lương Bảo Trâm'
+    - 'Mr. Nguyễn Phúc Luân'
+    - 'Ms. Lê Thị Minh Thư'
+    - 'Mr. Khang Nguyễn'
+    - 'Ms. My Dương'
+    - 'Ms. Lê Thị Cẩm Thi'
+    - 'Mr. Lê Hoàng Anh Thi'
+    - 'Mr. Đỗ Đức Anh'
+    - 'Mr. Kỷ Thế Vinh\nMr. Lê Vũ Quang'
+    - 'Ms. Nguyễn Hải Uyên'
+    - 'Ms. Trần Thị Thúy Hằng'
+    - 'Mr. Guy-Roger Duvert'
+    - 'Mr. Hoàng Phúc Lộc'
+    - 'Ms. Đinh Hoàng Dung'
+    - 'Ms. Trần Hải Bình'
+    - 'Ms. Nguyễn Tường Vi'
+    - 'Mr. Nguyễn Thiên Ân'
+    - 'Ths. Võ Minh Thành'
+    - 'Ms. Kim Phương'
+    - 'Mr. Lê Hoàng Anh Thi '
+    - 'Ms. Nguyễn Ngọc Tú Uyên'
+    - 'Mr. Đinh Nguyễn Trọng Nghĩa'
+    - 'Ms. Bùi Vĩnh Nghi'
+    - 'Ms. Bảo Trâm'
+    - 'Ms. Nguyễn Kim Phượng'
+    - 'Ms. Huỳnh Thị Ngọc Tuyền'
+    - 'Mr. Patrick Larochelle'
+    - 'Ms. Lê Diệu Hiền'
+    - 'Ms. Junie Đinh'
+    - 'Ms. Annie Nguyễn'
+    - 'Ms. Tracy Nguyễn'
+    - 'Ms. Trần Nguyễn Hoàng Ngân'
+    - 'Ms. Thanh Trà'
+    - 'Giảng viên Onlinica (AI)'
+    - 'Mr. Nguyễn Đình Cường'
+    - 'Mr. Trịnh Trung Hậu'
+    - 'Mr. Hoàng Khắc Huyên'
+    - 'Ms. Doris'
+    - 'Mr. Thái Bằng Phi (John Thai)'
+    - 'Ms. Đặng Nguyễn Thiên An'
+    - 'Ms. Bùi Thương Huyền'
+    - 'Mr. Huỳnh Nguyên Bảo'
+    - 'Ms. Nguyễn Hải Huyền Trang'
+    - 'Giảng viên Onlinica'
+    - 'Ms. Nguyễn Khánh Ly'
+    - 'Ms. Nguyễn Ngọc Tú Nguyên'
+    - 'Mr. Trần Nguyễn Hoài Nam'
+    - 'Ms. Ngô Thị Ngọc Phượng'
+    - 'Ms. Huỳnh Vũ Thủy Tiên (Tienee)'
+    - 'Mr. Ngô Đình Sơn Thái'
+    - 'Mr. Nguyễn Huỳnh Thiên An'
+    - 'Mr. Bùi Nguyễn Ngọc Dương'
+    - 'Mr. Nguyễn Trọng Tiến'
+    - 'Mr. Trần Anh Tuấn'
+    - 'Ms. Phạm Quỳnh Anh'
+    - 'Ms. Nguyễn Lệ Chi'
+    - 'Ms. Chế Dạ Thảo'
+    - 'ThS. Nguyễn Hải Uyên'
+    - 'Ms. Võ Ngọc Tuyền'
+    - 'Mr. Nguyễn Tấn Huynh'
+    - 'Mr. Nguyễn Đức Giang'
+    - 'Ms. Đỗ Phương Thảo'
+    - 'Ms. Nguyễn Thu Hà'
+    - 'Ms. Trần Thị Phương Thảo'
+    - 'Trí tuệ nhân tạo'
+    - 'Digital Marketing'
+    - 'Thiết kế\t'
+    - 'Thiết kế'
+    - 'Kỹ Thuật và Công Nghệ'
+    - 'Công nghệ thông tin'
+    - 'Tvb-201 Bootcamp For New Admins'
+    - 'Adx-201 Administrative Essentials'
+    - 'Hoạt hình/Diễn hoạt 3D ( 3D Animation)'
+    - 'Data Analytics For BI/BA'
+    - 'Growing Digital Business'
+    - 'AI Expert - AI Engineer'
+    - 'Họa Sỹ Môi Trường 3D Chuyên Nghiệp (3D Environment Artist Pro)'
+    - 'Visual Understanding'
+    - 'Họa Sỹ Nhân Vật 3D Chuyên Nghiệp (3D Character Artist Pro)'
+    - 'AI Full-stack Engineer'
+    - 'AI Practitioner'
+    - 'Thiết kế đồ họa (Digital Graphic Design)'
+    - 'AI Expert - Data Scientist'
+    - 'Tvb-450 Bootcamp For Platform Developer I'
+    - 'Tools Master For Digital Age'
+    - 'Rpx-101 Reporting Fundamentals'
+    - 'Digital Marketers'
+    - 'Python Developer For AI'
+    - 'Digital Marketing Management 4.0'
+    - 'Trí tuệ nhân tạo'
+    - 'AI For Everyone'
+    - 'Digital Marketing (Full-stack)'
+    - 'Lập trình Game (Game Development)'
+    - 'Modern Marketers: Design & Content'
+    - 'Quản lý chuỗi cung ứng và Logistics'
+    - 'AI Specialist - AI Engineer'
+    - 'Thiết kế 3D nâng cao'
+    - 'Kỹ xảo Hoạt hình 3D'
+    - 'Tvb-403 Bootcamp For Platform App Builder'
+    - 'Lập trình Phần mềm'
+    - 'E-commerce Leaders'
+    - 'Thiết kế Dựng hình 3D (3D Modelling)'
+    - 'AI Specialist - Data Scientist'
+    - 'Lập trình Phần mềm (Full-stack)'
+    - 'Level 2 - AI Specialist - Decision Making'
+    - 'Level 2 - AI Specialist - Language Understanding'
+    - 'Ngắn hạn'
+    - 'Trung hạn'
+    - 'Tiêu chuẩn'
+    - 'Plus Chất lượng cao Liên thông quốc tế'
+    - 'Online'
+    - 'Tập trung'
+    - 'Tập trung/Bán thời gian'
+    - 'Tập trung/Online'
+    - 'Ngắn hạn'
+    - 'Trung hạn'
+    - 'Dài hạn'
+    - '8 tuần'
+    - '1 nggày'
+    - '60 giờ'
+    - '8 tháng'
+    - '3 tuần'
+    - '4 tuần'
+    - '6 tuần'
+    - '9 tuần'
+    - '1.5 tuần'
+    - '2.5 năm'
+    - '16 tuần'
+    - '2 năm'
+    - '5 ngày'
+    - '30 ngày'
+    - '5 tuần'
+    - '12 tuần'
 
   tool:
     name: "sql_executor"

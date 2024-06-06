@@ -65,7 +65,7 @@ class MySqlChain:
     examples_questions_to_sql: list[str],
     k_few_shot_examples: int, # 5
     
-    is_debug: bool = True,
+    is_debug: bool = False,
     
     tool_name: str = None,
     tool_description: str = None,
@@ -83,8 +83,10 @@ class MySqlChain:
 
     self.vectorstore = vectorstore
     
+    self.proper_nouns = self._process_proper_nouns(proper_nouns)
+    
     self.vectorstore_nouns = self.vectorstore.from_texts(
-      proper_nouns, self.embeddings,
+      self.proper_nouns, self.embeddings,
     )
     self.retriever_nouns = self.vectorstore_nouns.as_retriever(
       search_kwargs={"k": k_retriever_proper_nouns}
@@ -94,7 +96,7 @@ class MySqlChain:
     self.tool_description = tool_description
     self.tool_metadata = tool_metadata
     self.tool_tags = tool_tags
-
+    
     self.context = self.db.get_context()
     self.table_info = self.context['table_info']
     self.table_schema = self.db.table_info
@@ -123,14 +125,14 @@ class MySqlChain:
       | self.llm.bind_tools([Table])
       | PydanticToolsParser(tools=[Table])
       | RunnableLambda(self.chain_process_get_tables)
-    )
+    ).with_retry()
     #*-----------------------------------------------------------------------------
 
     self.chain_retrieve_proper_nouns = (
       itemgetter("question")
       | self.retriever_nouns
       | (lambda docs: "\n".join(doc.page_content for doc in docs))
-    )
+    ).with_retry()
 
     #*-----------------------------------------------------------------------------
     self.example_selector = SemanticSimilarityExampleSelector.from_examples(
@@ -146,7 +148,7 @@ class MySqlChain:
         "input": itemgetter("question")
       }
       | RunnableLambda(self.example_selector.select_examples)
-    )
+    ).with_retry()
 
     #*-----------------------------------------------------------------------------
     # Gen sql, check sql, filter nouns
@@ -192,7 +194,7 @@ class MySqlChain:
         self.llm, self.db, prompt=self.prompt_write_sql
       )
       | RunnableLambda(self.chain_process_parse_final_answer)	
-    )
+    ).with_retry()
 
     #*-----------------------------------------------------------------------------
 
@@ -207,7 +209,9 @@ class MySqlChain:
     Answer:\
     """)
 
-    self.chain_answer = self.prompt_answer | self.llm | StrOutputParser()
+    self.chain_answer = (
+      self.prompt_answer | self.llm | StrOutputParser()
+    ).with_retry()
 
     self.chain_sql = (
       RunnablePassthrough
@@ -218,6 +222,18 @@ class MySqlChain:
       .assign(result=itemgetter("query") | self.query_executor)
       .assign(output=self.chain_answer)
     ).with_retry()
+    self.metadata_chain_sql = {"is_my_sql_chain_run": True}
+
+  def _process_proper_nouns(self, proper_nouns: list):
+    result = proper_nouns
+    
+    for i in range(len(result)):
+      if type(result[i]) != str:
+        key = next(iter(result[i]))
+        value = result[i][key]
+        result[i] = f'{key}-{value}'
+    
+    return result
 
   def chain_process_get_tables(self, tables: list):
     result = [table.name for table in tables]
@@ -235,7 +251,10 @@ class MySqlChain:
   def invoke_chain(self, question: str) -> Union[str, dict]:
     """Get natural user question, turn it into SQL query and execute"""
     question = self.prepare_chain_input(question)
-    result = self.chain_sql.invoke(question)
+    result = self.chain_sql.invoke(
+      question,
+      config={"metadata": self.metadata_chain_sql},
+    )
     
     if not self.is_debug:
       result = result["output"]
@@ -245,7 +264,10 @@ class MySqlChain:
   async def ainvoke_chain(self, question: str) -> Union[str, dict]:
     """Get natural user question, turn it into SQL query and execute"""
     question = self.prepare_chain_input(question)
-    result = await self.chain_sql.ainvoke(question)
+    result = await self.chain_sql.ainvoke(
+      question,
+      config={"metadata": self.metadata_chain_sql},
+    )
     
     if not self.is_debug:
       result = result["output"]
