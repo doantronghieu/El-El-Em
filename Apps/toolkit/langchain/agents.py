@@ -285,7 +285,6 @@ class MyStatelessAgent:
 					continue
 
 				result += chunk
-				res += chunk
 				yield chunk
 		
 			if show_tool_call and event_event == "on_chain_stream":

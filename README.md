@@ -46,7 +46,28 @@ table = dynamodb.create_table(
 
 # Wait until the table exists
 table.meta.client.get_waiter("table_exists").wait(TableName="LangChainSessionTable")
+```
 
+## Postgres
+
+Put data into container
+
+- Start Postgres container. Do your work
+
+```bash
+docker compose -f postgres.docker-compose.yaml up -d
+```
+
+- Dump data, get data.sql file in local
+
+```bash
+
+docker exec -it postgres  /bin/bash
+pg_dump -U myuser -d mydatabase > /var/lib/postgresql/data/data.sql
+
+cp ./data/postgres/data.sql ./data.sql
+docker build -t doantronghieu/llm-postgresql:latest -f deploy/docker_k8s/docker-files/Dockerfile.postgresql .
+rm ./data.sql
 ```
 
 ## Docker
@@ -57,6 +78,7 @@ docker build -t doantronghieu/llm-streamlit:latest -f deploy/docker_k8s/docker-f
 
 docker push doantronghieu/llm-fastapi:latest
 docker push doantronghieu/llm-streamlit:latest
+docker push doantronghieu/llm-postgresql:latest
 
 ---
 

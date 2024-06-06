@@ -29,6 +29,13 @@ resources:
     requests:
       cpu: "1"
       memory: "1Gi"
+  postgres:
+    limits:
+      cpu: "1"
+      memory: "2Gi"
+    requests:
+      cpu: "0.5"
+      memory: "1Gi"
 
 services:
   fastapi:
@@ -42,6 +49,11 @@ services:
     port: 80
     targetPort: 8051
     externalTrafficPolicy: Cluster
+  postgres:
+    name: postgres
+    type: ClusterIP
+    port: 5432
+    targetPort: 5432
 
 ingress:
   name: my-ingress

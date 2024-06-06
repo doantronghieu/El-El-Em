@@ -34,7 +34,7 @@ services:
     - fastapi
 
   postgres:
-    image: postgres:latest
+    image: doantronghieu/llm-postgresql:latest
     container_name: postgres
     restart: always
     # shm_size: 128mb # shared memory limit
@@ -48,7 +48,6 @@ services:
     - 5432:5432
     networks:
     - app-network
-    
 
 networks:
   app-network:

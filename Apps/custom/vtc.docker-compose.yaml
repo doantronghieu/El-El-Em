@@ -36,12 +36,12 @@ services:
     - fastapi
   
   postgres:
-    image: postgres:latest
+    image: doantronghieu/vtc-llm-postgresql:latest
     container_name: postgres
     restart: always
     # shm_size: 128mb # shared memory limit
     volumes:
-    - ../data/postgres:/var/lib/postgresql/data # ATTENTION
+    - ./data/postgres:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: myuser
       POSTGRES_PASSWORD: mysecretpassword

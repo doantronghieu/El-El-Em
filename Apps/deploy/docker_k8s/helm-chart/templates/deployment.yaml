@@ -1,86 +1,129 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {? {.Values.services.fastapi.name: ''} : ''}
+  name: {{ .Values.services.fastapi.name }}
   labels:
-    app: {? {.Values.services.fastapi.name: ''} : ''}
+    app: {{ .Values.services.fastapi.name }}
 spec:
-  replicas: {? {.Values.replicaCount: ''} : ''}
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {? {.Values.services.fastapi.name: ''} : ''}
+      app: {{ .Values.services.fastapi.name }}
   template:
     metadata:
       labels:
-        app: {? {.Values.services.fastapi.name: ''} : ''}
+        app: {{ .Values.services.fastapi.name }}
     spec:
       containers:
-      - name: {? {.Values.services.fastapi.name: ''} : ''}
+      - name: {{ .Values.services.fastapi.name }}
         image: "{{ .Values.image.fastapi.repository }}:{{ .Values.image.fastapi.tag }}"
-        imagePullPolicy: {? {.Values.image.fastapi.pullPolicy: ''} : ''}
+        imagePullPolicy: {{ .Values.image.fastapi.pullPolicy }}
         ports:
-        - containerPort: {? {.Values.services.fastapi.targetPort: ''} : ''}
+        - containerPort: {{ .Values.services.fastapi.targetPort }}
         resources:
           limits:
-            cpu: {? {.Values.resources.fastapi.limits.cpu: ''} : ''}
-            memory: {? {.Values.resources.fastapi.limits.memory: ''} : ''}
+            cpu: {{ .Values.resources.fastapi.limits.cpu }}
+            memory: {{ .Values.resources.fastapi.limits.memory }}
           requests:
-            cpu: {? {.Values.resources.fastapi.requests.cpu: ''} : ''}
-            memory: {? {.Values.resources.fastapi.requests.memory: ''} : ''}
+            cpu: {{ .Values.resources.fastapi.requests.cpu }}
+            memory: {{ .Values.resources.fastapi.requests.memory }}
         readinessProbe:
           httpGet:
             path: /health
-            port: {? {.Values.services.fastapi.targetPort: ''} : ''}
+            port: {{ .Values.services.fastapi.targetPort }}
           initialDelaySeconds: 10
           periodSeconds: 10
         livenessProbe:
           httpGet:
             path: /health
-            port: {? {.Values.services.fastapi.targetPort: ''} : ''}
+            port: {{ .Values.services.fastapi.targetPort }}
           initialDelaySeconds: 15
           periodSeconds: 20
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {? {.Values.services.streamlit.name: ''} : ''}
+  name: {{ .Values.services.streamlit.name }}
   labels:
-    app: {? {.Values.services.streamlit.name: ''} : ''}
+    app: {{ .Values.services.streamlit.name }}
 spec:
-  replicas: {? {.Values.replicaCount: ''} : ''}
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {? {.Values.services.streamlit.name: ''} : ''}
+      app: {{ .Values.services.streamlit.name }}
   template:
     metadata:
       labels:
-        app: {? {.Values.services.streamlit.name: ''} : ''}
+        app: {{ .Values.services.streamlit.name }}
     spec:
       containers:
-      - name: {? {.Values.services.streamlit.name: ''} : ''}
+      - name: {{ .Values.services.streamlit.name }}
         image: "{{ .Values.image.streamlit.repository }}:{{ .Values.image.streamlit.tag }}"
-        imagePullPolicy: {? {.Values.image.streamlit.pullPolicy: ''} : ''}
+        imagePullPolicy: {{ .Values.image.streamlit.pullPolicy }}
         ports:
-        - containerPort: {? {.Values.services.streamlit.targetPort: ''} : ''}
+        - containerPort: {{ .Values.services.streamlit.targetPort }}
         env:
         - name: ENDPOINT_PROD_FASTAPI
           value: "http://{{ .Values.services.fastapi.name }}:{{ .Values.services.fastapi.port }}"
         resources:
           limits:
-            cpu: {? {.Values.resources.streamlit.limits.cpu: ''} : ''}
-            memory: {? {.Values.resources.streamlit.limits.memory: ''} : ''}
+            cpu: {{ .Values.resources.streamlit.limits.cpu }}
+            memory: {{ .Values.resources.streamlit.limits.memory }}
           requests:
-            cpu: {? {.Values.resources.streamlit.requests.cpu: ''} : ''}
-            memory: {? {.Values.resources.streamlit.requests.memory: ''} : ''}
+            cpu: {{ .Values.resources.streamlit.requests.cpu }}
+            memory: {{ .Values.resources.streamlit.requests.memory }}
         readinessProbe:
           httpGet:
             path: /
-            port: {? {.Values.services.streamlit.targetPort: ''} : ''}
+            port: {{ .Values.services.streamlit.targetPort }}
           initialDelaySeconds: 5
           periodSeconds: 10
         livenessProbe:
           httpGet:
             path: /
-            port: {? {.Values.services.streamlit.targetPort: ''} : ''}
+            port: {{ .Values.services.streamlit.targetPort }}
           initialDelaySeconds: 15
           periodSeconds: 20
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.services.postgres.name }}
+  labels:
+    app: {{ .Values.services.postgres.name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.services.postgres.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.services.postgres.name }}
+    spec:
+      containers:
+      - name: {{ .Values.services.postgres.name }}
+        image: postgres:latest
+        ports:
+        - containerPort: {{ .Values.services.postgres.targetPort }}
+        env:
+        - name: POSTGRES_USER
+          value: myuser
+        - name: POSTGRES_PASSWORD
+          value: mysecretpassword
+        - name: POSTGRES_DB
+          value: mydatabase
+        resources:
+          limits:
+            cpu: {{ .Values.resources.postgres.limits.cpu }}
+            memory: {{ .Values.resources.postgres.limits.memory }}
+          requests:
+            cpu: {{ .Values.resources.postgres.requests.cpu }}
+            memory: {{ .Values.resources.postgres.requests.memory }}
+        volumeMounts:
+        - name: postgres-data
+          mountPath: /var/lib/postgresql/data
+      volumes:
+      - name: postgres-data
+        persistentVolumeClaim:
+          claimName: postgres-pvc
