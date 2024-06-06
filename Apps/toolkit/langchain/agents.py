@@ -253,14 +253,7 @@ class MyStatelessAgent:
 			history_type, user_id, session_id, history_size,
 		)
 
-		await self._add_messages_to_history(
-			history=history,
-			history_type=history_type,
-			msg_user=input_message,
-			msg_ai=None,
-		)
 		result = ""
-		res = ""
 
 		""" used for debugging
 		a = agent.events
@@ -287,12 +280,6 @@ class MyStatelessAgent:
 			if event_event == "on_chat_model_stream":
 				chunk = dict(event_data_chunk)["content"]
 		
-				# try:
-				# 	if event["metadata"]["ls_stop"] == ['\nSQLResult:']:	continue
-				# except: pass
-				# try:
-				# 	if "is_my_sql_chain_run" in event["metadata"].keys(): continue
-				# except: pass
 				if (event.get("metadata", {}).get("ls_stop") == ['\nSQLResult:']) \
 						or ("is_my_sql_chain_run" in event.get("metadata", {})):
 					continue
@@ -340,13 +327,6 @@ class MyStatelessAgent:
 			history_type=history_type,
 			msg_user=input_message,
 			msg_ai=result,
-		)
-	
-		await self._add_messages_to_history(
-			history=history,
-			history_type=history_type,
-			msg_user=None,
-			msg_ai=res,
 		)
 	
 	async def astream_events_basic_wrapper(
