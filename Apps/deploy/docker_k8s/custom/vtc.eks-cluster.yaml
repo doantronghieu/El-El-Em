@@ -33,18 +33,18 @@ iam:
 accessConfig:
   authenticationMode: API_AND_CONFIG_MAP
   accessEntries:
-    - principalARN: arn:aws:iam::360110288814:user/eks
-      type: STANDARD
-      accessPolicies: # optional access polices
-        - policyARN: arn:aws:eks::aws:cluster-access-policy/AmazonEKSAdminPolicy
-          accessScope:
-            type: cluster
+  - principalARN: arn:aws:iam::360110288814:user/eks
+    type: STANDARD
+    accessPolicies: # optional access polices
+    - policyARN: arn:aws:eks::aws:cluster-access-policy/AmazonEKSAdminPolicy
+      accessScope:
+        type: cluster
 
 
 managedNodeGroups:
 - name: managed-ng-1
   amiFamily: AmazonLinux2 # Ubuntu2204, AmazonLinux2 ...
-  instanceTypes: ["t4g.large"] # large, xlarge
+  instanceTypes: ["t4g.large"] # medium, large, xlarge
   # ami: ami-098c6080b06dab15c
 
   volumeSize: 16 # EBS
@@ -54,8 +54,8 @@ managedNodeGroups:
   spot: false # otherwise on-demand
 
   minSize: 2 # #EC2s (Nodes)
-  maxSize: 4 # #EC2s
-  desiredCapacity: 3 # #EC2s
+  maxSize: 6 # #EC2s
+  desiredCapacity: 4 # #EC2s
   maxPodsPerNode: 4
 
   labels: # Nodes labels

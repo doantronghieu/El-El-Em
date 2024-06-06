@@ -28,3 +28,19 @@ spec:
       targetPort: {{ .Values.services.streamlit.targetPort }}
   type: {{ .Values.services.streamlit.type }}
   externalTrafficPolicy: {{ .Values.services.streamlit.externalTrafficPolicy }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.services.postgres.name }}
+  labels:
+    app: {{ .Values.services.postgres.name }}
+spec:
+  selector:
+    app: {{ .Values.services.postgres.name }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.services.postgres.port }}
+      targetPort: {{ .Values.services.postgres.targetPort }}
+  type: {{ .Values.services.postgres.type }}
+---

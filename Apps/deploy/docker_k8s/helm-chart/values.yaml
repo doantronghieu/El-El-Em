@@ -6,11 +6,15 @@ replicaCount: 1
 
 image:
   fastapi:
-    repository: doantronghieu/llm-fastapi
+    repository: doantronghieu/vtc-llm-fastapi
     tag: latest
     pullPolicy: Always # IfNotPresent, Always
   streamlit:
-    repository: doantronghieu/llm-streamlit
+    repository: doantronghieu/vtc-llm-streamlit
+    tag: latest
+    pullPolicy: Always
+  postgres:
+    repository: doantronghieu/vtc-llm-postgresql
     tag: latest
     pullPolicy: Always
 
@@ -74,3 +78,15 @@ hpa:
   maxReplicas: 10
   cpuUtilization: 80
   memoryUtilization: 80
+
+volume:
+  postgres:
+    name: postgres-data
+    storage: 2Gi
+    accessModes: ReadWriteMany
+    claimName: postgres-pvc
+
+configMap:
+  fastapi: fastapi-config
+  streamlit: streamlit-config
+  postgres: postgres-config

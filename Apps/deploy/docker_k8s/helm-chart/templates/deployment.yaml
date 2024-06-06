@@ -20,6 +20,9 @@ spec:
         imagePullPolicy: {{ .Values.image.fastapi.pullPolicy }}
         ports:
         - containerPort: {{ .Values.services.fastapi.targetPort }}
+        envFrom:
+        - configMapRef:
+            name: {{ .Values.configMap.fastapi }}
         resources:
           limits:
             cpu: {{ .Values.resources.fastapi.limits.cpu }}
@@ -62,9 +65,9 @@ spec:
         imagePullPolicy: {{ .Values.image.streamlit.pullPolicy }}
         ports:
         - containerPort: {{ .Values.services.streamlit.targetPort }}
-        env:
-        - name: ENDPOINT_PROD_FASTAPI
-          value: "http://{{ .Values.services.fastapi.name }}:{{ .Values.services.fastapi.port }}"
+        envFrom:
+        - configMapRef:
+            name: {{ .Values.configMap.streamlit }}
         resources:
           limits:
             cpu: {{ .Values.resources.streamlit.limits.cpu }}
@@ -103,16 +106,13 @@ spec:
     spec:
       containers:
       - name: {{ .Values.services.postgres.name }}
-        image: postgres:latest
+        image: "{{ .Values.image.postgres.repository }}:{{ .Values.image.postgres.tag }}"
+        imagePullPolicy: {{ .Values.image.postgres.pullPolicy }}
         ports:
         - containerPort: {{ .Values.services.postgres.targetPort }}
-        env:
-        - name: POSTGRES_USER
-          value: myuser
-        - name: POSTGRES_PASSWORD
-          value: mysecretpassword
-        - name: POSTGRES_DB
-          value: mydatabase
+        envFrom:
+        - configMapRef:
+            name: {{ .Values.configMap.postgres }}
         resources:
           limits:
             cpu: {{ .Values.resources.postgres.limits.cpu }}
@@ -121,9 +121,9 @@ spec:
             cpu: {{ .Values.resources.postgres.requests.cpu }}
             memory: {{ .Values.resources.postgres.requests.memory }}
         volumeMounts:
-        - name: postgres-data
+        - name: {{ .Values.volume.postgres.name }}
           mountPath: /var/lib/postgresql/data
       volumes:
-      - name: postgres-data
+      - name: {{ .Values.volume.postgres.name }}
         persistentVolumeClaim:
-          claimName: postgres-pvc
+          claimName: {{ .Values.volume.postgres.claimName }}

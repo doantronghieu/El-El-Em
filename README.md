@@ -96,6 +96,8 @@ docker pull doantronghieu/llm-streamlit:latest
 
 ---
 
+# Test Helm
+helm template . --debug --dry-run > test.yaml
 eksctl create cluster -f deploy/docker_k8s/eks-cluster.yaml --dry-run
 
 eksctl create cluster -f deploy/docker_k8s/eks-cluster.yaml

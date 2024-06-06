@@ -66,14 +66,16 @@ docker push doantronghieu/vtc-llm-postgresql:latest
 ---
 
 # Test
-docker run -p 8000:8000 doantronghieu/vtc-llm-fastapi:latest
-
 docker compose -f custom/vtc.docker-compose.yaml up -d
 docker compose -f custom/vtc.docker-compose.yaml down
 
 ---
 
+# Test Helm
+helm template . --debug --dry-run > test.yaml
+
 eksctl create cluster -f deploy/docker_k8s/custom/vtc.eks-cluster.yaml --dry-run
+
 eksctl create cluster -f deploy/docker_k8s/custom/vtc.eks-cluster.yaml
 kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 
@@ -81,6 +83,12 @@ eksctl upgrade cluster --config-file deploy/docker_k8s/custom/vtc.eks-cluster.ya
 
 eksctl delete cluster --wait --disable-nodegroup-eviction -f deploy/docker_k8s/custom/vtc.eks-cluster.yaml 
 
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+kubectl apply -f config-map.yaml
+kubectl apply -f volume.yaml
+kubectl apply -f deployment.yaml
+kubectl apply -f hpa.yaml
+kubectl apply -f service.yaml
 ```
 
 ## Environment Variables

@@ -1,3 +1,4 @@
+
 # Source: helm-chart/templates/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -17,10 +18,13 @@ spec:
     spec:
       containers:
       - name: fastapi
-        image: "doantronghieu/llm-fastapi:latest"
+        image: "doantronghieu/vtc-llm-fastapi:latest"
         imagePullPolicy: Always
         ports:
         - containerPort: 8000
+        envFrom:
+        - configMapRef:
+            name: fastapi-config
         resources:
           limits:
             cpu: 3
@@ -60,13 +64,13 @@ spec:
     spec:
       containers:
       - name: streamlit
-        image: "doantronghieu/llm-streamlit:latest"
+        image: "doantronghieu/vtc-llm-streamlit:latest"
         imagePullPolicy: Always
         ports:
         - containerPort: 8051
-        env:
-        - name: ENDPOINT_PROD_FASTAPI
-          value: "http://fastapi:80"
+        envFrom:
+        - configMapRef:
+            name: streamlit-config
         resources:
           limits:
             cpu: 1
@@ -86,3 +90,45 @@ spec:
             port: 8051
           initialDelaySeconds: 15
           periodSeconds: 20
+---
+# Source: helm-chart/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  labels:
+    app: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: "doantronghieu/vtc-llm-postgresql:latest"
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5432
+        envFrom:
+        - configMapRef:
+            name: postgres-config
+        resources:
+          limits:
+            cpu: 1
+            memory: 2Gi
+          requests:
+            cpu: 0.5
+            memory: 1Gi
+        volumeMounts:
+        - name: postgres-data
+          mountPath: /var/lib/postgresql/data
+      volumes:
+      - name: postgres-data
+        persistentVolumeClaim:
+          claimName: postgres-pvc
+---
