@@ -25,4 +25,3 @@ spec:
   hostPath:
     path: "/mnt/data"
   storageClassName: gp3
-  

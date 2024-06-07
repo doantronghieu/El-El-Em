@@ -79,14 +79,18 @@ hpa:
   cpuUtilization: 80
   memoryUtilization: 80
 
+configMap:
+  fastapi: fastapi-config
+  streamlit: streamlit-config
+  postgres: postgres-config
+
 volume:
   postgres:
     name: postgres-data
     storage: 2Gi
     accessModes: ReadWriteMany
     claimName: postgres-pvc
-
-configMap:
-  fastapi: fastapi-config
-  streamlit: streamlit-config
-  postgres: postgres-config
+    storageClassName: gp3
+    source:
+      name: postgres-pv
+      hostPath: /mnt/data

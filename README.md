@@ -2,17 +2,7 @@
 
 ## App Logic
 
-### Indexing Flow
-
-![Indexing Flow](./diagrams/IndexingFlow.jpeg)
-
-### RAG Flow
-
-![RAG Flow](./diagrams/RAGFlow.jpeg)
-
-### Agent Flow
-
-![Agent Flow](./diagrams/AgentFlow.jpeg)
+![Logic Flow](./diagrams/LogicFlow.jpg)
 
 ## System Architecture
 
