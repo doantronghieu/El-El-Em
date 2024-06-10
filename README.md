@@ -6,7 +6,7 @@
 
 ## System Architecture
 
-![System Architecture](./diagrams/SystemDesign.jpeg)
+![System Architecture](./diagrams/SystemDesign.jpg)
 
 ## AWS
 
