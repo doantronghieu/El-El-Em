@@ -25,7 +25,9 @@ proper_nouns = configs["sql"]["proper_nouns"]
 
 my_sql_db = sql.MySQLDatabase()
 
-cfg_sql_tool = configs["sql"]["tool"]
+cfg_sql = configs["sql"]
+cfg_sql_tool = cfg_sql["tool"]
+cfg_sql_params = cfg_sql["params"]
 
 my_sql_chain = chains.MySqlChain(
 	my_sql_db=my_sql_db,
@@ -35,9 +37,9 @@ my_sql_chain = chains.MySqlChain(
 	proper_nouns=proper_nouns,
 	k_retriever_proper_nouns=4,
 	examples_questions_to_sql=examples_questions_to_sql,
-	k_few_shot_examples=5,
-	sql_max_out_length=500,
-	is_sql_get_all=True,
+	k_few_shot_examples=cfg_sql_params["k_few_shot_examples"],
+	sql_max_out_length=cfg_sql_params["sql_max_out_length"],
+	is_sql_get_all=cfg_sql_params["is_sql_get_all"],
 	is_debug=False,
 	tool_name=cfg_sql_tool["name"],
 	tool_description=cfg_sql_tool["description"],

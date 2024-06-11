@@ -46,10 +46,6 @@ TypeHistoryType: TypeAlias = Literal["in_memory", "dynamodb"]
 TypeUserId: TypeAlias = str
 TypeSessionId: TypeAlias = Union[str, None]
 
-def create_md_txt_color(input: str, color: str="red"):
-	result = f'<span style="color:{color};">{input}</span>'
-	return result
-
 class SchemaChatHistory(BaseModel):
 	history_type: TypeHistoryType = "in_memory"
 	user_id: TypeUserId = "admin"

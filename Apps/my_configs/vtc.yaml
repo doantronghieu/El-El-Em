@@ -89,15 +89,15 @@ prompts:
 
     Types of Questions Users Might Ask and How to Answer Them:
 
-    - Course Information: List ALL available courses (and their relevant information) that MOST MATCH the user's question for both VTC Academy and Onlinica. Provide users with ALL the information related to the course.
+    - Course Information: MUST List ALL available courses (and their relevant information) that MOST MATCH the user's question for both VTC Academy and Onlinica. Provide users with ALL the information related to the course.
       
-    - List Courses in a Certain Category: List ALL available courses in that category for VTC Academy, Onlinica, or both based on the user question.
+    - List Courses in a Certain Category: MUST List ALL available courses for VTC Academy, Onlinica, or both based on the user question.
       
     - Content and Knowledge of the Lecture: Address questions with specialized keywords such as Typography, Lazada, Premiere, Unity, etc. Synthesize information from the lectures that contain keywords most relevant and provide detailed answers for both VTC Academy and Onlinica.
       
-    - Frequently Asked Questions: Provide detailed answers to common queries for both VTC Academy and Onlinica.
+    - Frequently Asked Questions: MUST Provide detailed answers to common queries for both VTC Academy and Onlinica.
       
-    - Others: Provide users with ALL the information you have in a FULL, DETAILED manner.
+    - Others: MUST Provide users with ALL the information you have in a FULL, DETAILED manner.
 
     Response Guidelines:
 
@@ -111,9 +111,11 @@ prompts:
 
     - Handling Information Gaps: If you do not have information about the user's question, apologize and explain that there may be an error or that you currently do not have the information. Suggest that they try asking the same question again or contact customer support.
 
-    - Language and Interaction Style: Your response must be in Vietnamese. Responses should be open-ended, encouraging further engagement and questions to ensure a thorough understanding of their needs and to provide the best possible assistance.
+    - Language and Interaction Style: Your response MUST be in Vietnamese. Responses should be open-ended, encouraging further engagement and questions to ensure a thorough understanding of their needs and to provide the best possible assistance.
 
     - Humor and Comfort: Use humor appropriately to create a feeling of comfort and trust for users. Ensure that your responses remain professional, but don't hesitate to add a light-hearted touch when suitable to make interactions more enjoyable.
+
+    - Transparency: Based on the information you have, you MUST provide ALL of that information (in accordance with the user's question), without concealment.
 
     This is very important to my career. Think about the feeling of satisfaction, joy, and happiness you bring to users. Your goal is to make every interaction not only informative but also a delightful experience that leaves users feeling positive and well-cared for.
 
@@ -122,8 +124,6 @@ sql:
     onli_course_list:
     - input: "Các thể loại khoá học ở Onlinica"
       query: "SELECT DISTINCT course_category FROM onli_course_list;"
-    - input: "Có bao nhiêu thể loại khoá học onlinica"
-      query: "SELECT COUNT(DISTINCT course_category) FROM onli_course_list;"
     - input: "Giảng viên nào có nhiều khoá học nhất ở Onlinica"
       query: "SELECT instructor_name, COUNT(course_id) as course_count FROM onli_course_list GROUP BY instructor_name ORDER BY course_count DESC LIMIT 3;"
     - input: "Thể loại khoá học nào có nhiều khoá học nhất ở Onlinica?"
@@ -139,7 +139,7 @@ sql:
     - input: "Giảng viên của khoá học 'Kỹ Năng Giao Tiếp Hiệu Quả' ở Onlinica"
       query: "SELECT instructor_name, course_link, course_description FROM onli_course_list WHERE LOWER(course_name) LIKE '%giao tiếp hiệu quả%';"
     - input: "Các khoá học về lập trình ở Onlinica"
-      query: "SELECT course_name, course_link, instructor_name FROM onli_course_list WHERE LOWER(course_category) LIKE '%lập trình%' OR LOWER(course_name) LIKE '%lập trình%';"
+      query: "SELECT course_name, course_link, instructor_name FROM onli_course_list WHERE LOWER(course_category) LIKE '%lập trình%';"
     - input: "Các khoá học về game ở Onlinica"
       query: "SELECT course_name, course_link, instructor_name FROM onli_course_list WHERE LOWER(course_category) LIKE '%game%' OR LOWER(course_name) LIKE '%game%';"
     - input: "các khóa học về thiết kế onlinica"
@@ -152,8 +152,16 @@ sql:
       query: "SELECT academic_program, program_type, reference_link, program_format, program_duration, program_time FROM vtc_course_list WHERE LOWER(category) LIKE '%thiết kế%' OR LOWER(academic_program) LIKE '%thiết kế%';"
     - input: "Học thiết kế tại VTCA"
       query: "SELECT academic_program, program_type, reference_link, program_format, program_duration, program_time FROM vtc_course_list WHERE LOWER(category) LIKE '%thiết kế%';"
+    - input: "các khoá học về trí tuệ nhân tạo vtca"
+      query: "SELECT academic_program, program_type, reference_link, program_format, program_duration, program_time FROM vtc_course_list WHERE LOWER(category) LIKE '%trí tuệ nhân tạo%';"
+    - input: "các khoá học về AI vtca"
+      query: "SELECT academic_program, program_type, reference_link, program_format, program_duration, program_time FROM vtc_course_list WHERE LOWER(category) LIKE '%trí tuệ nhân tạo%';"
     - input: "Thời lượng và hình thức học của khóa học lập trình phần mềm tại VTCA"
       query: "SELECT * FROM vtc_course_list WHERE LOWER(academic_program) LIKE '%lập trình%';"
+    - input: "lộ trình đào tạo ngành lập trình phần mềm vtca"
+      query: "SELECT academic_program, training_roadmap FROM vtc_course_list WHERE LOWER(academic_program) LIKE '%lập trình phần mềm%';"
+    - input: "lộ trình đào tạo ngành logistic vtca"
+      query: "SELECT academic_program, training_roadmap FROM vtc_course_list WHERE LOWER(academic_program) LIKE '%logistic%';"
     - input: "Ở VTCA có những khoá học dài hạn nào?"
       query: "SELECT academic_program, program_type, reference_link FROM vtc_course_list WHERE LOWER(program_duration) LIKE '%dài%';"
     - input: "Ở VTCA có những khoá học trung hạn nào?"
@@ -441,6 +449,11 @@ sql:
   - '30 ngày'
   - '5 tuần'
   - '12 tuần'
+
+  params:
+    k_few_shot_examples: 5
+    sql_max_out_length: 2000
+    is_sql_get_all: True
 
   tool:
     name: "sql_executor"

@@ -47,6 +47,7 @@ docker compose -f postgres.docker-compose.yaml up -d
 
 docker exec -it postgres  /bin/bash
 pg_dump -U myuser -d mydatabase > /var/lib/postgresql/data/data.sql
+exit
 
 cp ./data/postgres/data.sql ./data.sql
 docker build -t doantronghieu/vtc-llm-postgresql:latest -f deploy/docker_k8s/docker-files/Dockerfile.postgresql .
