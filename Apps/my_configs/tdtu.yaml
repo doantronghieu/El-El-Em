@@ -9,7 +9,7 @@ agents:
   type: "tool_calling" # openai_tools, react, anthropic, tool_calling
 
 data:
-  # metadata_field_info: metadata of Documenchatt
+  # metadata_field_info: metadata of Document
   # - type: string or list[string], string, integer, float
 
   lectures_content:
@@ -38,58 +38,227 @@ vector_db:
 
   qdrant:
     general:
-      prefer_grpc: true
+      prefer_grpc: false
       distance: "Cosine" # Cosine, Euclid, Dot, Manhattan
       default_search_type: "mmr" # similarity, mmr
       content_payload_key: "page_content"
       metadata_payload_key: "metadata"
 
-    university_admission_program:
-      collection_name: "tdtu-university_admission_program"
-      default_search_type: "mmr" # similarity, mmr
+    tdtu_feee_faq:
+      collection_name: "tdtu_feee_faq"
+      default_search_type: "mmr"
       default_search_kwargs:
         k: 10
-      retriever_tool_name: "university_admission_program"
-      retriever_tool_description: |
-        Searches and returns data for university admission programs. The data for each program is segmented into sections, with each section focusing on a specific aspect of the program. Key elements of the data include an introduction, expected learning outcomes, program-specific features, career opportunities, and admission details. 
-
-    personnel:
-      collection_name: "tdtu-personnel"
-      default_search_type: "mmr" # similarity, mmr
-      default_search_kwargs:
-        k: 10
-      retriever_tool_name: "personnel"
-      retriever_tool_description: |
-        Searches and returns data for a structured table containing personnel information from a specific department. The data is organized into columns. Each row represents an individual staff member, and the columns are labeled "Nhân sự" (Personnel), "Chức vụ" (Position), "Bộ môn" (Department), "Email," "Phòng làm việc" (Office), and "Nhóm" (Group). The key elements include the individual's name, their role or title within the department, the specific department they are associated with, their email address, their office location, and their group affiliation. The information provides detailed insight into the organizational structure, roles, and contact details of the department's staff. 
-
-    general_information:
-      collection_name: "tdtu-general_information"
-      default_search_type: "mmr" # similarity, mmr
-      default_search_kwargs:
-        k: 10
-      retriever_tool_name: "general_information"
-      retriever_tool_description: |
-        Searches and returns data for a detailed overview of the Electrical-Electronics Department at Ton Duc Thang University. The data is organized into several sections, including general information, a message from the department head, an introduction to the department, details about the faculty, and information about the department's facilities. Key elements of the data include the department's contact information, the department head's message, the department's history and achievements, the faculty's size and expertise, and the facilities' descriptions.
+      retriever_tool_name: "tdtu_feee_faq_frequently_asked_questions"
+      retriever_tool_description: "Searches and returns answer for frequently asked questions about Faculty of Electrical Engineering in University like 'Thông điệp của Trưởng Khoa', 'Giới thiệu Khoa', 'Quy mô và vị trí', 'Phương thức đào tạo và quản lý đào tạo', 'Nghiên cứu khoa học', 'Thành tựu sinh viên và đánh giá của doanh nghiệp', 'Cơ sở vật chất'. Get most accurate answer based on user question."
 
 prompts:
   system_message_tdtu: |
-    You are a college admission consultant for the Faculty of Electrical Engineering, dedicated to helping students navigate the college application process and explore their interests in electrical engineering.
+    You are a dedicated and professional consultant for Ton Duc Thang University, assisting with admission consulting for high school students and providing support for university students with internal information.
 
-    You have the following qualities:
-    - Helpful: You are always ready to assist students and their families in understanding the complexities of college admissions and the electrical engineering field.
-    - Extremely dedicated and hardworking: You are committed to providing the best possible advice and guidance to your clients.
-    - Professionalism, respect, sincerity, and honesty: You maintain a high level of professionalism and integrity in all your interactions.
-    - Standard thinking: You follow best practices and ethical guidelines in the college admission consulting industry and the electrical engineering field.
-    - Excellent communication, negotiation, and complaint handling skills: You can effectively communicate with students and their families, as well as college admissions officers and electrical engineering professionals.
-    - Excellent sales skills: You can effectively market your services to potential clients.
-    - Deep understanding of products/services: You have a thorough understanding of the college admissions process, including application requirements, deadlines, and strategies for success. You also have a strong knowledge of the electrical engineering field, including the latest trends and innovations.
-    - Strong knowledge of the industry: You stay up-to-date with the latest trends and changes in college admissions and the electrical engineering field.
-    - Optimistic and positive spirit: You approach your work with a positive attitude and strive to create a positive experience for your clients.
-    - Sensitive to customers' requests and desires: You understand that each student has unique needs and goals, and you tailor your services accordingly.
+    You possess the following admirable qualities:
 
-    You will help users answer questions about the college admissions process and the Faculty of Electrical Engineering. The language in which you respond will be the same as the user's language.
+    - A helpful and supportive nature
+    - An extremely dedicated and hardworking work ethic
+    - Professionalism, respect, sincerity, and honesty in all interactions
+    - Standard and methodical thinking
+    - Excellent communication, negotiation, and complaint handling skills
+    - Exceptional sales skills
+    - A deep understanding of the university's programs, services, and the education industry
+    - An optimistic and positive spirit, with the ability to create a positive customer experience
+    - Sensitivity to students' requests and desires
+    - A sense of humor and sophistication to create a comfortable and trustworthy environment for users
 
-    Questions users might ask and how to answer:
-    - Study programs: You will provide detailed information about the study programs offered by the Faculty of Electrical Engineering, including the curriculum, specializations, and career opportunities.
-    - Personnel in the department: You will provide information about the faculty and staff in the Faculty of Electrical Engineering, including the department chair, professors, advisors, and support staff. You will highlight the department's strengths, such as faculty with expertise in the user's area of interest, a strong advising program, or opportunities for undergraduate research. You will also provide information about the department's culture and values, such as a commitment to diversity and inclusion, a focus on student success, or a collaborative and supportive environment.
-    - General information about the department: You will provide an overview of the Faculty of Electrical Engineering, including its mission, history, and achievements. You will also highlight the department's resources and facilities, such as state-of-the-art labs and equipment, student organizations and clubs, and opportunities for internships and co-ops.
+    Your role will involve assisting users in Vietnamese, answering their questions about admission and university-related information at Ton Duc Thang University.
+
+    Types of Questions Users Might Ask and How to Answer Them:
+
+    - Admission Information: MUST List ALL available programs and relevant admission information that MOST MATCH the user's question. Provide users with ALL the information related to the programs and admission process.
+      
+    - List Programs in a Certain Category: MUST List ALL available programs based on the user question.
+      
+    - Frequently Asked Questions: MUST Provide detailed answers to common queries related to admission, programs, campus facilities, student services, etc.
+      
+    - Others: MUST Provide users with ALL the information you have in a FULL, DETAILED manner.
+
+    Response Guidelines:
+
+    - Personalization: Personalize responses to make the user feel valued and understood.
+      
+    - Proactive Suggestions: Suggest related programs or services that might interest the user based on their queries.
+      
+    - Encouraging Engagement: Encourage follow-up questions or offer to provide further assistance if needed.
+      
+    - Feedback: Ask for feedback to improve services and understand user satisfaction.
+
+    - Handling Information Gaps: If you do not have information about the user's question, apologize and explain that there may be an error or that you currently do not have the information. Suggest that they try asking the same question again or contact customer support.
+
+    - Language and Interaction Style: Your response MUST be in Vietnamese. Responses should be open-ended, encouraging further engagement and questions to ensure a thorough understanding of their needs and to provide the best possible assistance.
+
+    - Humor and Comfort: Use humor appropriately to create a feeling of comfort and trust for users. Ensure that your responses remain professional, but don't hesitate to add a light-hearted touch when suitable to make interactions more enjoyable.
+
+    - Transparency: Based on the information you have, you MUST provide ALL of that information (in accordance with the user's question), without concealment.
+
+    This is very important to your career. Think about the feeling of satisfaction, joy, and happiness you bring to users. Your goal is to make every interaction not only informative but also a delightful experience that leaves users feeling positive and well-cared for.
+
+sql:
+  examples_questions_to_sql:
+    tdtu_feee_personnel:
+    - input: "Ai là người phụ trách khoa Điện - Điện tử?"
+      query: "SELECT DISTINCT(name) FROM tdtu_feee_personnel WHERE LOWER(position) LIKE '%phụ trách%';"
+    - input: "Có bao nhiêu giảng viên trong bộ môn Kỹ thuật Điện?"
+      query: "SELECT COUNT(DISTINCT(name)) FROM tdtu_feee_personnel WHERE LOWER(child_department) LIKE '%kỹ thuật điện%';"
+    - input: "Giảng viên khoa Điện nào đang đi học nước ngoài?"
+      query: "SELECT name, position, major, email, office, child_department FROM tdtu_feee_personnel WHERE LOWER(office) LIKE '%nước ngoài%';"
+    - input: "Phó hiệu trưởng trường Đại học Tôn Đức Thắng hiện tại là ai?"
+      query: "SELECT name, position FROM tdtu_feee_personnel WHERE LOWER(position) LIKE '%phó hiệu trưởng%';"
+    - input: "Trưởng bộ môn Điều khiển tự động khoa Điện?"
+      query: "SELECT name, position, major, email, office, child_department FROM tdtu_feee_personnel WHERE LOWER(position) LIKE '%trưởng bộ môn%' AND LOWER(major) LIKE '%điều khiển%';"
+    - input: "Những giảng viên nào có văn phòng ở phòng C117?"
+      query: "SELECT name, position, major, email FROM tdtu_feee_personnel WHERE LOWER(office) LIKE '%c117%';"
+    - input: "Những giảng viên nào dạy bộ môn Điện tử - Viễn thông?"
+      query: "SELECT name, position, email, office, child_department FROM tdtu_feee_personnel WHERE LOWER(major) LIKE '%điện tử - viễn thông%';"
+    - input: "Có bao nhiêu giảng viên thuộc Ban chủ nhiệm khoa?"
+      query: "SELECT COUNT(*) as number FROM tdtu_feee_personnel WHERE LOWER(child_department) LIKE '%chủ nhiệm%';"
+    - input: "Thành viên ban chủ nhiệm khoa"
+      query: "SELECT * FROM tdtu_feee_personnel WHERE LOWER(child_department) LIKE '%chủ nhiệm%'"
+    - input: "Email Trần Thanh Phương?"
+      query: "SELECT email FROM tdtu_feee_personnel WHERE LOWER(name) LIKE LOWER('%Trần Thanh Phương%');"
+    - input: "Những ai đang giữ chức vụ Trưởng bộ môn trong khoa Điện - Điện tử?"
+      query: "SELECT * FROM tdtu_feee_personnel WHERE LOWER(position) LIKE '%trưởng bộ môn%';"
+    - input: "Người phụ trách bộ môn Điều khiển tự động"
+      query: "SELECT name, position, email, office, child_department FROM tdtu_feee_personnel WHERE LOWER(position) LIKE 'trưởng bộ môn%';"
+    - input: "Có bao nhiêu giảng viên trong khoa Điện - Điện tử đang có học vị Tiến sĩ?"
+      query: "SELECT COUNT(name) FROM tdtu_feee_personnel WHERE LOWER(name) LIKE '%ts%';"
+    - input: "Các tiến sĩ trong khoa điện"
+      query: "SELECT * FROM tdtu_feee_personnel WHERE LOWER(name) LIKE '%ts%';"
+    - input: "Các thạc sĩ trong khoa điện"
+      query: "SELECT * FROM tdtu_feee_personnel WHERE LOWER(name) LIKE '%ths%';"
+    - input: "Những người thuộc bộ môn Điện tử - Viễn thông có văn phòng tại đâu?"
+      query: "SELECT name, office FROM tdtu_feee_personnel WHERE LOWER(major) LIKE '%viễn thông%';"
+    - input: "Bộ phận hành chính khoa điện"
+      query: "SELECT * FROM tdtu_feee_personnel WHERE LOWER(position) LIKE '%hành chính%';"
+    
+    tdtu_feee_admission:
+      - input: "Các ngành học khoa Điện"
+        query: "SELECT DISTINCT(study_field) FROM tdtu_feee_admission WHERE LOWER(faculty) LIKE '%điện%';"
+      - input: "Các chương trình đào tạo tiến sĩ khoa Điện"
+        query: "SELECT study_field, link, program_type, introduction FROM tdtu_feee_admission WHERE LOWER(faculty) LIKE '%điện%' AND LOWER(education_level) LIKE 'tiến sĩ%';"
+      - input: "Học phí khoa Điện"
+        query: "SELECT DISTINCT(tuition) FROM tdtu_feee_admission WHERE LOWER(faculty) LIKE '%điện%';"
+      - input: "Trình độ ngoại ngữ được yêu cầu để tham gia chương trình tiến sĩ khoa Điện?"
+        query: "SELECT DISTINCT(admission_candidates) FROM tdtu_feee_admission WHERE LOWER(faculty) LIKE '%điện%' AND LOWER(education_level) LIKE '%tiến sĩ%'"
+      - input: "Các chương trình đào tạo khoa Điện có hình thức liên kết với các trường đại học nước ngoài?"
+        query: "SELECT * FROM tdtu_feee_admission WHERE LOWER(faculty) LIKE '%điện%' AND LOWER(program_type) LIKE '%liên kết%';"
+      - input: "Các phương thức đóng học phí"
+        query: "SELECT DISTINCT(tuition) FROM tdtu_feee_admission;"
+      - input: "Thông tin liên hệ"
+        query: "SELECT DISTINCT(contact) FROM tdtu_feee_admission;"
+      - input: "Các chương trình đào tạo khoa Điện về Tự động hoá"
+        query: "SELECT * FROM tdtu_feee_admission WHERE LOWER(faculty) LIKE '%điện%' AND LOWER(study_field) LIKE '%tự động%';"
+      - input: "Các chương trình đào tạo khoa Điện về Kỹ thuật Điện tử - Viễn thông"
+        query: "SELECT * FROM tdtu_feee_admission WHERE LOWER(faculty) LIKE '%điện%' AND LOWER(study_field) LIKE '%viễn thông%';"
+      - input: "Các yêu cầu về văn bằng để tham gia chương trình đào tạo tiến sĩ khoa Điện"
+        query: "SELECT DISTINCT(admission_candidates) FROM tdtu_feee_admission WHERE LOWER(faculty) LIKE '%điện%' AND LOWER(education_level) LIKE '%tiến sĩ%';"
+      - input: "Thông tin liên hệ của phòng tư vấn tuyển sinh sau đại học"
+        query: "SELECT DISTINCT(contact) FROM tdtu_feee_admission WHERE LOWER(education_level) NOT LIKE '%đại học%';"
+      - input: "Mức học phí Ngành Cơ điện tử khoa Điện"
+        query: "SELECT tuition FROM tdtu_feee_admission WHERE LOWER(faculty) LIKE '%điện%' AND LOWER(study_field) LIKE '%cơ%';"
+      - input: "Các trình độ đào tạo cho ngành Kỹ thuật Điều khiển và Tự động hóa khoa Điện"
+        query: "SELECT education_level, program_type FROM tdtu_feee_admission WHERE LOWER(faculty) LIKE '%điện%' AND LOWER(study_field) LIKE '%tự động%';"
+
+  proper_nouns:
+  - 'Điện - Điện tử'
+  - 'TS. Trần Công Thịnh'
+  - 'TS. Trần Đức Anh Minh'
+  - 'TS. Vũ Trí Viễn'
+  - 'TS. Lê Anh Tuấn'
+  - 'TS. Trần Thanh Phương'
+  - 'ThS. Nguyễn Thành Quang'
+  - 'TS. Võ Hữu Hậu'
+  - 'ThS. Phạm Hữu Lý'
+  - 'TS. Huỳnh Thanh Thiện'
+  - 'TS. Đỗ Vinh Quang'
+  - 'TS. Từ Lâm Thanh'
+  - 'TS. Huỳnh Văn Vạn'
+  - 'TS. Nguyễn Dáo'
+  - 'TS. Đinh Hoàng Bách'
+  - 'TS. Nguyễn Kiều Tam'
+  - 'Phan Thanh Duy'
+  - 'Lê Đức Thịnh'
+  - 'TS. Hồ Đăng Sang'
+  - 'TS. Nguyễn Trung Thắng'
+  - 'TS. Nguyễn Hữu Khánh Nhân'
+  - 'ThS. Thiều Quang Trí'
+  - 'ThS. Đặng Ngọc Khoa'
+  - 'TS. Nguyễn Nhật Tân'
+  - 'TS. Phan Tấn Phát'
+  - 'TS. Võ Hoàng Duy'
+  - 'ThS. Nguyễn Quang Dũng'
+  - 'TS. Đồng Sĩ Thiên Châu'
+  - 'TS. Trần Hoàng Quang Minh'
+  - 'TS. Nguyễn Thị Phương Thảo'
+  - 'TS. Hà Duy Hưng'
+  - 'GS. TS. Pavel Brandstetter'
+  - 'ThS. Phan Thành Tài'
+  - 'TS. Nguyễn Công Tráng'
+  - 'TS. Trần Thành Nam'
+  - 'TS. Trần Đình Cương'
+  - 'GS. TS. Miroslav Voznak'
+  - 'ThS. Đào Huy Tuấn'
+  - 'Nguyễn Thị Thu Quyên'
+  - 'TS. Nguyễn Đoàn Quốc Anh'
+  - 'TS. Nguyễn Hoàng Nam'
+  - 'TS. Võ Phú Thoại'
+  - 'Trưởng bộ môn Điều khiển tự động'
+  - 'Phó trưởng Khoa Điện - Điện tử, Giảng viên bộ môn Kỹ Thuật Điện'
+  - 'Viên chức hành chính'
+  - 'Phó trưởng Khoa, Phụ trách Khoa Điện - Điện tử, Trưởng bộ môn Điện tử - Viễn thông'
+  - 'Giảng viên bộ môn Kỹ thuật điện'
+  - 'Viện trưởng Viện hợp tác, nghiên cứu và đào tạo quốc tế, Trưởng Bộ môn Kĩ thuật Điện'
+  - 'Phó Trưởng Khoa Điện - Điện tử'
+  - 'Giảng viên bộ môn Điều khiển tự động'
+  - 'Giảng viên - Nghiên cứu viên'
+  - 'Giảng viên bộ môn Điện tử - Viễn thông'
+  - 'Phó Hiệu trưởng trường Đại học Tôn Đức Thắng'
+  - 'Kỹ Thuật Điện'
+  - 'Điện tử - Viễn thông'
+  - 'Điều khiển tự động'
+  - 'Hành Chính'
+  - 'C008'
+  - 'C117'
+  - 'Không'
+  - 'C116'
+  - 'C118'
+  - 'Đang đi học nước ngoài'
+  - 'Bộ môn Điều khiển tự động'
+  - 'Bộ môn Điện tử - Viễn thông'
+  - 'Bộ môn Kỹ thuật Điện'
+  - 'Ban chủ nhiệm khoa, Bộ môn Điện tử - Viễn thông'
+  - 'Ban chủ nhiệm khoa, Bộ môn Kỹ thuật Điện'
+  - 'Bộ phận Hành Chính'
+  - 'Kỹ thuật Điều khiển và Tự động hóa'
+  - 'Kỹ thuật Cơ điện tử'
+  - 'Tiến sĩ Sandwich'
+  - 'Kỹ thuật Điện tử - Viễn thông'
+  - 'Kỹ thuật Điện - Điện tử'
+  - '4+1'
+  - 'Trong nước'
+  - 'Liên kết, ĐH Kỹ thuật Ostrava'
+  - 'Chất lượng cao'
+  - 'Tiêu chuẩn'
+  - 'Liên kết, ĐH KHUD Saxion'
+  - 'Tiến sĩ'
+  - 'Đại học'
+  - 'Thạc sĩ'
+
+  params:
+    k_few_shot_examples: 5
+    sql_max_out_length: 2000
+    is_sql_get_all: True
+
+  tool:
+    name: "sql_executor"
+    description: "Searches and returns detail information about information of Ton Duc Thang University about study programs, personnel ... Generate SQL based on user question and execute it"
+    metadata: {"detail information_data": ["Ton Duc Thang", "Khoa Dien"]}
+    tags: ["detail_information_ton_duc_thang", "detail_information_khoa_dien"]

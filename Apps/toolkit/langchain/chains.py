@@ -39,9 +39,6 @@ async def invoke_chain(chain: Runnable, input, is_async: bool = False):
 	chain.invoke(input)
 
 #*------------------------------------------------------------------------------
-
-
-#*------------------------------------------------------------------------------
 class InputChainSql(BaseModel):
 	question: str = Field(description="user question, natural language, NOT sql query")
 

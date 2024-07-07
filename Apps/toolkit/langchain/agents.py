@@ -1,5 +1,6 @@
 import add_packages
 import boto3
+import os
 from loguru import logger
 from typing import Union, Optional, List, Literal, AsyncGenerator, TypeAlias
 from pydantic import BaseModel
@@ -35,15 +36,15 @@ from langchain.agents.output_parsers.openai_tools import (
 )
 
 from langchain_community.chat_message_histories.dynamodb import DynamoDBChatMessageHistory
-
+from langchain_mongodb.chat_message_histories import MongoDBChatMessageHistory
 #*==============================================================================
 
 dynamodb = boto3.resource("dynamodb")
 
 #*==============================================================================
 
-TypeHistoryType: TypeAlias = Literal["in_memory", "dynamodb"]
-TypeUserId: TypeAlias = str
+TypeHistoryType: TypeAlias = Literal["in_memory", "dynamodb", "mongodb"]
+TypeUserId: TypeAlias = Optional[str]
 TypeSessionId: TypeAlias = Union[str, None]
 
 class SchemaChatHistory(BaseModel):
@@ -74,16 +75,22 @@ class ChatHistory:
 				},
 				history_size=self.history_size,
 			)
+		elif self.history_type == "mongodb":
+			self.chat_history = MongoDBChatMessageHistory(
+				session_id=self.session_id, # user name, email, chat id etc.
+				connection_string=os.getenv("MONGODB_ATLAS_CLUSTER_URI"),
+				database_name=os.getenv("MONGODB_DB_NAME"),
+				collection_name=os.getenv("MONGODB_COLLECTION_NAME_MSG"),
+			)			
 
 		if self.is_new_session:
 			welcome_msg = "Hello! How can I help you today?"
-	
 			if self.history_type == "in_memory":
 				self.chat_history.append(AIMessage(welcome_msg))
 			elif self.history_type == "dynamodb":
 				self.chat_history.add_ai_message(welcome_msg)
 
-		logger.info(f"User Id: {self.user_id}")
+		if self.user_id: logger.info(f"User Id: {self.user_id}")
 		logger.info(f"Session Id: {self.session_id}")
 		logger.info(f"History Type: {self.history_type}")
 	
@@ -97,22 +104,27 @@ class ChatHistory:
 				self.chat_history.append(HumanMessage(msg_user))
 			if msg_ai:
 				self.chat_history.append(AIMessage(msg_ai))
-		elif self.history_type == "dynamodb":
+		elif self.history_type == "dynamodb" or self.history_type == "mongodb":
 			if msg_user:
 				await self.chat_history.aadd_messages(messages=[HumanMessage(msg_user)])
 			if msg_ai:
 				await self.chat_history.aadd_messages(messages=[AIMessage(msg_ai)])
 
-	async def _get_chat_history(self):
+	async def _get_chat_history(self, is_truncate=True):
 		if self.history_type == "in_memory":
 			return self.chat_history
 		elif self.history_type == "dynamodb":
 			return self.chat_history.messages
+		elif self.history_type == "mongodb":
+			result = await self.chat_history.aget_messages()
+			if is_truncate:
+				result = result[-self.history_size:]
+			return result
 
 	async def clear_chat_history(self):
 		if self.history_type == "in_memory":
 			self.chat_history = []
-		elif self.history_type == "dynamodb":
+		elif self.history_type == "dynamodb" or self.history_type == "dynamodb":
 			await self.chat_history.aclear()
 
 	async def _truncate_chat_history(
@@ -166,7 +178,7 @@ class MyStatelessAgent:
 
 	def _create_chat_history(
 		self,
-		history_type: TypeHistoryType = "dynamodb",
+		history_type: TypeHistoryType = "mongodb",
 		user_id: TypeUserId = "admin",
 		session_id: TypeSessionId = None,
 		history_size: Union[int, None] = 20,
@@ -194,7 +206,7 @@ class MyStatelessAgent:
 		callbacks: Optional[List] = None,
 		mode: Literal["sync", "async"] = "async",
 	
-		history_type: TypeHistoryType = "dynamodb",
+		history_type: TypeHistoryType = "mongodb",
 		user_id: TypeUserId = "admin",
 		session_id: TypeSessionId = None,
 	
@@ -233,7 +245,7 @@ class MyStatelessAgent:
 		self,
 		input_message: str,
 
-		history_type: TypeHistoryType = "dynamodb",
+		history_type: TypeHistoryType = "mongodb",
 		user_id: TypeUserId = "admin",
 		session_id: TypeSessionId = None,
 	

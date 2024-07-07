@@ -84,6 +84,7 @@ eksctl upgrade cluster --config-file deploy/docker_k8s/custom/vtc.eks-cluster.ya
 
 eksctl delete cluster --wait --disable-nodegroup-eviction -f deploy/docker_k8s/custom/vtc.eks-cluster.yaml 
 
+cd deploy/docker_k8s/k8s
 kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 kubectl apply -f config-map.yaml
 kubectl apply -f volume.yaml

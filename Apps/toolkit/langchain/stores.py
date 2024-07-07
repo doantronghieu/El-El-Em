@@ -1,11 +1,12 @@
 import add_packages
+import os
 from my_configs import constants
 
 import logging
 from loguru import logger
 from tqdm import tqdm
 import typing_inspect
-from typing import Literal, Union
+from typing import List, Dict, Any, Optional, Literal, Union
 
 
 from langchain_community.vectorstores import chroma, docarray, faiss, qdrant
@@ -18,7 +19,7 @@ from langchain_core.embeddings import Embeddings
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.vectorstores import VectorStore
 from langchain_openai import OpenAIEmbeddings
-from langchain_qdrant import Qdrant
+
 from langchain.retrievers import (
   ContextualCompressionRetriever,
   EnsembleRetriever,
@@ -36,14 +37,23 @@ from langchain.tools.retriever import create_retriever_tool
 
 from langchain_cohere import CohereEmbeddings, CohereRerank
 
-# Qdrant client imports
+# Qdrant
+from langchain_qdrant import Qdrant
 import qdrant_client
 from qdrant_client.http import models
 
+# MongoDB
+from langchain_mongodb.vectorstores import MongoDBAtlasVectorSearch
+from pymongo import MongoClient
+from pymongo.operations import SearchIndexModel
+
 # Logging setup
-logging.basicConfig()
-logging.getLogger("langchain.retrievers.re_phraser").setLevel(logging.INFO)
-# -------------------------------------------------------------------------------
+if os.getenv("IN_PROD"):
+  logging.basicConfig()
+  logging.getLogger("langchain.retrievers.re_phraser").setLevel(logging.INFO)
+  logging.getLogger("langchain.retrievers.multi_query").setLevel(logging.INFO)
+
+#-------------------------------------------------------------------------------
 
 def create_qdrant_index(
   docs, embeddings, use_memory=True, path=None, collection_name="my_documents"
@@ -162,6 +172,119 @@ class QdrantWrapper:
   def invoke_retriever(self, query, **kwargs):
     return self.retriever.invoke(query, **kwargs)
 
+#-------------------------------------------------------------------------------
+
+class MongoStore:
+		def __init__(
+				self,
+				mongodb_atlas_cluster_uri: str,
+				db_name: str,
+				collection_name: str,
+				index_name: str,
+				dimensions: int,
+				embeddings: Optional[Any] = None,
+				configs: Dict = None,
+				default_search_type: str = "similarity",
+				default_search_kwargs: Dict = {"k": 6},
+				retriever_tool_name: str = "",
+				retriever_tool_description: str = "",
+		):
+				self.client = MongoClient(mongodb_atlas_cluster_uri)
+				self.db_name = db_name
+				self.collection_name = collection_name
+				self.index_name = index_name
+				self.dimensions = dimensions
+				self.collection = self.client[db_name][collection_name]
+				
+				# Set up embeddings
+				self.embeddings = embeddings if embeddings else OpenAIEmbeddings(disallowed_special=())
+				
+				# Set up vector store
+				self.vector_store = MongoDBAtlasVectorSearch(
+						collection=self.collection,
+						index_name=self.index_name,
+						embedding=self.embeddings,
+						relevance_score_fn="cosine",
+				)
+				
+				# Set up retriever
+				self.retriever = self.vector_store.as_retriever(
+						search_type=default_search_type,
+						search_kwargs=default_search_kwargs,
+				)
+				
+				# Set up retriever tool
+				if retriever_tool_name and retriever_tool_description:
+						self.retriever_tool = create_retriever_tool(
+								retriever=self.retriever,
+								name=retriever_tool_name,
+								description=retriever_tool_description,
+						)
+				else:
+						self.retriever_tool = None
+
+		def create_index(self):
+				"""
+				Not available in free-tier.
+				https://www.mongodb.com/docs/atlas/atlas-vector-search/ai-integrations/langchain/#create-the-atlas-vector-search-index
+				"""
+				try:
+						search_index_model = SearchIndexModel(
+								definition={
+										"fields": [
+												{
+														"type": "vector",
+														"numDimensions": self.dimensions,
+														"path": "embedding",
+														"similarity": "cosine"
+												},
+												{
+														"type": "filter",
+														"path": "page"
+												},
+										]
+								},
+								name=self.index_name,
+								type="vectorSearch",
+						)
+
+						result = self.collection.create_search_index(model=search_index_model)
+						logger.info(f"Index '{self.index_name}' created successfully. Result: {result}")
+						return result
+				except Exception as e:
+						if "already exists" in str(e):
+								logger.info(f"Index '{self.index_name}' already exists.")
+						else:
+								logger.error(f"Error creating index: {e}")
+						return None
+
+		def add_documents(self, docs: List[Document]):
+				for doc in tqdm(docs):
+						self.vector_store.add_documents([doc])
+
+		def invoke_retriever(self, query, **kwargs):
+				result: List[Document] = self.retriever.invoke(query, **kwargs)
+				result = [Document(res.page_content) for res in result]
+				return result
+
+"""
+MONGODB_DB_NAME = "db_langchain"
+MONGODB_COLLECTION_NAME = "coll_langchain"
+MONGODB_ATLAS_VECTOR_SEARCH_INDEX_NAME = "idx_langchain"
+
+mongo_store = MongoStore(
+	mongodb_atlas_cluster_uri=os.getenv("MONGODB_ATLAS_CLUSTER_URI"),
+	db_name=MONGODB_DB_NAME,
+	collection_name=MONGODB_COLLECTION_NAME,
+	index_name=MONGODB_ATLAS_VECTOR_SEARCH_INDEX_NAME,
+	dimensions=1536,  # Set this to match your embedding size
+	retriever_tool_name="retriever_mongodb",
+	retriever_tool_description="Useful for retrieving information from MongoDB Atlas vector store."
+)
+
+"""
+#-------------------------------------------------------------------------------
+
 TypeRetriever = Literal[
   'base', 'SelfQueryRetriever', 'MultiQueryRetriever', 'CohereRerank', 
   'BM25Retriever', 'RePhraseQueryRetriever',
@@ -179,7 +302,7 @@ def create_retriever(
   vectorstore: Union[VectorStore, None] = None,
   embeddings: Union[Embeddings, None] = None,
   retriever_types: list[TypeRetriever] = [
-    'base', 'MultiQueryRetriever', 'CohereRerank'
+    'base', 'MultiQueryRetriever', 'RePhraseQueryRetriever',
   ],
   compressor_types: list[Literal[
     'EmbeddingsRedundantFilter', 'EmbeddingsFilter', 'LLMChainFilter', 
@@ -187,7 +310,7 @@ def create_retriever(
   ]] = [],
   search_type: Literal['mmr', 'similarity'] = "mmr",
   search_kwargs: dict = {
-    "k": 10,
+    "k": 6,
   },
   document_content_description: Union[str, None] = None,
   metadata_field_info: Union[list, None] = None,

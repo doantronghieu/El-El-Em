@@ -44,7 +44,7 @@ accessConfig:
 managedNodeGroups:
 - name: managed-ng-1
   amiFamily: AmazonLinux2 # Ubuntu2204, AmazonLinux2 ...
-  instanceTypes: ["t4g.large"] # medium, large, xlarge
+  instanceTypes: ["t4g.small"] # small, medium, large, xlarge
   # ami: ami-098c6080b06dab15c
 
   volumeSize: 16 # EBS

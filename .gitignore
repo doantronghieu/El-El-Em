@@ -9,3 +9,5 @@ Apps/__pycache__
 Apps/cache
 Apps/.env
 Apps/.vscode
+
+.aider*

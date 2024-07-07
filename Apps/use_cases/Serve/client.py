@@ -146,25 +146,6 @@ async def clear_agent_chat_history(
 		print(f"Request failed with status code {e.response.status_code}: {e.response.content.decode('utf-8')}")
 		return None
 
-
-def vtc_stream_agent_sync(
-	query,
-	server_fastapi = server_fastapi,
-	history_type: str = "dynamodb",
-	user_id=None,
-	session_id: str = "default",
-):
-	url = f"{server_fastapi}/vtc-stream-agent"
-	params = {
-		"query": query,
-		"history_type": history_type,
-		"user_id": user_id,
-		"session_id": session_id,
-	}
-
-	with httpx.stream('GET', url, params=params, timeout=60) as r:
-		for chunk in r.iter_text():
-			yield chunk
   
 def tdtu_stream_agent_sync(
 	query,

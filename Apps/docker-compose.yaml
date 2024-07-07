@@ -48,6 +48,7 @@ services:
     - 5432:5432
     networks:
     - app-network
+    # add health check
 
 networks:
   app-network:
