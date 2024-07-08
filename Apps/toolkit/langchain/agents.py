@@ -87,7 +87,7 @@ class ChatHistory:
 			welcome_msg = "Hello! How can I help you today?"
 			if self.history_type == "in_memory":
 				self.chat_history.append(AIMessage(welcome_msg))
-			elif self.history_type == "dynamodb":
+			elif self.history_type == "dynamodb" or self.history_type == "mongodb":
 				self.chat_history.add_ai_message(welcome_msg)
 
 		if self.user_id: logger.info(f"User Id: {self.user_id}")
