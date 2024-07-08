@@ -51,7 +51,7 @@ class SchemaChatHistory(BaseModel):
 	history_type: TypeHistoryType = "in_memory"
 	user_id: TypeUserId = "admin"
 	session_id: TypeSessionId = None
-	history_size: Union[int, None] = 20
+	history_size: Union[int, None] = 10
 
 class ChatHistory:
 	def __init__(self, schema: SchemaChatHistory):
@@ -112,28 +112,21 @@ class ChatHistory:
 
 	async def _get_chat_history(self, is_truncate=True):
 		if self.history_type == "in_memory":
-			return self.chat_history
+			result = self.chat_history
+			if is_truncate: result = result[-self.history_size:]
 		elif self.history_type == "dynamodb":
-			return self.chat_history.messages
+			result = self.chat_history.messages
 		elif self.history_type == "mongodb":
 			result = await self.chat_history.aget_messages()
-			if is_truncate:
-				result = result[-self.history_size:]
-			return result
+			if is_truncate: result = result[-self.history_size:]
+
+		return result
 
 	async def clear_chat_history(self):
 		if self.history_type == "in_memory":
 			self.chat_history = []
 		elif self.history_type == "dynamodb" or self.history_type == "dynamodb":
 			await self.chat_history.aclear()
-
-	async def _truncate_chat_history(
-		self,
-	):
-		if self.history_type == "in_memory":
-			self.chat_history = self.chat_history[-self.history_size:]
-		elif self.history_type == "dynamodb":
-			...
 
 class MyStatelessAgent:
 	def __init__(
@@ -197,8 +190,6 @@ class MyStatelessAgent:
 		msg_ai: str,
 	):
 		await history._add_messages_to_history(msg_user, msg_ai)
-		if history_type == "in_memory":
-			await history._truncate_chat_history()
 	
 	async def invoke_agent(
 		self,
