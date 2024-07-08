@@ -60,7 +60,7 @@ rm ./data.sql
 docker build -t doantronghieu/vtc-llm-fastapi:latest -f deploy/docker_k8s/docker-files/custom/Dockerfile.fastapi.vtc .
 docker build -t doantronghieu/vtc-llm-streamlit:latest -f deploy/docker_k8s/docker-files/custom/Dockerfile.streamlit.vtc .
 
-docker push doantronghieu/vtc-llm-fastapi:latest
+docker push doantronghieju/vtc-llm-fastapi:latest
 docker push doantronghieu/vtc-llm-streamlit:latest
 docker push doantronghieu/vtc-llm-postgresql:latest
 

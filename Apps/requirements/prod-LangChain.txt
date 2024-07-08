@@ -5,13 +5,15 @@ langchain-openai >= 0.1.8 # == 0.0.5 (crewai), >= 0.1.1
 openai >= 1.30.5
 tiktoken >= 0.7.0 # >=0.5.2 | >= 0.6.0
 langchain-anthropic >= 0.1.15
+langchain-groq >= 0.1.4
+groq >= 0.8.0
+langgraph >= 0.0.61
 langchain-qdrant >= 0.1.0
 qdrant-client >= 1.9.1
 langchain_cohere >= 0.1.5
 cohere >= 5.5.4
-langchain-groq >= 0.1.4
-groq >= 0.8.0
-langgraph >= 0.0.61
+langchain-mongodb
+pymongo
 
 langchainhub >= 0.1.17
 langsmith >= 0.1.69

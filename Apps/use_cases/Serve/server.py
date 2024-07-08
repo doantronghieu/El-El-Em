@@ -1,8 +1,8 @@
-
 import add_packages
 import asyncio
 import os
-from fastapi import FastAPI, Request, Header
+from typing import Union
+from fastapi import FastAPI, Request
 from fastapi.responses import StreamingResponse, Response, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
@@ -21,6 +21,11 @@ TRACER_LS = smiths.LangChainTracer(project_name=PROJECT_LS, client=CLIENT_LC)
 RUN_COLLECTOR = smiths.RunCollectorCallbackHandler()
 
 callbacks = [TRACER_LS, RUN_COLLECTOR]
+
+#*------------------------------------------------------------------------------
+
+DEFAULT_USER_ID = "admin"
+DEFAULT_SESSION_ID = "default"
 
 #*------------------------------------------------------------------------------
 
@@ -59,26 +64,20 @@ my_agent = agents.MyStatelessAgent(
 @app.get("/health")
 def health_check():
   return JSONResponse(content={"status": "healthy"})
-  
-@app.get('/langchain-session-dynamodb-table')
-async def get_langchain_session_dynamodb_table(
-  user: str  = "admin"
+
+@app.get('/langchain-chat-history')
+async def get_langchain_chat_history(
+  user_id: Union[str, None]  = DEFAULT_USER_ID,
+  session_id: Union[str, None]  = DEFAULT_SESSION_ID,
 ):
-  langchain_session_dynamodb_table = memories.LangChainSessionDynamodbTable()
-  result = langchain_session_dynamodb_table.get_session_ids(user)
+  result = None
+  if os.getenv("MSG_STORAGE_PROVIDER") == "dynamodb":
+    langchain_session_dynamodb_table = memories.LangChainSessionDynamodbTable()
+    result = langchain_session_dynamodb_table.get_session_ids(user_id)
+  elif os.getenv("MSG_STORAGE_PROVIDER") == "mongodb":
+    result = "TODO: get_langchain_chat_history for `mongodb`"
   return result
 
-#*------------------------------------------------------------------------------
-
-async def fake_data_streamer():
-  for i in range(5):
-    yield b'pip pip ...\n\n'
-    await asyncio.sleep(0.5)
-
-@app.get('/fake-stream')
-async def fake_stream():
-    return StreamingResponse(fake_data_streamer(), media_type='text/event-stream')
-  
 #*------------------------------------------------------------------------------
 
 def stream_generator_chat_model(
@@ -102,9 +101,9 @@ async def stream_chat_model(
 def stream_generator_agent(
   agent: agents.MyStatelessAgent,
   query: str,
-	history_type: str="dynamodb",
+	history_type: str=os.getenv("MSG_STORAGE_PROVIDER"),
   user_id=None,
-	session_id: str="default",
+	session_id: str=DEFAULT_SESSION_ID,
 ):
   return agent.astream_events_basic(
     input_message=query,
@@ -118,9 +117,9 @@ def stream_generator_agent(
 async def stream_agent(
   request: Request,
   query: str="Hello",
-  history_type: str="dynamodb",
+  history_type: str=os.getenv("MSG_STORAGE_PROVIDER"),
   user_id=None,
-  session_id: str="default",
+  session_id: str=DEFAULT_SESSION_ID,
 ):
   return StreamingResponse(
     stream_generator_agent(
@@ -138,9 +137,9 @@ async def stream_agent(
 async def invoke_agent(
   request: Request,
   query: str="Hello",
-  history_type: str="dynamodb",
+  history_type: str=os.getenv("MSG_STORAGE_PROVIDER"),
   user_id=None,
-  session_id: str="default",
+  session_id: str=DEFAULT_SESSION_ID,
 ):
   return Response(
     content=await my_agent.invoke_agent(
@@ -148,7 +147,6 @@ async def invoke_agent(
       history_type=history_type,
       user_id=request.client.host if (user_id is None or user_id == "") 
         else user_id,
-      # user_id=str(Header(None, alias='X-Real-IP')),
       session_id=session_id,
     ),
   )
@@ -156,9 +154,9 @@ async def invoke_agent(
 @app.get("/agent-chat-history")
 async def get_agent_chat_history(
   request: Request,
-  history_type: str="dynamodb",
+  history_type: str=os.getenv("MSG_STORAGE_PROVIDER"),
   user_id=None,
-  session_id: str="default",
+  session_id: str=DEFAULT_SESSION_ID,
 ):
   history = my_agent._create_chat_history(
     history_type=history_type,
@@ -172,9 +170,9 @@ async def get_agent_chat_history(
 @app.delete("/agent-chat-history")
 async def clear_agent_chat_history(
   request: Request,
-  history_type: str="dynamodb",
+  history_type: str=os.getenv("MSG_STORAGE_PROVIDER"),
   user_id=None,
-  session_id: str="default",
+  session_id: str=DEFAULT_SESSION_ID,
 ):
   history = my_agent._create_chat_history(
     history_type=history_type,

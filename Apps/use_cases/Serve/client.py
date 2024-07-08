@@ -2,20 +2,27 @@ import httpx
 import asyncio
 import os
 import json
-from typing import Literal
+from typing import Literal, Union
 
 server_fastapi = os.environ.get('ENDPOINT_PROD_FASTAPI', 'http://127.0.0.1:8000')
 
-async def get_langchain_session_dynamodb_table(
+DEFAULT_USER_ID = "admin"
+DEFAULT_SESSION_ID = "default"
+
+#*==============================================================================
+
+async def get_langchain_chat_history(
 	server_fastapi = server_fastapi, 
-	user: str = "admin",
+	user_id: Union[str, None]  = "admin",
+	session_id: Union[str, None]  = DEFAULT_SESSION_ID,
 ):
-	url = f"{server_fastapi}/langchain-session-dynamodb-table"
+	url = f"{server_fastapi}/langchain-chat-history"
 	headers = {
 		"accept": "application/json"
 	}
 	params = {
-		"user": user,
+		"user_id": user_id,
+		"session_id": session_id,
 	}
 
 	try:

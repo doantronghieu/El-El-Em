@@ -62,8 +62,8 @@ my_agent = agents.MyStatelessAgent(
 def health_check():
   return JSONResponse(content={"status": "healthy"})
   
-@app.get('/langchain-session-dynamodb-table')
-async def get_langchain_session_dynamodb_table(
+@app.get('/langchain-chat-history')
+async def get_langchain_chat_history(
   user: str  = "admin"
 ):
   langchain_session_dynamodb_table = memories.LangChainSessionDynamodbTable()
