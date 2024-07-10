@@ -42,6 +42,7 @@ from langchain_mongodb.chat_message_histories import MongoDBChatMessageHistory
 dynamodb = boto3.resource("dynamodb")
 
 #*==============================================================================
+TypeAgent: TypeAlias = Literal["tool_calling", "openai_tools", "react", "anthropic"]
 
 TypeHistoryType: TypeAlias = Literal["in_memory", "dynamodb", "mongodb"]
 TypeUserId: TypeAlias = Optional[str]

@@ -1,5 +1,5 @@
 import os, dotenv, yaml
-from typing import Literal, Union
+from typing import Literal, Union, TypeAlias
 from loguru import logger
 from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
@@ -9,17 +9,17 @@ from langchain_core.language_models.chat_models import BaseChatModel
 
 dotenv.load_dotenv()
 
-MODEL_PROVIDER = Literal["openai", "gemini", "anthropic"]
-MODEL_VERSION_OPENAI = Literal[
-  "gpt-3.5-turbo-0125",
+MODEL_PROVIDER: TypeAlias = Literal["openai", "gemini", "anthropic"]
+MODEL_VERSION_OPENAI: TypeAlias = Literal[
+  "gpt-3.5-turbo-0125", "gpt-4-turbo-preview"
 ]
-MODEL_VERSION_ANTHROPIC = Literal[
-  "claude-3-haiku-20240307",
+MODEL_VERSION_ANTHROPIC: TypeAlias = Literal[
+  "claude-3-haiku-20240307", "claude-3-opus-20240229", "claude-3-sonnet-20240229",
 ]
-MODEL_VERSION_GROQ = Literal[
+MODEL_VERSION_GROQ: TypeAlias = Literal[
   "mixtral-8x7b-32768", "llama3-70b-8192",
 ]
-MODEL_VERSION_COHERE = Literal[
+MODEL_VERSION_COHERE: TypeAlias = Literal[
   "command", "command-r", "command-r-plus",
 ]
 
@@ -41,31 +41,6 @@ chat_cohere = ChatCohere(
   model="command-r-plus", # "command", "command-r", "command-r-plus",
   temperature=0
 )
-
-def create_chat_model(config: dict) -> BaseChatModel:
-  model_option = config["model"]["option"]
-  model_version = config['model'][model_option]
-  temperature = config["model"]["temperature"]
-  
-  logger.info(f"Model: {model_option}, {model_version}")
-  
-  if model_option == 'openai':
-      if model_version:
-          return ChatOpenAI(
-              temperature=temperature, model=model_version, streaming=True,
-          )
-      else:
-          raise ValueError("OpenAI model name is missing in config.")
-  elif model_option == 'anthropic':
-      if model_version:
-          return ChatAnthropic(
-              temperature=temperature, model_name=model_version, streaming=True,
-          )
-      else:
-          raise ValueError("Anthropic model name is missing in config.")
-  else:
-      raise ValueError(
-          "Invalid model option in config. Supported options are 'openai', 'anthropic'.")
 
 def create_llm(
   model_provider: MODEL_PROVIDER,

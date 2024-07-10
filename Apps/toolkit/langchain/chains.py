@@ -1,5 +1,7 @@
 import add_packages
 from operator import itemgetter
+import ast
+
 from toolkit import sql 
 from typing import Any, Awaitable, Callable, Optional, Type, Union, Dict, List
 
@@ -15,22 +17,24 @@ from langchain.tools import StructuredTool
 from langchain_community.tools.sql_database.tool import QuerySQLDataBaseTool
 from langchain_community.utilities import SQLDatabase
 from langchain_core.callbacks import AsyncCallbackManagerForToolRun, CallbackManagerForToolRun
+from langchain_core.documents import Document
 from langchain_core.embeddings import Embeddings
 from langchain_core.example_selectors import SemanticSimilarityExampleSelector
-from langchain_core.language_models.chat_models import  BaseChatModel
+from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.output_parsers.openai_tools import PydanticToolsParser
 from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
 from langchain_core.pydantic_v1 import BaseModel, Field
-from langchain_core.runnables import RunnableLambda, RunnablePassthrough, Runnable
+from langchain_core.runnables import RunnableLambda, RunnablePassthrough, Runnable, RunnableParallel
 from langchain_core.tools import ToolException, ValidationError
 from langchain_core.vectorstores import VectorStore
+from langchain_core.retrievers import BaseRetriever
 
-#*------------------------------------------------------------------------------
+#*==============================================================================
 def parse_retriever_input(params: Dict):
 		return params["messages"][-1].content
 
-#*------------------------------------------------------------------------------
+#*==============================================================================
 
 async def invoke_chain(chain: Runnable, input, is_async: bool = False):
 	if is_async:
@@ -38,9 +42,14 @@ async def invoke_chain(chain: Runnable, input, is_async: bool = False):
 
 	chain.invoke(input)
 
-#*------------------------------------------------------------------------------
+#*==============================================================================
 class InputChainSql(BaseModel):
 	question: str = Field(description="user question, natural language, NOT sql query")
+
+class InputChainRag(BaseModel):
+	question: str = Field(description="user question, natural language, NOT sql query")
+
+#*==============================================================================
 
 class Table(BaseModel):
 	"""Table in SQL database."""
@@ -425,6 +434,171 @@ class MyRoutableChain:
 		
 		def get_chain(self):
 				return self.chain_routable
+
+class MyRagChain:
+	def __init__(
+		self,
+		llm: BaseChatModel,
+		retriever: BaseRetriever,
+		is_debug: bool = False,
+		just_return_ctx: bool = False,
+		
+		tool_name: str = None,
+		tool_description: str = None,
+		tool_metadata: Optional[Dict[str, Any]] = None,
+		tool_tags: Optional[List[str]] = None,
+		**kwargs,
+  ) -> None:
+		self.is_debug = is_debug
+		self.tool_name = tool_name
+		self.just_return_ctx = just_return_ctx
+		
+		self.tool_description = tool_description
+		self.tool_metadata = tool_metadata
+		self.tool_tags = tool_tags
+  
+		self.prompt_tpl_filter_context = """\
+		You are an AI assistant tasked with filtering a list of retrieved text chunks to only the most relevant ones for answering a given question.
+
+		Here is the question:
+		<question>
+		{question}
+		</question>
+
+		And here are the retrieved text chunks:
+		<retrieved_chunks>
+		{context}
+		</retrieved_chunks>
+
+		Carefully analyze each chunk for how relevant it is to answering the question. Consider the following:
+		- Does the chunk contain information that helps answer the question?
+		- Does the chunk provide important context or background for the question?
+		- Is the chunk focused on the key concepts and entities mentioned in the question?
+
+		Create a Python list containing only the most relevant chunks. The list should be a subset of the original retrieved_chunks list. Omit any chunks that are not directly helpful for answering the question. 
+
+		Output this filtered list of the most relevant chunks. The format should be a valid Python list, like:
+		['chunk 1 text', 
+		'chunk 2 text',
+		'chunk 3 text']
+
+		Remember, the goal is to create a focused list of only the most relevant chunks for answering the original question. Do not include any irrelevant or tangential chunks in your final result list.
+		"""
+		self.prompt_filter_context = ChatPromptTemplate.from_template(self.prompt_tpl_filter_context)
+
+		self.prompt_tpl_rag = """\
+		Here is the question to answer:
+		<question>
+		{question}
+		</question>
+
+		And here are the relevant pieces of context that may help answer the question:
+		<context>
+		{context_filtered}
+		</context>
+
+		Carefully read the question and context. Think through how the context can be used to answer the question. If the context doesn't contain any relevant information to the question, don't make something up and just say "I don't know".
+
+		Provide your final answer to the question. If the question cannot be answered based on the provided context, simply say "I don't know." Keep your answer to 3 sentences maximum and prioritize conciseness.
+
+		Helpful Answer:\
+		"""
+		self.prompt_rag = ChatPromptTemplate.from_template(self.prompt_tpl_rag)
+
+		self.retriever = retriever
+		self.llm = llm
+  
+		self.chain_rag = RunnableParallel(
+			{
+				"question": RunnablePassthrough(),
+				"context": self.retriever | self.format_docs_to_list,
+			}
+		)\
+			.assign(context_filtered=(
+				self.prompt_filter_context | self.llm | StrOutputParser() | ast.literal_eval
+			)).with_retry()
+		if self.just_return_ctx:
+			self.chain_rag.assign(result=(
+				self.prompt_rag	| self.llm	| StrOutputParser()
+			)).with_retry()
+		
+		self.metadata_chain_rag = {"is_my_rag_chain_run": True}
+
+	def format_docs_to_str(self, docs: list[Document]):
+		return "\n\n".join(doc.page_content for doc in docs)
+
+	def format_docs_to_list(self, docs: list[Document]):
+		return [doc.page_content for doc in docs]
+
+	def prepare_chain_input(self, question: str):
+		result = question
+		return result
+
+	def prepare_chain_output(self, result):
+		if not self.is_debug and self.just_return_ctx:
+			result = result["context_filtered"]
+		return result
+ 
+	def invoke_chain(self, question: str) -> Union[str, dict]:
+		"""Get natural user question, turn it into SQL query and execute"""
+		# question = self.prepare_chain_input(question)
+		result = self.chain_rag.invoke(
+			question,
+			config={"metadata": self.metadata_chain_rag},
+		)
+		result = self.prepare_chain_output(result)
+
+		return result
+	
+	async def ainvoke_chain(self, question: str) -> Union[str, dict]:
+		"""Get natural user question, turn it into SQL query and execute"""
+		# question = self.prepare_chain_input(question)
+		result = await self.chain_rag.ainvoke(
+			question,
+			config={"metadata": self.metadata_chain_rag},
+		)
+		result = self.prepare_chain_output(result)
+
+		return result
+
+	def create_tool_chain_rag(
+		self,
+		func: Callable = None,
+		args_schema: Type[BaseModel] = None,
+		coroutine: Optional[Callable[..., Awaitable[Any]]] = None,
+		name: str = None,
+		description: str = None,
+		return_direct: bool = False, # True: Agent will stop after tool completed
+		handle_tool_error: Optional[Union[bool, str, Callable[[ToolException], str]]] = True,
+		handle_validation_error: Optional[Union[bool, str, Callable[[ValidationError], str]]] = True,
+		verbose: bool = False,
+		metadata: Optional[Dict[str, Any]] = None,
+		tags: Optional[List[str]] = None,
+	):
+		func = self.invoke_chain if func is None else func
+		args_schema = InputChainRag if args_schema is None else args_schema
+		coroutine = self.ainvoke_chain if coroutine is None else coroutine
+		
+		name = self.tool_name if name is None else name
+		description = self.tool_description if description is None else description
+		metadata = self.tool_metadata if metadata is None else metadata
+		tags = self.tool_tags if tags is None else tags
+		
+		tool_chain_rag = StructuredTool.from_function(
+			func=func,
+			args_schema=args_schema,
+			coroutine=coroutine,
+			name=name,
+			description=description,
+			return_direct=return_direct,
+			handle_tool_error=handle_tool_error,
+			handle_validation_error=handle_validation_error,
+			verbose=verbose,
+			metadata=metadata,
+			tags=tags,
+		)
+
+		return tool_chain_rag
 
 
 ...
