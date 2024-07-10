@@ -57,7 +57,7 @@ def create_qdrant_index(
   return qdrant_instance
 
 
-class QdrantWrapper:
+class QdrantStore:
   def __init__(
     self,
     qdrant_host: str,

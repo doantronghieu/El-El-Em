@@ -1,13 +1,3 @@
-model:
-  option: "openai" # openai, anthropic
-  temperature: 0
-
-  openai: "gpt-3.5-turbo-0125" # gpt-3.5-turbo-0125, gpt-4-turbo-preview
-  anthropic: "claude-3-haiku-20240307" # claude-3-haiku-20240307, claude-3-opus-20240229, claude-3-sonnet-20240229
-
-agents:
-  type: "tool_calling" # openai_tools, react, anthropic, tool_calling
-
 data:
   # metadata_field_info: metadata of Document
   # - type: string or list[string], string, integer, float
@@ -24,49 +14,26 @@ data:
       description: ""
       type: ""
 
-
 vector_db:
-  embeddings:
-    model: "openai" # openai, cohere
-
-    openai:
-      model: "text-embedding-3-large" # text-embedding-3-large, text-embedding-ada-002
-
-    size:
-      text-embedding-ada-002: 1536
-      text-embedding-3-large: 3072
-
   qdrant:
-    general:
-      prefer_grpc: false
-      distance: "Cosine" # Cosine, Euclid, Dot, Manhattan
-      default_search_type: "mmr" # similarity, mmr
-      content_payload_key: "page_content"
-      metadata_payload_key: "metadata"
-
     lectures_content:
       collection_name: "vtc-lectures-content-3072-v1" # vtc-lectures-content-2 , vtc-lectures-content-3072
-      default_search_type: "mmr" # similarity, mmr
-      default_search_kwargs:
-        k: 5
-      retriever_tool_name: "lectures_content"
-      retriever_tool_description: "Searches and returns content, knowledge from the lecture scripts based on specialized keywords from user's question like Typography, Lazada, Premiere, Unity ..."
+      tool_name: "lectures_content"
+      tool_description: "Searches and returns content, knowledge from the lecture scripts based on specialized keywords from user's question like Typography, Lazada, Premiere, Unity ..."
 
     vtc_faq:
       collection_name: "vtc_faq"
-      default_search_type: "mmr"
-      default_search_kwargs:
-        k: 10
-      retriever_tool_name: "vtca_frequently_asked_questions"
-      retriever_tool_description: "Searches and returns answer for frequently asked questions about VTCA information. Get most accurate answer based on user question."
+      tool_name: "vtca_frequently_asked_questions"
+      tool_description: "Searches and returns answer for frequently asked questions about VTCA information. Get most accurate answer based on user question."
+      tool_metadata: {"frequently asked questions": ["vtc"]}
+      tool_tags: ["frequently_asked_questions_vtc"]
 
     onli_faq:
       collection_name: "onli_faq"
-      default_search_type: "mmr"
-      default_search_kwargs:
-        k: 10
-      retriever_tool_name: "onlinica_frequently_asked_questions"
-      retriever_tool_description: "Searches and returns answer for frequently asked questions about Onlinica platform information. Get most accurate answer based on user question."
+      tool_name: "onlinica_frequently_asked_questions"
+      tool_description: "Searches and returns answer for frequently asked questions about Onlinica platform information. Get most accurate answer based on user question."
+      tool_metadata: {"frequently asked questions": ["onlinica"]}
+      tool_tags: ["frequently_asked_questions_onlinica"]
 
 prompts:
   system_message_vtc: |
@@ -120,6 +87,7 @@ prompts:
     This is very important to my career. Think about the feeling of satisfaction, joy, and happiness you bring to users. Your goal is to make every interaction not only informative but also a delightful experience that leaves users feeling positive and well-cared for.
 
     At the end of each response, kindly ask the user for their phone number. Frame this request as an opportunity for them to receive more detailed advice and the best possible support. You can say something like, 'You can leave your phone number so that our staff can contact you and advise you in the best way.' Phrase this request in Vietnamese, ensuring it sounds natural and inviting without being pushy. If in your most recent messages you haven't asked for the customer's phone number, ask them for their phone number. Do not ask for the customer's phone number if in the most recent responses you have asked for their phone number.
+
 sql:
   examples_questions_to_sql:
     onli_course_list:
@@ -450,11 +418,6 @@ sql:
   - '30 ngày'
   - '5 tuần'
   - '12 tuần'
-
-  params:
-    k_few_shot_examples: 5
-    sql_max_out_length: 2000
-    is_sql_get_all: True
 
   tool:
     name: "sql_executor"

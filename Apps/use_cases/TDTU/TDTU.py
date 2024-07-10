@@ -13,21 +13,21 @@ from toolkit.langchain import (
 with open(f"{add_packages.APP_PATH}/my_configs/tdtu.yaml", 'r') as file:
   configs = yaml.safe_load(file)
 
-qdrant_csv_personnel = stores.QdrantWrapper(
+qdrant_csv_personnel = stores.QdrantStore(
 	qdrant_host=os.getenv("QDRANT_HOST"),
 	qdrant_api_key=os.getenv("QDRANT_API_KEY"),
 	configs=configs,
 	**configs["vector_db"]["qdrant"]["personnel"]
 )
 
-qdrant_csv_admission = stores.QdrantWrapper(
+qdrant_csv_admission = stores.QdrantStore(
 	qdrant_host=os.getenv("QDRANT_HOST"),
 	qdrant_api_key=os.getenv("QDRANT_API_KEY"),
 	configs=configs,
 	**configs["vector_db"]["qdrant"]["university_admission_program"]
 )
 
-qdrant_txt_info = stores.QdrantWrapper(
+qdrant_txt_info = stores.QdrantStore(
   qdrant_host=os.getenv("QDRANT_HOST"),
   qdrant_api_key=os.getenv("QDRANT_API_KEY"),
   configs=configs,

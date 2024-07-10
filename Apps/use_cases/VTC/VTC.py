@@ -27,7 +27,6 @@ my_sql_db = sql.MySQLDatabase()
 
 cfg_sql = configs["sql"]
 cfg_sql_tool = cfg_sql["tool"]
-cfg_sql_params = cfg_sql["params"]
 
 my_sql_chain = chains.MySqlChain(
 	my_sql_db=my_sql_db,
@@ -37,9 +36,9 @@ my_sql_chain = chains.MySqlChain(
 	proper_nouns=proper_nouns,
 	k_retriever_proper_nouns=4,
 	examples_questions_to_sql=examples_questions_to_sql,
-	k_few_shot_examples=cfg_sql_params["k_few_shot_examples"],
-	sql_max_out_length=cfg_sql_params["sql_max_out_length"],
-	is_sql_get_all=cfg_sql_params["is_sql_get_all"],
+	k_few_shot_examples=5,
+	sql_max_out_length=2000,
+	is_sql_get_all=True,
 	is_debug=False,
 	tool_name=cfg_sql_tool["name"],
 	tool_description=cfg_sql_tool["description"],
@@ -51,38 +50,50 @@ tool_chain_sql = my_sql_chain.create_tool_chain_sql()
 
 #*------------------------------------------------------------------------------
 
-qdrant_txt_vtc_faq = stores.QdrantWrapper(
-  qdrant_host=os.getenv("QDRANT_HOST"),
-  qdrant_api_key=os.getenv("QDRANT_API_KEY"),
+qdrant_txt_vtc_faq = stores.QdrantStore(
+  embeddings_provider="openai",
+	embeddings_model="text-embedding-3-large",
+	llm=models.chat_openai,
+	search_type="mmr",
   configs=configs,
+  distance="Cosine",
   **configs["vector_db"]["qdrant"]["vtc_faq"]
 )
 
-qdrant_txt_onli_faq = stores.QdrantWrapper(
-  qdrant_host=os.getenv("QDRANT_HOST"),
-  qdrant_api_key=os.getenv("QDRANT_API_KEY"),
+qdrant_txt_onli_faq = stores.QdrantStore(
+  embeddings_provider="openai",
+	embeddings_model="text-embedding-3-large",
+	llm=models.chat_openai,
+	search_type="mmr",
   configs=configs,
+  distance="Cosine",
   **configs["vector_db"]["qdrant"]["onli_faq"]
 )
 
-qdrant_lectures_content = stores.QdrantWrapper(
-  qdrant_host=os.getenv("QDRANT_HOST"),
-  qdrant_api_key=os.getenv("QDRANT_API_KEY"),
-  configs=configs,
-  **configs["vector_db"]["qdrant"]["lectures_content"],
+my_chain_rag_vtc_faq = chains.MyRagChain(
+	llm=llm,
+	retriever=qdrant_txt_vtc_faq.retriever,
+	is_debug=False,
+	just_return_ctx=True,
+	**configs["vector_db"]["qdrant"]["vtc_faq"],
 )
+
+tool_chain_rag_vtc_faq = my_chain_rag_vtc_faq.create_tool_chain_rag()
+
+my_chain_rag_onli_faq = chains.MyRagChain(
+	llm=llm,
+	retriever=qdrant_txt_onli_faq.retriever,
+	is_debug=False,
+	just_return_ctx=True,
+	**configs["vector_db"]["qdrant"]["onli_faq"],
+)
+
+tool_chain_rag_onli_faq = my_chain_rag_onli_faq.create_tool_chain_rag()
 
 #*==============================================================================
-system_message_vtc = configs["prompts"]["system_message_vtc"]
-
-prompt_onlinica = prompts.create_prompt_tool_calling_agent(
-  system_message_vtc
-)
-
 tools = [
-  # qdrant_lectures_content.retriever_tool,
-  qdrant_txt_vtc_faq.retriever_tool,
-	qdrant_txt_onli_faq.retriever_tool,
+	tool_chain_rag_vtc_faq,
+	tool_chain_rag_onli_faq,
 	tool_chain_sql,
 ]
 
@@ -93,6 +104,6 @@ agent = agents.MyStatelessAgent(
 	llm=llm,
 	tools=tools,
 	prompt=prompt,
-	agent_type=configs["agents"]["type"],
+	agent_type="tool_calling",
 	agent_verbose=False,
 )

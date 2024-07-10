@@ -281,7 +281,8 @@ class MyStatelessAgent:
 				chunk = dict(event_data_chunk)["content"]
 		
 				if (event.get("metadata", {}).get("ls_stop") == ['\nSQLResult:']) \
-						or ("is_my_sql_chain_run" in event.get("metadata", {})):
+						or ("is_my_sql_chain_run" in event.get("metadata", {})) \
+						or ("is_my_rag_chain_run" in event.get("metadata", {})):
 					continue
 
 				result += chunk
