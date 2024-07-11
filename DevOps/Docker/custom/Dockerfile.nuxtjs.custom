@@ -1,0 +1,31 @@
+# Build stage
+FROM node:lts-alpine AS builder
+
+WORKDIR /LLM/FrontEnd
+
+COPY FrontEnd/package*.json ./
+RUN npm ci && npm cache clean --force
+
+COPY FrontEnd/ ./
+RUN npm run build
+
+# Runtime stage
+FROM node:lts-alpine
+
+WORKDIR /LLM/FrontEnd
+
+# Install PM2 globally
+RUN npm install -g pm2 && npm cache clean --force
+
+# Copy built app and necessary files from builder stage
+COPY --from=builder /LLM/FrontEnd/.output /LLM/FrontEnd/.output
+COPY --from=builder /LLM/FrontEnd/ecosystem.config.cjs .
+
+# Create a non-root user and switch to it
+RUN addgroup -g 1001 -S nodejs && adduser -S nuxtjs -u 1001 && \
+    chown -R nuxtjs:nodejs /LLM/FrontEnd
+USER nuxtjs
+
+EXPOSE 3000
+
+CMD ["pm2-runtime", "start", "ecosystem.config.cjs"]

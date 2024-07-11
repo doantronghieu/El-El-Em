@@ -1,0 +1,15 @@
+FROM postgres:latest
+
+# Copy the SQL dump file into the image
+COPY ../../Apps/data/postgres/data.sql /docker-entrypoint-initdb.d/
+# COPY ../../Apps/data.sql /docker-entrypoint-initdb.d/
+
+# Expose port 5432 as it's the default port for PostgreSQL
+EXPOSE 5432
+
+# Set environment variables
+ENV POSTGRES_USER=myuser
+ENV POSTGRES_PASSWORD=mysecretpassword
+ENV POSTGRES_DB=mydatabase
+
+# PostgreSQL starts automatically when the container is launched, so no command is needed

@@ -1,7 +1,5 @@
 # Large Languge Model-powered applications
 
-[Demo](https://drive.google.com/file/d/1fXI2bWKGI-on2AUz9UEQitSJyxn3WROl/view?usp=sharing)
-
 ## App Logic
 
 ![Logic Flow](./diagrams/LogicFlow.jpg)
@@ -120,13 +118,13 @@ rm ./data.sql # No need
 ### Build Docker
 
 ```bash
-docker build -t doantronghieu/llm-fastapi:latest -f DevOps/Docker/Dockerfile.fastapi .
-docker build -t doantronghieu/llm-nuxtjs:latest -f DevOps/Docker/Dockerfile.nuxtjs .
-docker build -t doantronghieu/llm-postgresql:latest -f DevOps/Docker/Dockerfile.postgresql .
+docker build -t doantronghieu/custom-llm-fastapi:latest -f DevOps/Docker/custom/Dockerfile.fastapi.custom .
+docker build -t doantronghieu/custom-llm-nuxtjs:latest -f DevOps/Docker/custom/Dockerfile.nuxtjs.custom .
+docker build -t doantronghieu/custom-llm-postgresql:latest -f DevOps/Docker/custom/Dockerfile.postgresql.custom .
 
-docker push doantronghieu/llm-fastapi:latest
-docker push doantronghieu/llm-streamlit:latest
-docker push doantronghieu/llm-postgresql:latest
+docker push doantronghieu/custom-llm-fastapi:latest
+docker push doantronghieu/custom-llm-streamlit:latest
+docker push doantronghieu/custom-llm-postgresql:latest
 ```
 
 ### Test Docker
@@ -134,16 +132,16 @@ docker push doantronghieu/llm-postgresql:latest
 #### Separately
 
 ```bash
-docker run -d -p 8000:8000 --name llm-fastapi doantronghieu/llm-fastapi:latest
-docker run -d -p 5432:5432 --name llm-postgresql doantronghieu/llm-postgresql:latest
-docker run -d -p 3000:3000 --name llm-nuxtjs doantronghieu/llm-nuxtjs:latest
+docker run -d -p 8000:8000 --name custom-llm-fastapi doantronghieu/custom-llm-fastapi:latest
+docker run -d -p 3000:3000 --name custom-llm-nuxtjs doantronghieu/custom-llm-nuxtjs:latest
+docker run -d -p 5432:5432 --name custom-llm-postgresql doantronghieu/custom-llm-postgresql:latest
 ```
 
 #### All in one
 
 ```bash
-docker-compose -f DevOps/Docker/docker-compose.yaml up -d
-docker-compose -f DevOps/Docker/docker-compose.yaml down
+docker-compose -f DevOps/Docker/custom/custom.docker-compose.yaml up -d
+docker-compose -f DevOps/Docker/custom/custom.docker-compose.yaml down
 ```
 
 ### Use Helm to export K8s files

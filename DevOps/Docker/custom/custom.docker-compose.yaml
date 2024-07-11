@@ -1,0 +1,51 @@
+services:
+  fastapi:
+    image: doantronghieu/custom-llm-fastapi:latest
+    container_name: custom-llm-fastapi
+    build:
+      context: ../../../Apps
+      dockerfile: ../../Docker/Dockerfile.fastapi
+    ports:
+    - "8000:8000"
+    networks:
+    - app-network
+    restart: always
+    environment:
+    - IN_PROD=True
+
+  nuxtjs:
+    image: doantronghieu/custom-llm-nuxtjs:latest
+    container_name: custom-llm-nuxtjs
+    build:
+      context: ../../../FrontEnd
+      dockerfile: ../../Docker/Dockerfile.nuxtjs
+    ports:
+    - "3000:3000"
+    networks:
+    - app-network
+    restart: always
+    environment:
+    - NUXT_PUBLIC_SERVER_FASTAPI=http://fastapi:8000
+    depends_on:
+    - fastapi
+
+  postgres:
+    image: doantronghieu/custom-llm-postgresql:latest
+    container_name: custom-llm-postgres
+    restart: always
+    # shm_size: 128mb # shared memory limit
+    volumes:
+    - ../../../Apps/data/postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_DB: mydatabase
+    ports:
+    - 5432:5432
+    networks:
+    - app-network
+    # add health check
+
+networks:
+  app-network:
+    driver: bridge # bridge, overlay
