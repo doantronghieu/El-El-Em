@@ -1,4 +1,4 @@
-
+---
 # Source: helm-chart/templates/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: fastapi
-        image: "doantronghieu/vtc-llm-fastapi:latest"
+        image: "doantronghieu/custom-llm-fastapi:latest"
         imagePullPolicy: Always
         ports:
         - containerPort: 8000
@@ -64,10 +64,10 @@ spec:
     spec:
       containers:
       - name: nuxtjs
-        image: "doantronghieu/vtc-llm-nuxtjs:latest"
+        image: "doantronghieu/custom-llm-nuxtjs:latest"
         imagePullPolicy: Always
         ports:
-        - containerPort: 8051
+        - containerPort: 3000
         envFrom:
         - configMapRef:
             name: nuxtjs-config
@@ -81,13 +81,13 @@ spec:
         readinessProbe:
           httpGet:
             path: /
-            port: 8051
+            port: 3000
           initialDelaySeconds: 5
           periodSeconds: 10
         livenessProbe:
           httpGet:
             path: /
-            port: 8051
+            port: 3000
           initialDelaySeconds: 15
           periodSeconds: 20
 ---
@@ -110,7 +110,7 @@ spec:
     spec:
       containers:
       - name: postgres
-        image: "doantronghieu/vtc-llm-postgresql:latest"
+        image: "doantronghieu/custom-llm-postgresql:latest"
         imagePullPolicy: Always
         ports:
         - containerPort: 5432
@@ -131,4 +131,3 @@ spec:
       - name: postgres-data
         persistentVolumeClaim:
           claimName: postgres-pvc
----

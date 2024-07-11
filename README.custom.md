@@ -123,7 +123,7 @@ docker build -t doantronghieu/custom-llm-nuxtjs:latest -f DevOps/Docker/custom/D
 docker build -t doantronghieu/custom-llm-postgresql:latest -f DevOps/Docker/custom/Dockerfile.postgresql.custom .
 
 docker push doantronghieu/custom-llm-fastapi:latest
-docker push doantronghieu/custom-llm-streamlit:latest
+docker push doantronghieu/custom-llm-nuxtjs:latest
 docker push doantronghieu/custom-llm-postgresql:latest
 ```
 
@@ -148,19 +148,21 @@ docker-compose -f DevOps/Docker/custom/custom.docker-compose.yaml down
 
 ```bash
 # Export
-helm template . --debug --dry-run > test.yaml 
+helm template DevOps/Helm/ --debug --dry-run > DevOps/Helm/helm-test.yaml 
 ```
 
 ### Create AWS K8s cluster
 
 ```bash
 # Test cluster config file
-eksctl create cluster -f DevOps/Infra/custom/vtc.eks-cluster.yaml --dry-run 
+eksctl create cluster -f DevOps/Infra/custom/custom.eks-cluster.yaml --dry-run 
 # Create cluster
-eksctl create cluster -f DevOps/Infra/custom/vtc.eks-cluster.yaml
+eksctl create cluster -f DevOps/Infra/custom/custom.eks-cluster.yaml
 
 # Apply config files
+
 kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.15.1/cert-manager.yaml
 
 kubectl apply -f DevOps/K8s/config-map.yaml
 kubectl apply -f DevOps/K8s/volume.yaml
@@ -169,7 +171,6 @@ kubectl apply -f DevOps/K8s/hpa.yaml
 kubectl apply -f DevOps/K8s/service.yaml
 
 # Optional
-eksctl upgrade cluster --config-file DevOps/custom/vtc.eks-cluster.yaml
-
-eksctl delete cluster --wait --disable-nodegroup-eviction -f DevOps/custom/vtc.eks-cluster.yaml 
+eksctl upgrade cluster --config-file DevOps/Infra/custom/custom.eks-cluster.yaml
+eksctl delete cluster --wait --disable-nodegroup-eviction -f DevOps/Infra/custom/custom.eks-cluster.yaml
 ```

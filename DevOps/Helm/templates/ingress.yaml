@@ -8,6 +8,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-body-size: "{{ .Values.ingress.annotations.proxyBodySize }}"
     nginx.ingress.kubernetes.io/ssl-redirect: "{{ .Values.ingress.annotations.sslRedirect }}"
     cert-manager.io/cluster-issuer: "{{ .Values.ingress.annotations.certManagerIssuer }}"
+    kubernetes.io/ingress.class: "{{ .Values.ingress.ingressClassName }}"
 spec:
   ingressClassName: {{ .Values.ingress.ingressClassName }}
   tls:

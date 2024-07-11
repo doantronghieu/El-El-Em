@@ -1,4 +1,4 @@
-
+---
 # Source: helm-chart/templates/service.yaml
 apiVersion: v1
 kind: Service
@@ -10,10 +10,11 @@ spec:
   selector:
     app: fastapi
   ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 8000
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
   type: ClusterIP
+  
 ---
 # Source: helm-chart/templates/service.yaml
 apiVersion: v1
@@ -26,9 +27,9 @@ spec:
   selector:
     app: nuxtjs
   ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 8051
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
   type: LoadBalancer
   externalTrafficPolicy: Cluster
 ---
@@ -43,8 +44,7 @@ spec:
   selector:
     app: postgres
   ports:
-  - protocol: TCP
-    port: 5432
-    targetPort: 5432
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
   type: ClusterIP
----

@@ -6,15 +6,15 @@ replicaCount: 1
 
 image:
   fastapi:
-    repository: doantronghieu/vtc-llm-fastapi
+    repository: doantronghieu/custom-llm-fastapi
     tag: latest
     pullPolicy: Always # IfNotPresent, Always
   nuxtjs:
-    repository: doantronghieu/vtc-llm-nuxtjs
+    repository: doantronghieu/custom-llm-nuxtjs
     tag: latest
     pullPolicy: Always
   postgres:
-    repository: doantronghieu/vtc-llm-postgresql
+    repository: doantronghieu/custom-llm-postgresql
     tag: latest
     pullPolicy: Always
 
@@ -51,7 +51,7 @@ services:
     name: nuxtjs
     type: LoadBalancer
     port: 80
-    targetPort: 8051
+    targetPort: 3000
     externalTrafficPolicy: Cluster
   postgres:
     name: postgres

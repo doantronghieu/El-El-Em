@@ -2,7 +2,7 @@ apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 
 metadata:
-  name: vtc-cluster # Name of the EKS cluster
+  name: custom-cluster # Name of the EKS cluster
   region: ap-northeast-2
   version: "1.29" # Kubernetes version
 

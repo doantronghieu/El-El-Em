@@ -1,3 +1,4 @@
+---
 # Source: helm-chart/templates/config-map.yaml
 apiVersion: v1
 kind: ConfigMap
@@ -13,7 +14,7 @@ metadata:
   name: nuxtjs-config
 data:
   IN_PROD: "true"
-  ENDPOINT_PROD_FASTAPI: "http://fastapi:80"
+  NUXT_PUBLIC_SERVER_FASTAPI: "http://fastapi:80"
 ---
 # Source: helm-chart/templates/config-map.yaml
 apiVersion: v1

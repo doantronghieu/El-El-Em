@@ -11,7 +11,7 @@ metadata:
   name: {{ .Values.configMap.nuxtjs }}
 data:
   IN_PROD: "true"
-  ENDPOINT_PROD_FASTAPI: "http://{{ .Values.services.fastapi.name }}:{{ .Values.services.fastapi.port }}"
+  NUXT_PUBLIC_SERVER_FASTAPI: "http://{{ .Values.services.fastapi.name }}:{{ .Values.services.fastapi.port }}"
 ---
 apiVersion: v1
 kind: ConfigMap

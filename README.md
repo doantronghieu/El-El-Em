@@ -125,7 +125,7 @@ docker build -t doantronghieu/llm-nuxtjs:latest -f DevOps/Docker/Dockerfile.nuxt
 docker build -t doantronghieu/llm-postgresql:latest -f DevOps/Docker/Dockerfile.postgresql .
 
 docker push doantronghieu/llm-fastapi:latest
-docker push doantronghieu/llm-streamlit:latest
+docker push doantronghieu/llm-nuxtjs:latest
 docker push doantronghieu/llm-postgresql:latest
 ```
 
