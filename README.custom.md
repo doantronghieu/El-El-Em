@@ -151,7 +151,7 @@ docker-compose -f DevOps/Docker/custom/custom.docker-compose.yaml down
 helm template DevOps/Helm/ --debug --dry-run > DevOps/Helm/helm-test.yaml 
 ```
 
-### Create AWS K8s cluster
+### Create/Update/Delete AWS K8s cluster
 
 ```bash
 # Test cluster config file
@@ -159,8 +159,14 @@ eksctl create cluster -f DevOps/Infra/custom/custom.eks-cluster.yaml --dry-run
 # Create cluster
 eksctl create cluster -f DevOps/Infra/custom/custom.eks-cluster.yaml
 
-# Apply config files
+# Optional
+eksctl upgrade cluster --config-file DevOps/Infra/custom/custom.eks-cluster.yaml
+eksctl delete cluster --wait --disable-nodegroup-eviction -f DevOps/Infra/custom/custom.eks-cluster.yaml
+```
 
+### Apply Config files to K8s cluster
+
+```bash
 kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.15.1/cert-manager.yaml
 
@@ -170,7 +176,82 @@ kubectl apply -f DevOps/K8s/deployment.yaml
 kubectl apply -f DevOps/K8s/hpa.yaml
 kubectl apply -f DevOps/K8s/service.yaml
 
-# Optional
-eksctl upgrade cluster --config-file DevOps/Infra/custom/custom.eks-cluster.yaml
-eksctl delete cluster --wait --disable-nodegroup-eviction -f DevOps/Infra/custom/custom.eks-cluster.yaml
+#*** Check ***#
+# Check if the TLS certificate has been generated 
+kubectl get secret my-domain-tls
+kubectl get ingress my-ingress
+# Check if the Ingress resource is using the TLS certificate
+kubectl describe ingress my-ingress 
+# Check if the Ingress controller is using the TLS certificate (Volumes -> Secret -> tls.crt, tls.key)
+kubectl describe pod <ingress-controller-pod-name>
+
+```
+
+### Apply Logging to K8s cluster
+
+Remember to replace your-storage-class with your actual storage class name, and kibana.yourdomain.com with your actual domain.
+
+```bash
+# temp
+helm repo add elastic https://helm.elastic.co
+helm repo add fluent https://fluent.github.io/helm-charts
+helm repo update
+kubectl create namespace logging
+helm install elasticsearch elastic/elasticsearch -n logging
+helm install fluentd fluent/fluentd -n logging
+helm install kibana elastic/kibana -n logging
+# temp
+
+kubectl create namespace logging
+
+helm repo add elastic https://helm.elastic.co
+helm repo add fluent https://fluent.github.io/helm-charts
+helm repo update
+
+helm install elasticsearch elastic/elasticsearch \
+  --namespace logging \
+  --set clusterName=elasticsearch \
+  --set nodeGroup=master \
+  --set minimumMasterNodes=2 \
+  --set replicas=3 \
+  --set volumeClaimTemplate.storageClassName=your-storage-class \
+  --set volumeClaimTemplate.resources.requests.storage=100Gi \
+  --set resources.requests.cpu=1 \
+  --set resources.limits.cpu=2 \
+  --set resources.requests.memory=2Gi \
+  --set resources.limits.memory=4Gi \
+  --set xpack.security.enabled=true \
+  --set xpack.security.transport.ssl.enabled=true
+
+helm install fluentd fluent/fluentd \
+  --namespace logging \
+  --set persistence.enabled=true \
+  --set persistence.storageClass=your-storage-class \
+  --set persistence.size=10Gi \
+  --set resources.requests.cpu=100m \
+  --set resources.limits.cpu=500m \
+  --set resources.requests.memory=200Mi \
+  --set resources.limits.memory=500Mi
+
+helm install kibana elastic/kibana \
+  --namespace logging \
+  --set elasticsearchHosts=http://elasticsearch-master:9200 \
+  --set replicas=2 \
+  --set resources.requests.cpu=500m \
+  --set resources.limits.cpu=1 \
+  --set resources.requests.memory=1Gi \
+  --set resources.limits.memory=2Gi
+
+kubectl apply -f kibana-ingress.yaml
+kubectl apply -f fluentd-config.yaml
+
+helm upgrade fluentd fluent/fluentd \
+  --namespace logging \
+  --reuse-values \
+  --set configMap=fluentd-config
+
+kubectl get pods -n logging
+kubectl get services -n logging
+kubectl get ingress -n logging
+
 ```

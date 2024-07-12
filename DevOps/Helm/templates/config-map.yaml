@@ -4,6 +4,7 @@ metadata:
   name: {{ .Values.configMap.fastapi }}
 data:
   IN_PROD: "true"
+  SSL_REDIRECT: "true"
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -11,6 +12,7 @@ metadata:
   name: {{ .Values.configMap.nuxtjs }}
 data:
   IN_PROD: "true"
+  SSL_REDIRECT: "true"
   NUXT_PUBLIC_SERVER_FASTAPI: "http://{{ .Values.services.fastapi.name }}:{{ .Values.services.fastapi.port }}"
 ---
 apiVersion: v1

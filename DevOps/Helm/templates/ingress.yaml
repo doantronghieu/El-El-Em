@@ -6,6 +6,7 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: {{ .Values.ingress.annotations.rewriteTarget }}
     nginx.ingress.kubernetes.io/use-regex: "{{ .Values.ingress.annotations.useRegex }}"
     nginx.ingress.kubernetes.io/proxy-body-size: "{{ .Values.ingress.annotations.proxyBodySize }}"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "{{ .Values.ingress.annotations.sslRedirect }}"
     cert-manager.io/cluster-issuer: "{{ .Values.ingress.annotations.certManagerIssuer }}"
     kubernetes.io/ingress.class: "{{ .Values.ingress.ingressClassName }}"

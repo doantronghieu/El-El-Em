@@ -50,7 +50,7 @@ services:
   nuxtjs:
     name: nuxtjs
     type: LoadBalancer
-    port: 80
+    port: 443 # 443, 80
     targetPort: 3000
     externalTrafficPolicy: Cluster
   postgres:

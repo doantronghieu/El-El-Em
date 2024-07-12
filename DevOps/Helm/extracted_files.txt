@@ -1,0 +1,236 @@
+./templates/cluster-issuer.yaml:
+```
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: harrisondoan2810@gmail.com  # Replace with your email address
+    privateKeySecretRef:
+      name: letsencrypt-prod-account-key
+    solvers:
+    - http01:
+        ingress:
+          class: nginx
+```
+./templates/config-map.yaml:
+```
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.configMap.fastapi }}
+data:
+  IN_PROD: "true"
+  SSL_REDIRECT: "true"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.configMap.nuxtjs }}
+data:
+  IN_PROD: "true"
+  SSL_REDIRECT: "true"
+  NUXT_PUBLIC_SERVER_FASTAPI: "http://{{ .Values.services.fastapi.name }}:{{ .Values.services.fastapi.port }}"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.configMap.postgres }}
+data:
+  IN_PROD: "true"
+  POSTGRES_USER: myuser
+  POSTGRES_PASSWORD: mysecretpassword
+  POSTGRES_DB: mydatabase
+---
+```
+./templates/ingress.yaml:
+```
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.ingress.name }}
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: {{ .Values.ingress.annotations.rewriteTarget }}
+    nginx.ingress.kubernetes.io/use-regex: "{{ .Values.ingress.annotations.useRegex }}"
+    nginx.ingress.kubernetes.io/proxy-body-size: "{{ .Values.ingress.annotations.proxyBodySize }}"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "{{ .Values.ingress.annotations.sslRedirect }}"
+    cert-manager.io/cluster-issuer: "{{ .Values.ingress.annotations.certManagerIssuer }}"
+    kubernetes.io/ingress.class: "{{ .Values.ingress.ingressClassName }}"
+spec:
+  ingressClassName: {{ .Values.ingress.ingressClassName }}
+  tls:
+  - hosts:
+    - {{ .Values.ingress.hosts }}
+    secretName: {{ .Values.ingress.tls.secretName }}
+  rules:
+  - host: {{ .Values.ingress.hosts }}
+    http:
+      paths:
+      - path: /{{ .Values.services.fastapi.name }}(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Values.services.fastapi.name }}
+            port:
+              number: {{ .Values.services.fastapi.port }}
+      - path: /{{ .Values.services.nuxtjs.name }}(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Values.services.nuxtjs.name }}
+            port:
+              number: {{ .Values.services.nuxtjs.port }}
+```
+./templates/service.yaml:
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.services.fastapi.name }}
+  labels:
+    app: {{ .Values.services.fastapi.name }}
+spec:
+  selector:
+    app: {{ .Values.services.fastapi.name }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.services.fastapi.port }}
+      targetPort: {{ .Values.services.fastapi.targetPort }}
+  type: {{ .Values.services.fastapi.type }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.services.nuxtjs.name }}
+  labels:
+    app: {{ .Values.services.nuxtjs.name }}
+spec:
+  selector:
+    app: {{ .Values.services.nuxtjs.name }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.services.nuxtjs.port }}
+      targetPort: {{ .Values.services.nuxtjs.targetPort }}
+  type: {{ .Values.services.nuxtjs.type }}
+  externalTrafficPolicy: {{ .Values.services.nuxtjs.externalTrafficPolicy }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.services.postgres.name }}
+  labels:
+    app: {{ .Values.services.postgres.name }}
+spec:
+  selector:
+    app: {{ .Values.services.postgres.name }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.services.postgres.port }}
+      targetPort: {{ .Values.services.postgres.targetPort }}
+  type: {{ .Values.services.postgres.type }}
+---
+
+```
+./values.yaml:
+```
+# Default values for mychart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  fastapi:
+    repository: doantronghieu/custom-llm-fastapi
+    tag: latest
+    pullPolicy: Always # IfNotPresent, Always
+  nuxtjs:
+    repository: doantronghieu/custom-llm-nuxtjs
+    tag: latest
+    pullPolicy: Always
+  postgres:
+    repository: doantronghieu/custom-llm-postgresql
+    tag: latest
+    pullPolicy: Always
+
+resources:
+  fastapi:
+    limits:
+      cpu: "3" # 1000m = 1cpu, or "1"
+      memory: "8Gi"
+    requests:
+      cpu: "1"
+      memory: "1Gi" # Mi, Gi
+  nuxtjs:
+    limits:
+      cpu: "1"
+      memory: "8Gi"
+    requests:
+      cpu: "1"
+      memory: "1Gi"
+  postgres:
+    limits:
+      cpu: "1"
+      memory: "2Gi"
+    requests:
+      cpu: "0.5"
+      memory: "1Gi"
+
+services:
+  fastapi:
+    name: fastapi
+    type: ClusterIP
+    port: 80
+    targetPort: 8000
+  nuxtjs:
+    name: nuxtjs
+    type: LoadBalancer
+    port: 443 # 443, 80
+    targetPort: 3000
+    externalTrafficPolicy: Cluster
+  postgres:
+    name: postgres
+    type: ClusterIP
+    port: 5432
+    targetPort: 5432
+
+ingress:
+  name: my-ingress
+  enabled: true
+  annotations:
+    rewriteTarget: /${2}
+    useRegex: "true"
+    proxyBodySize: "50m"
+    sslRedirect: "true"
+    certManagerIssuer: "letsencrypt-prod"
+  hosts: my-domain.com
+  tls:
+    secretName: my-domain-tls
+  ingressClassName: nginx
+
+hpa:
+  minReplicas: 1
+  maxReplicas: 10
+  cpuUtilization: 80
+  memoryUtilization: 80
+
+configMap:
+  fastapi: fastapi-config
+  nuxtjs: nuxtjs-config
+  postgres: postgres-config
+
+volume:
+  postgres:
+    name: postgres-data
+    storage: 2Gi
+    accessModes: ReadWriteMany
+    claimName: postgres-pvc
+    storageClassName: gp3
+    source:
+      name: postgres-pv
+      hostPath: /mnt/data
+
+```
