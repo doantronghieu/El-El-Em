@@ -1,0 +1,29 @@
+Help me create a text diagram based on these raw ideas:
+
+Title: Text Diagram for Large Language Model (LLM) Agent
+
+- Core: The Large Language Model (LLM)
+
+- Agent: The LLM is equipped with the following:
+   - System Prompt: A prompt used to control the response behavior of the LLM.
+   - Tools:
+      - RAG Tool: A chain used to retrieve unstructured data.
+         - The RAG chain utilizes Qdrant cloud vector store for storing embedding vectors.
+         - The Qdrant vector store's search type is "mmr", and the distance to compute is "cosine".
+         - Another LLM is used in this RAG chain for performing retrieval.
+      - SQL Tool: A chain used to retrieve structured data.
+         - The SQL chain uses a PostgreSQL database for storing data.
+         - Another LLM is used in this SQL chain for performing retrieval.
+         - An in-memory vector store (FAISS) is used in this SQL chain for storing metadata (nouns, examples of natural_question-sql_query pairs) of the database.
+      - Notes:
+         - Each tool has a tool_name and tool_description.
+         - The chain in each tool uses the same Embedding Model (OpenAIEmbeddings: text-embedding-ada-002).
+         - A chain is essentially a function; inputs are inserted into the chain, the chain works on its internal logic, and returns the result.
+   - Memory: MongoDb NoSQL database is used for storing messages of the user and agent.
+
+- Agent Workflow:
+   - The user asks a question.
+   - The agent has the ability to choose the right tool to use based on the user's question and tool metadata (tool name, tool description).
+   - The agent selects the appropriate tool and generates the input for the tool.
+   - The agent executes the tool (chain), and the tool returns the result to the agent.
+   - Based on the returned result of the tool, the original user's question, and the system prompt, the agent generates the final response.

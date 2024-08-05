@@ -3,6 +3,11 @@ import os
 from pprint import pprint
 from dotenv import load_dotenv
 
+###
+import pathlib
+sys.path.append(str(pathlib.Path().resolve()))
+###
+
 load_dotenv() 
 
 current_file_path = os.path.abspath(__file__)

@@ -1,0 +1,380 @@
+---
+# Source: helm-chart/templates/config-map.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fastapi-config
+data:
+  IN_PROD: "true"
+  SSL_REDIRECT: "true"
+---
+# Source: helm-chart/templates/config-map.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nuxtjs-config
+data:
+  IN_PROD: "true"
+  SSL_REDIRECT: "true"
+  NUXT_PUBLIC_SERVER_FASTAPI: "http://fastapi:80"
+---
+# Source: helm-chart/templates/config-map.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config
+data:
+  IN_PROD: "true"
+  POSTGRES_USER: myuser
+  POSTGRES_PASSWORD: mysecretpassword
+  POSTGRES_DB: mydatabase
+---
+# Source: helm-chart/templates/volume.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgres-pv
+spec:
+  capacity:
+    storage: 2Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/data
+  storageClassName: gp3
+---
+# Source: helm-chart/templates/volume.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 2Gi
+  volumeName: postgres-pv
+  storageClassName: gp3
+---
+# Source: helm-chart/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: fastapi
+  labels:
+    app: fastapi
+spec:
+  selector:
+    app: fastapi
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
+  type: ClusterIP
+---
+# Source: helm-chart/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: nuxtjs
+  labels:
+    app: nuxtjs
+spec:
+  selector:
+    app: nuxtjs
+  ports:
+    - protocol: TCP
+      port: 443
+      targetPort: 3000
+  type: LoadBalancer
+  externalTrafficPolicy: Cluster
+---
+# Source: helm-chart/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  labels:
+    app: postgres
+spec:
+  selector:
+    app: postgres
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+  type: ClusterIP
+---
+# Source: helm-chart/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastapi
+  labels:
+    app: fastapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fastapi
+  template:
+    metadata:
+      labels:
+        app: fastapi
+    spec:
+      containers:
+      - name: fastapi
+        image: "doantronghieu/custom-llm-fastapi:latest"
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+        envFrom:
+        - configMapRef:
+            name: fastapi-config
+        resources:
+          limits:
+            cpu: 3
+            memory: 8Gi
+          requests:
+            cpu: 1
+            memory: 1Gi
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 15
+          periodSeconds: 20
+---
+# Source: helm-chart/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nuxtjs
+  labels:
+    app: nuxtjs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nuxtjs
+  template:
+    metadata:
+      labels:
+        app: nuxtjs
+    spec:
+      containers:
+      - name: nuxtjs
+        image: "doantronghieu/custom-llm-nuxtjs:latest"
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+        envFrom:
+        - configMapRef:
+            name: nuxtjs-config
+        resources:
+          limits:
+            cpu: 1
+            memory: 8Gi
+          requests:
+            cpu: 1
+            memory: 1Gi
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 15
+          periodSeconds: 20
+---
+# Source: helm-chart/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  labels:
+    app: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: "doantronghieu/custom-llm-postgresql:latest"
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5432
+        envFrom:
+        - configMapRef:
+            name: postgres-config
+        resources:
+          limits:
+            cpu: 1
+            memory: 2Gi
+          requests:
+            cpu: 0.5
+            memory: 1Gi
+        volumeMounts:
+        - name: postgres-data
+          mountPath: /var/lib/postgresql/data
+      volumes:
+      - name: postgres-data
+        persistentVolumeClaim:
+          claimName: postgres-pvc
+---
+# Source: helm-chart/templates/hpa.yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: hpa-fastapi
+  labels:
+    app: fastapi
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: fastapi
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 80
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80
+---
+# Source: helm-chart/templates/hpa.yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: hpa-nuxtjs
+  labels:
+    app: nuxtjs
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: nuxtjs
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 80
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80
+---
+# Source: helm-chart/templates/hpa.yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: hpa-postgres
+  labels:
+    app: postgres
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: postgres
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 80
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80
+---
+# Source: helm-chart/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /${2}
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - my-domain.com
+    secretName: my-domain-tls
+  rules:
+  - host: my-domain.com
+    http:
+      paths:
+      - path: /fastapi(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: fastapi
+            port:
+              number: 80
+      - path: /nuxtjs(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: nuxtjs
+            port:
+              number: 443
+---
+# Source: helm-chart/templates/cluster-issuer.yaml
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: harrisondoan2810@gmail.com  # Replace with your email address
+    privateKeySecretRef:
+      name: letsencrypt-prod-account-key
+    solvers:
+    - http01:
+        ingress:
+          class: nginx

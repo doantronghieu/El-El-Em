@@ -1,13 +1,3 @@
-model:
-  option: "openai" # openai, anthropic
-  temperature: 0
-
-  openai: "gpt-3.5-turbo-0125" # gpt-3.5-turbo-0125, gpt-4-turbo-preview
-  anthropic: "claude-3-haiku-20240307" # claude-3-haiku-20240307, claude-3-opus-20240229, claude-3-sonnet-20240229
-
-agents:
-  type: "tool_calling" # openai_tools, react, anthropic, tool_calling
-
 data:
   # metadata_field_info: metadata of Document
   # - type: string or list[string], string, integer, float
@@ -26,31 +16,11 @@ data:
 
 
 vector_db:
-  embeddings:
-    model: "openai" # openai, cohere
-
-    openai:
-      model: "text-embedding-3-large" # text-embedding-3-large, text-embedding-ada-002
-
-    size:
-      text-embedding-ada-002: 1536
-      text-embedding-3-large: 3072
-
   qdrant:
-    general:
-      prefer_grpc: false
-      distance: "Cosine" # Cosine, Euclid, Dot, Manhattan
-      default_search_type: "mmr" # similarity, mmr
-      content_payload_key: "page_content"
-      metadata_payload_key: "metadata"
-
     tdtu_feee_faq:
       collection_name: "tdtu_feee_faq"
-      default_search_type: "mmr"
-      default_search_kwargs:
-        k: 10
-      retriever_tool_name: "tdtu_feee_faq_frequently_asked_questions"
-      retriever_tool_description: "Searches and returns answer for frequently asked questions about Faculty of Electrical Engineering in University like 'Thông điệp của Trưởng Khoa', 'Giới thiệu Khoa', 'Quy mô và vị trí', 'Phương thức đào tạo và quản lý đào tạo', 'Nghiên cứu khoa học', 'Thành tựu sinh viên và đánh giá của doanh nghiệp', 'Cơ sở vật chất'. Get most accurate answer based on user question."
+      tool_name: "tdtu_feee_faq_frequently_asked_questions"
+      tool_description: "Searches and returns answer for frequently asked questions about Faculty of Electrical Engineering in University like 'Thông điệp của Trưởng Khoa', 'Giới thiệu Khoa', 'Quy mô và vị trí', 'Phương thức đào tạo và quản lý đào tạo', 'Nghiên cứu khoa học', 'Thành tựu sinh viên và đánh giá của doanh nghiệp', 'Cơ sở vật chất', 'Ký túc xá'. Get most accurate answer based on user question."
 
 prompts:
   system_message_tdtu: |
@@ -105,39 +75,39 @@ sql:
   examples_questions_to_sql:
     tdtu_feee_personnel:
     - input: "Ai là người phụ trách khoa Điện - Điện tử?"
-      query: "SELECT DISTINCT(name) FROM tdtu_feee_personnel WHERE LOWER(position) LIKE '%phụ trách%';"
-    - input: "Có bao nhiêu giảng viên trong bộ môn Kỹ thuật Điện?"
-      query: "SELECT COUNT(DISTINCT(name)) FROM tdtu_feee_personnel WHERE LOWER(child_department) LIKE '%kỹ thuật điện%';"
+      query: "SELECT DISTINCT(name) FROM tdtu_feee_personnel WHERE LOWER(faculty) LIKE '%điện%' AND LOWER(position) LIKE '%phụ trách%';"
+    - input: "Có bao nhiêu giảng viên trong bộ môn Kỹ thuật Điện khoa Điện?"
+      query: "SELECT COUNT(DISTINCT(name)) FROM tdtu_feee_personnel WHERE LOWER(faculty) LIKE '%điện%' AND LOWER(child_department) LIKE '%kỹ thuật điện%';"
     - input: "Giảng viên khoa Điện nào đang đi học nước ngoài?"
-      query: "SELECT name, position, major, email, office, child_department FROM tdtu_feee_personnel WHERE LOWER(office) LIKE '%nước ngoài%';"
+      query: "SELECT name, position, major, email, office, child_department FROM tdtu_feee_personnel WHERE LOWER(faculty) LIKE '%điện%' AND LOWER(office) LIKE '%nước ngoài%';"
     - input: "Phó hiệu trưởng trường Đại học Tôn Đức Thắng hiện tại là ai?"
       query: "SELECT name, position FROM tdtu_feee_personnel WHERE LOWER(position) LIKE '%phó hiệu trưởng%';"
     - input: "Trưởng bộ môn Điều khiển tự động khoa Điện?"
-      query: "SELECT name, position, major, email, office, child_department FROM tdtu_feee_personnel WHERE LOWER(position) LIKE '%trưởng bộ môn%' AND LOWER(major) LIKE '%điều khiển%';"
-    - input: "Những giảng viên nào có văn phòng ở phòng C117?"
-      query: "SELECT name, position, major, email FROM tdtu_feee_personnel WHERE LOWER(office) LIKE '%c117%';"
-    - input: "Những giảng viên nào dạy bộ môn Điện tử - Viễn thông?"
-      query: "SELECT name, position, email, office, child_department FROM tdtu_feee_personnel WHERE LOWER(major) LIKE '%điện tử - viễn thông%';"
-    - input: "Có bao nhiêu giảng viên thuộc Ban chủ nhiệm khoa?"
-      query: "SELECT COUNT(*) as number FROM tdtu_feee_personnel WHERE LOWER(child_department) LIKE '%chủ nhiệm%';"
-    - input: "Thành viên ban chủ nhiệm khoa"
-      query: "SELECT * FROM tdtu_feee_personnel WHERE LOWER(child_department) LIKE '%chủ nhiệm%'"
-    - input: "Email Trần Thanh Phương?"
-      query: "SELECT email FROM tdtu_feee_personnel WHERE LOWER(name) LIKE LOWER('%Trần Thanh Phương%');"
+      query: "SELECT name, position, major, email, office, child_department FROM tdtu_feee_personnel WHERE LOWER(faculty) LIKE '%điện%' AND LOWER(position) LIKE '%trưởng bộ môn%' AND LOWER(major) LIKE '%điều khiển%';"
+    - input: "Những giảng viên khoa Điện nào có văn phòng ở phòng C117?"
+      query: "SELECT name, position, major, email FROM tdtu_feee_personnel WHERE LOWER(faculty) LIKE '%điện%' AND LOWER(office) LIKE '%c117%';"
+    - input: "Những giảng viên khoa Điện nào dạy bộ môn Điện tử - Viễn thông?"
+      query: "SELECT name, position, email, office, child_department FROM tdtu_feee_personnel WHERE LOWER(faculty) LIKE '%điện%' AND LOWER(major) LIKE '%điện tử - viễn thông%';"
+    - input: "Có bao nhiêu giảng viên khoa Điện thuộc Ban chủ nhiệm khoa?"
+      query: "SELECT COUNT(*) as number FROM tdtu_feee_personnel WHERE LOWER(faculty) LIKE '%điện%' AND LOWER(child_department) LIKE '%chủ nhiệm%';"
+    - input: "Thành viên ban chủ nhiệm khoa Điện"
+      query: "SELECT * FROM tdtu_feee_personnel WHERE LOWER(faculty) LIKE '%điện%' AND LOWER(child_department) LIKE '%chủ nhiệm%'"
+    - input: "Email Trần Thanh Phương khoa Điện?"
+      query: "SELECT email FROM tdtu_feee_personnel WHERE LOWER(faculty) LIKE '%điện%' AND LOWER(name) LIKE LOWER('%Trần Thanh Phương%');"
     - input: "Những ai đang giữ chức vụ Trưởng bộ môn trong khoa Điện - Điện tử?"
       query: "SELECT * FROM tdtu_feee_personnel WHERE LOWER(position) LIKE '%trưởng bộ môn%';"
-    - input: "Người phụ trách bộ môn Điều khiển tự động"
-      query: "SELECT name, position, email, office, child_department FROM tdtu_feee_personnel WHERE LOWER(position) LIKE 'trưởng bộ môn%';"
+    - input: "Người phụ trách bộ môn Điều khiển tự động khoa Điện"
+      query: "SELECT name, position, email, office, child_department FROM tdtu_feee_personnel WHERE LOWER(faculty) LIKE '%điện%' AND LOWER(position) LIKE '%trưởng bộ môn%';"
     - input: "Có bao nhiêu giảng viên trong khoa Điện - Điện tử đang có học vị Tiến sĩ?"
-      query: "SELECT COUNT(name) FROM tdtu_feee_personnel WHERE LOWER(name) LIKE '%ts%';"
-    - input: "Các tiến sĩ trong khoa điện"
-      query: "SELECT * FROM tdtu_feee_personnel WHERE LOWER(name) LIKE '%ts%';"
-    - input: "Các thạc sĩ trong khoa điện"
-      query: "SELECT * FROM tdtu_feee_personnel WHERE LOWER(name) LIKE '%ths%';"
-    - input: "Những người thuộc bộ môn Điện tử - Viễn thông có văn phòng tại đâu?"
-      query: "SELECT name, office FROM tdtu_feee_personnel WHERE LOWER(major) LIKE '%viễn thông%';"
-    - input: "Bộ phận hành chính khoa điện"
-      query: "SELECT * FROM tdtu_feee_personnel WHERE LOWER(position) LIKE '%hành chính%';"
+      query: "SELECT COUNT(name) FROM tdtu_feee_personnel WHERE LOWER(faculty) LIKE '%điện%' AND LOWER(name) LIKE '%ts%';"
+    - input: "Các tiến sĩ trong khoa Điện"
+      query: "SELECT * FROM tdtu_feee_personnel WHERE LOWER(faculty) LIKE '%điện%' AND (LOWER(name) LIKE '%ts%' OR LOWER(POSITION) LIKE '%tiến sĩ%');"
+    - input: "Các thạc sĩ trong khoa Điện"
+      query: "SELECT * FROM tdtu_feee_personnel WHERE LOWER(faculty) LIKE '%điện%' AND (LOWER(name) LIKE '%ths%' OR LOWER(POSITION) LIKE '%thạc sĩ%');"
+    - input: "Những người thuộc bộ môn Điện tử - Viễn thông khoa Điện có văn phòng tại đâu?"
+      query: "SELECT name, office FROM tdtu_feee_personnel WHERE LOWER(faculty) LIKE '%điện%' AND LOWER(major) LIKE '%viễn thông%';"
+    - input: "Bộ phận hành chính khoa Điện"
+      query: "SELECT * FROM tdtu_feee_personnel WHERE LOWER(faculty) LIKE '%điện%' AND LOWER(position) LIKE '%hành chính%';"
     
     tdtu_feee_admission:
       - input: "Các ngành học khoa Điện"
@@ -154,8 +124,15 @@ sql:
         query: "SELECT DISTINCT(tuition) FROM tdtu_feee_admission;"
       - input: "Thông tin liên hệ"
         query: "SELECT DISTINCT(contact) FROM tdtu_feee_admission;"
+        
       - input: "Các chương trình đào tạo khoa Điện về Tự động hoá"
         query: "SELECT * FROM tdtu_feee_admission WHERE LOWER(faculty) LIKE '%điện%' AND LOWER(study_field) LIKE '%tự động%';"
+      - input: "Chi tiết Chương trình Đại học về Tự động hoá khoa Điện"
+        query: "SELECT * FROM tdtu_feee_admission WHERE LOWER(faculty) LIKE '%điện%' AND LOWER(study_field) LIKE '%tự động%' AND LOWER(education_level) LIKE '%đại học%';"
+      - input: "Chi tiết Chương trình Đại học tiêu chuẩn về Tự động hoá khoa Điện"
+        query: "SELECT * FROM tdtu_feee_admission WHERE LOWER(faculty) LIKE '%điện%' AND LOWER(study_field) LIKE '%tự động%' AND LOWER(education_level) LIKE '%đại học%'AND LOWER(program_type) LIKE '%tiêu chuẩn%';"
+      - input: "Chi tiết Chương trình Đại học chất lượng cao về Tự động hoá khoa Điện"
+        query: "SELECT * FROM tdtu_feee_admission WHERE LOWER(faculty) LIKE '%điện%' AND LOWER(study_field) LIKE '%tự động%' AND LOWER(education_level) LIKE '%đại học%'AND LOWER(program_type) LIKE '%chất lượng cao%';"
       - input: "Các chương trình đào tạo khoa Điện về Kỹ thuật Điện tử - Viễn thông"
         query: "SELECT * FROM tdtu_feee_admission WHERE LOWER(faculty) LIKE '%điện%' AND LOWER(study_field) LIKE '%viễn thông%';"
       - input: "Các yêu cầu về văn bằng để tham gia chương trình đào tạo tiến sĩ khoa Điện"
@@ -252,13 +229,8 @@ sql:
   - 'Đại học'
   - 'Thạc sĩ'
 
-  params:
-    k_few_shot_examples: 5
-    sql_max_out_length: 2000
-    is_sql_get_all: True
-
   tool:
     name: "sql_executor"
-    description: "Searches and returns detail information about information of Ton Duc Thang University about study programs, personnel ... Generate SQL based on user question and execute it"
+    description: "Searches and returns detail information about Faculty of Electrical Engineering of Ton Duc Thang University about study programs details (faculty information, majors in the faculty, link, university major type (standard, high quality, linked), education level (university, masters, doctorate), university major introduction, career prospects of university majors, major outcome, major syllabub, admission candidates, admission requirements, admission registration, university major tuition, contact, ...), personnel, Department personnel information, ... Generate SQL based on user question and execute it"
     metadata: {"detail information_data": ["Ton Duc Thang", "Khoa Dien"]}
     tags: ["detail_information_ton_duc_thang", "detail_information_khoa_dien"]

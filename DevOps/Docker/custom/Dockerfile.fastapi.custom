@@ -59,4 +59,4 @@ EXPOSE 8000
 # Set the command to run the FastAPI app
 WORKDIR /Apps/use_cases/Serve/custom/
 
-CMD ["uvicorn", "server_vtc:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "server_tdtu:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -5,7 +5,8 @@ from langchain_core.prompts import (
   FewShotPromptTemplate,
 )
 from langchain_core.messages import (
-  SystemMessage, AIMessage, HumanMessage, ToolMessage, BaseMessage, FunctionMessage
+  SystemMessage, AIMessage, HumanMessage, ToolMessage, BaseMessage, 
+  FunctionMessage, AnyMessage
 )
 from langchain.schema import ChatMessage
 from langchain import hub

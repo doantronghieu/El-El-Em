@@ -238,11 +238,11 @@ class MyStatelessAgent:
 		input_message: str,
 
 		history_type: TypeHistoryType = "mongodb",
-		user_id: TypeUserId = "admin",
-		session_id: TypeSessionId = None,
+		user_id: TypeUserId = utils.generate_unique_id(thing="uuid_name"),
+		session_id: TypeSessionId = utils.generate_unique_id(thing="uuid"),
 	
 		show_tool_call: bool = False,
-		history_size: Union[int, None] = 20,
+		history_size: Union[int, None] = 10,
 	) -> AsyncGenerator[str, None]:
 		"""
 		async for chunk in agent.astream_events_basic("Hello"):
@@ -339,5 +339,5 @@ class MyStatelessAgent:
 			print(chunk, end="", flush=True)
 		return result
 
-	def hello():
-		...
+def hello():
+	...

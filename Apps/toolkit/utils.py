@@ -5,7 +5,7 @@ from typing import Literal
 def generate_unique_id(
 	thing: Literal["uuid", "name", "uuid_name"]
 ):
-	random_uuid = str(uuid.uuid4())[:8]
+	random_uuid = str(uuid.uuid4())
 	random_name = Faker().name()
 	random_uuid_name = f"{random_name}-{random_uuid}"
 	

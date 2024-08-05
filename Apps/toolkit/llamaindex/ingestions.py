@@ -1,1 +1,0 @@
-from llama_index.core.ingestion import IngestionPipeline
