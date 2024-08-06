@@ -96,15 +96,15 @@ async def stream_agent(
   user_id=None,
   session_id: str=DEFAULT_SESSION_ID,
 ):
+  user_id = request.client.host if (user_id is None or user_id == "") \
+                                else f'{user_id}_{utils.generate_unique_id(thing="uuid_name")}'
   return StreamingResponse(
     stream_generator_agent(
       agent=my_agent,
       query=query, 
       history_type=history_type,
-      user_id=request.client.host if (user_id is None or user_id == "") 
-        else user_id,
-      # session_id=session_id,
-      session_id=utils.generate_unique_id(thing="uuid"),
+      user_id=user_id,
+      session_id=utils.generate_unique_id(thing="uuid"), # session_id
     ),
     media_type='text/event-stream',
   )

@@ -515,7 +515,7 @@ class MyRagChain:
 			}
 		)\
 			.assign(context_filtered=(
-				self.prompt_filter_context | self.llm | StrOutputParser() | ast.literal_eval
+				self.prompt_filter_context | self.llm | StrOutputParser() # | ast.literal_eval # TODO
 			)).with_retry()
 		if self.just_return_ctx:
 			self.chain_rag.assign(result=(

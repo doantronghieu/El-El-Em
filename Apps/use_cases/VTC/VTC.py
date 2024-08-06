@@ -13,6 +13,7 @@ with open(f"{add_packages.APP_PATH}/my_configs/vtc.yaml", 'r') as file:
   configs = yaml.safe_load(file)
 
 llm = models.chat_openai
+# llm = models.create_llm(provider="openai", version="gpt-4o-mini")
 embeddings = text_embedding_models.OpenAIEmbeddings()
 vectorstore = stores.faiss.FAISS
 
@@ -36,7 +37,7 @@ my_sql_chain = chains.MySqlChain(
 	proper_nouns=proper_nouns,
 	k_retriever_proper_nouns=4,
 	examples_questions_to_sql=examples_questions_to_sql,
-	k_few_shot_examples=5,
+	k_few_shot_examples=10,
 	sql_max_out_length=2000,
 	is_sql_get_all=True,
 	is_debug=False,

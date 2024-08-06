@@ -14,8 +14,8 @@ with open(f"{add_packages.APP_PATH}/my_configs/tdtu.yaml", 'r') as file:
   configs = yaml.safe_load(file)
 
 
-llm = models.chat_openai
-embeddings = text_embedding_models.OpenAIEmbeddings()
+llm = models.create_llm(provider="openai", version="gpt-3.5-turbo-0125")
+embeddings = text_embedding_models.OpenAIEmbeddings(model="text-embedding-3-large")
 vectorstore = stores.faiss.FAISS
 
 #*------------------------------------------------------------------------------

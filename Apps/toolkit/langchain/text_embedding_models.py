@@ -2,6 +2,8 @@ import os
 from langchain_openai import OpenAIEmbeddings
 from langchain_cohere import CohereEmbeddings
 
+# "text-embedding-3-large", "text-embedding-ada-002"
+
 class CustomOpenAIEmbeddings(OpenAIEmbeddings):
 
   def __init__(

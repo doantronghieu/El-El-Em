@@ -1,5 +1,5 @@
 # Build stage
-FROM python:3.11-slim-bullseye as build
+FROM python:3.11-slim-bullseye AS build
 
 # Create a virtual environment
 ENV VIRTUAL_ENV=/opt/venv
