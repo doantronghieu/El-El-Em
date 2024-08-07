@@ -255,3 +255,12 @@ kubectl get services -n logging
 kubectl get ingress -n logging
 
 ```
+
+## Debug
+
+```bash
+# [Nuxt.js] Call FastAPI server
+wget --header='accept: application/json' 'http://fastapi:8000/stream-agent?query=Ch%C3%A0o&history_type=mongodb&session_id=default' -O -
+
+
+```

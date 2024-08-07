@@ -142,4 +142,4 @@ async def clear_agent_chat_history(
 
 #*==============================================================================
 
-# uvicorn server_vtc:app --host=0.0.0.0 --port=8000
+# uvicorn server_tdtu:app --host=0.0.0.0 --port=8000

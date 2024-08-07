@@ -2,9 +2,9 @@ services:
   fastapi:
     image: doantronghieu/custom-llm-fastapi:latest
     container_name: custom-llm-fastapi
-    build:
-      context: ../../../Apps
-      dockerfile: ../../Docker/Dockerfile.fastapi
+    # build:
+    #   context: ../../../Apps
+    #   dockerfile: ../../Docker/Dockerfile.fastapi
     ports:
     - "8000:8000"
     networks:
@@ -16,16 +16,21 @@ services:
   nuxtjs:
     image: doantronghieu/custom-llm-nuxtjs:latest
     container_name: custom-llm-nuxtjs
-    build:
-      context: ../../../FrontEnd
-      dockerfile: ../../Docker/Dockerfile.nuxtjs
+    # build:
+    #   context: ../../../FrontEnd
+    #   dockerfile: ../../Docker/Dockerfile.nuxtjs
     ports:
     - "3000:3000"
     networks:
     - app-network
     restart: always
+    env_file:
+      - .env
     environment:
-    - NUXT_PUBLIC_SERVER_FASTAPI=http://fastapi:8000
+    # - NUXT_PUBLIC_SERVER_FASTAPI=http://fastapi:8000 # localhost, fastapi
+    - NUXT_PUBLIC_SERVER_FASTAPI=${NUXT_PUBLIC_SERVER_FASTAPI}
+    - NUXT_PUBLIC_OPENAI_API_KEY=${NUXT_PUBLIC_OPENAI_API_KEY}
+    - NUXT_PUBLIC_HISTORY_TYPE=${NUXT_PUBLIC_HISTORY_TYPE}
     depends_on:
     - fastapi
 

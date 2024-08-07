@@ -1,0 +1,183 @@
+./DevOps/Docker/custom/Dockerfile.fastapi.custom:
+```
+# Build stage
+FROM python:3.11-slim-bullseye AS build
+
+# Create a virtual environment
+ENV VIRTUAL_ENV=/opt/venv
+RUN python3 -m venv $VIRTUAL_ENV
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
+# Set the working directory
+WORKDIR /LLM/Apps
+
+# Install system packages
+RUN apt-get update && apt-get install -y --no-install-recommends \
+  gcc \
+  python3-dev \
+  libssl-dev && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/*
+
+# Copy the requirements file and install dependencies
+COPY Apps/requirements/prod-LangChain.txt .
+RUN pip install --no-cache-dir -r prod-LangChain.txt
+
+# Copy the application code (local -> container)
+COPY Apps .
+
+# Production stage
+FROM python:3.11-slim-bullseye
+
+# Set the working directory
+WORKDIR /Apps
+
+# Install system packages
+RUN apt-get update && apt-get install -y --no-install-recommends \
+  libssl-dev && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/*
+
+# Create a non-root user for security
+RUN adduser --disabled-password --no-create-home app
+
+# Copy the virtual environment from the build stage
+COPY --from=build /opt/venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Copy the application code from the build stage
+COPY --from=build /LLM/Apps /Apps
+
+# Set environment variables
+# ENV PYTHONUNBUFFERED=1 \
+#     PYTHONDONTWRITEBYTECODE=1
+
+# Switch to the non-root user
+USER app
+
+# Expose the port (just for documenting)
+EXPOSE 8000
+
+# Set the command to run the FastAPI app
+WORKDIR /Apps/use_cases/Serve/custom/
+
+CMD ["uvicorn", "server_tdtu:app", "--host", "0.0.0.0", "--port", "8000"]
+
+```
+./DevOps/Docker/custom/Dockerfile.nuxtjs.custom:
+```
+# Build stage
+FROM node:lts-alpine AS builder
+
+WORKDIR /LLM/FrontEnd
+
+COPY FrontEnd/package*.json ./
+RUN npm ci && npm cache clean --force
+
+COPY FrontEnd/ ./
+# TODO
+COPY DevOps/Docker/custom/.env ./ 
+ 
+RUN npm run build
+
+# Runtime stage
+FROM node:lts-alpine
+
+WORKDIR /LLM/FrontEnd
+
+# Install PM2 globally
+RUN npm install -g pm2 && npm cache clean --force
+
+# Copy built app and necessary files from builder stage
+COPY --from=builder /LLM/FrontEnd/.output /LLM/FrontEnd/.output
+COPY --from=builder /LLM/FrontEnd/ecosystem.config.cjs .
+
+# Create a non-root user and switch to it
+RUN addgroup -g 1001 -S nodejs && adduser -S nuxtjs -u 1001 && \
+    chown -R nuxtjs:nodejs /LLM/FrontEnd
+USER nuxtjs
+
+EXPOSE 3000
+
+CMD ["pm2-runtime", "start", "ecosystem.config.cjs"]
+
+```
+./DevOps/Docker/custom/Dockerfile.postgresql.custom:
+```
+FROM postgres:latest
+
+# Copy the SQL dump file into the image
+COPY ../../../Apps/data/postgres/data.sql /docker-entrypoint-initdb.d/
+# COPY ../../Apps/data.sql /docker-entrypoint-initdb.d/
+
+# Expose port 5432 as it's the default port for PostgreSQL
+EXPOSE 5432
+
+# Set environment variables
+ENV POSTGRES_USER=myuser
+ENV POSTGRES_PASSWORD=mysecretpassword
+ENV POSTGRES_DB=mydatabase
+
+# PostgreSQL starts automatically when the container is launched, so no command is needed
+
+```
+./DevOps/Docker/custom/custom.docker-compose.yaml:
+```
+services:
+  fastapi:
+    image: doantronghieu/custom-llm-fastapi:latest
+    container_name: custom-llm-fastapi
+    # build:
+    #   context: ../../../Apps
+    #   dockerfile: ../../Docker/Dockerfile.fastapi
+    ports:
+    - "8000:8000"
+    networks:
+    - app-network
+    restart: always
+    environment:
+    - IN_PROD=True
+
+  nuxtjs:
+    image: doantronghieu/custom-llm-nuxtjs:latest
+    container_name: custom-llm-nuxtjs
+    # build:
+    #   context: ../../../FrontEnd
+    #   dockerfile: ../../Docker/Dockerfile.nuxtjs
+    ports:
+    - "3000:3000"
+    networks:
+    - app-network
+    restart: always
+    env_file:
+      - .env
+    environment:
+    # - NUXT_PUBLIC_SERVER_FASTAPI=http://fastapi:8000 # localhost, fastapi
+    - NUXT_PUBLIC_SERVER_FASTAPI=${NUXT_PUBLIC_SERVER_FASTAPI}
+    - NUXT_PUBLIC_OPENAI_API_KEY=${NUXT_PUBLIC_OPENAI_API_KEY}
+    - NUXT_PUBLIC_HISTORY_TYPE=${NUXT_PUBLIC_HISTORY_TYPE}
+    depends_on:
+    - fastapi
+
+  postgres:
+    image: doantronghieu/custom-llm-postgresql:latest
+    container_name: custom-llm-postgres
+    restart: always
+    # shm_size: 128mb # shared memory limit
+    volumes:
+    - ../../../Apps/data/postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_DB: mydatabase
+    ports:
+    - 5432:5432
+    networks:
+    - app-network
+    # add health check
+
+networks:
+  app-network:
+    driver: bridge # bridge, overlay
+
+```
