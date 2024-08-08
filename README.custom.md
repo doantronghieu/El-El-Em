@@ -144,6 +144,19 @@ docker-compose -f DevOps/Docker/custom/custom.docker-compose.yaml up -d
 docker-compose -f DevOps/Docker/custom/custom.docker-compose.yaml down
 ```
 
+#### Cloud Instance
+
+Remember to change `NUXT_PUBLIC_SERVER_FASTAPI=http://{EC2_IP_ADDR}:8000` in `DevOps/Docker/custom/.env`
+
+```bash
+sudo docker pull doantronghieu/custom-llm-fastapi:latest
+sudo docker pull doantronghieu/custom-llm-nuxtjs:latest
+sudo docker pull doantronghieu/custom-llm-postgresql:latest
+
+sudo docker-compose -f DevOps/Docker/custom/custom.docker-compose.yaml up -d
+sudo docker-compose -f DevOps/Docker/custom/custom.docker-compose.yaml down
+```
+
 ### Use Helm to export K8s files
 
 ```bash
