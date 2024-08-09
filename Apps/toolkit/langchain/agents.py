@@ -1,11 +1,17 @@
+
 import add_packages
 import boto3
 import os
+from operator import itemgetter
 from loguru import logger
 from typing import Union, Optional, List, Literal, AsyncGenerator, TypeAlias
 from pydantic import BaseModel
 
 from toolkit import utils
+
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.runnables import RunnablePassthrough, Runnable, RunnableParallel
 
 from langchain.agents import (
 	create_openai_tools_agent, create_openai_functions_agent, 
@@ -35,6 +41,7 @@ from langchain.agents.output_parsers.openai_tools import (
 	OpenAIToolsAgentOutputParser,
 )
 
+from langchain_openai import ChatOpenAI
 from langchain_community.chat_message_histories.dynamodb import DynamoDBChatMessageHistory
 from langchain_mongodb.chat_message_histories import MongoDBChatMessageHistory
 #*==============================================================================
@@ -42,11 +49,128 @@ from langchain_mongodb.chat_message_histories import MongoDBChatMessageHistory
 dynamodb = boto3.resource("dynamodb")
 
 #*==============================================================================
+
 TypeAgent: TypeAlias = Literal["tool_calling", "openai_tools", "react", "anthropic"]
 
 TypeHistoryType: TypeAlias = Literal["in_memory", "dynamodb", "mongodb"]
 TypeUserId: TypeAlias = Optional[str]
+
 TypeSessionId: TypeAlias = Union[str, None]
+
+#*==============================================================================
+
+prompt_tpl_check_ans = """\
+You are tasked with evaluating whether an AI's answer adequately addressed and satisfied the original question. Follow these steps carefully:
+
+1. Review the following:
+
+Original question:
+<original_question>
+{original_question}
+</original_question>
+
+AI's answer:
+<ai_answer>
+{ai_answer}
+</ai_answer>
+
+2. Analyze the AI's answer by considering the following:
+   - Does the answer directly address the main points of the original question?
+   - Is the information provided relevant and accurate?
+   - Does the answer provide sufficient detail to satisfy the query?
+   - Are there any parts of the original question left unanswered?
+   - Ensure that all keywords in the answer correspond to the keywords in the question.
+
+3. Based on your analysis, determine if the AI's answer adequately addressed and satisfied the original question.
+
+4. Provide your response as follows:
+   - If the answer adequately addressed and satisfied the query, output exactly: True
+   - If the answer did not adequately address or satisfy the query, or if you cannot determine this due to lack of information or context, output exactly: ERROR
+
+Do not provide any explanation or justification for your response. Your output must be either "True" or "ERROR" without any additional text.
+
+Examples of correct outputs:
+True
+ERROR
+
+Ensure your response is only one of these two options.
+"""
+prompt_check_ans = ChatPromptTemplate.from_template(prompt_tpl_check_ans)
+
+def check_ans(original_question: str, ai_answer: str, llm=ChatOpenAI()):
+	chain_check_ans = (
+			{
+				"original_question": itemgetter("original_question"),
+				"ai_answer": itemgetter("ai_answer")
+			}
+			| prompt_check_ans
+			| llm
+			| StrOutputParser()
+	).with_retry()
+
+	result = chain_check_ans.invoke({
+		"original_question": original_question,
+		"ai_answer": ai_answer,
+	})
+	return result
+
+#*------------------------------------------------------------------------------
+
+prompt_tpl_res_if_not_satis = """\
+You are tasked with generating a response to a user based on the number of retries for an AI-generated answer. You will be given three inputs: the AI's answer, the current retry count, and the maximum number of retries allowed.
+
+Here are the inputs you will work with:
+
+<ai_answer>
+{ai_answer}
+</ai_answer>
+
+<current_retry>{current_retry}</current_retry>
+
+<max_retry>{max_retry}</max_retry>
+
+Follow these steps to generate the appropriate response:
+
+1. Compare the value of current_retry to max_retry.
+
+2. If current_retry is less or equals to than max_retry:
+   - Inform the user that you will continue to retry to get the correct answer.
+   
+3. If current_retry is greater than max_retry:
+   - Tell the user to please try again.
+
+4. Ensure that your response is in the exact same language as the text in ai_answer. This means you should analyze the language used in ai_answer and formulate your response in that same language.
+
+Remember, do not include any explanations or additional information. Your output should only be the appropriate message to the user, written in the same language as ai_answer.
+
+Your response: \
+"""
+prompt_res_if_not_satis = ChatPromptTemplate.from_template(prompt_tpl_res_if_not_satis)
+
+
+def response_if_not_satisfied(
+  ai_answer: str, current_retry: int, max_retry: int,
+  llm=ChatOpenAI()
+):
+	chain_res_if_not_satis = (
+			{
+				"ai_answer": itemgetter("ai_answer"),
+				"current_retry": itemgetter("current_retry"),
+				"max_retry": itemgetter("max_retry")
+			}
+			| prompt_res_if_not_satis
+			| llm
+			| StrOutputParser()
+	).with_retry()
+ 
+	result = chain_res_if_not_satis.invoke({
+		"ai_answer": ai_answer,
+		"current_retry": current_retry,
+		"max_retry": max_retry,
+	})
+	return result
+
+#*==============================================================================
 
 class SchemaChatHistory(BaseModel):
 	history_type: TypeHistoryType = "in_memory"
@@ -233,6 +357,16 @@ class MyStatelessAgent:
 	
 		return result
 
+	async def astream_events_basic_wrapper(
+		self,
+		input_message: str,
+	):
+		result = ""
+		async for chunk in self.astream_events_basic(input_message):
+			result += chunk
+			print(chunk, end="", flush=True)
+		return result
+
 	async def astream_events_basic(
 		self,
 		input_message: str,
@@ -254,6 +388,9 @@ class MyStatelessAgent:
 		)
 
 		result = ""
+		is_result_satisfied = False
+		max_retry = 2
+		current_retry = 0
 
 		""" used for debugging
 		a = agent.events
@@ -265,63 +402,95 @@ class MyStatelessAgent:
 		"""
   
 		# self.events = [] # debug
-  
-		async for event in self.agent_executor.astream_events(
-			input={"input": input_message, "chat_history": await history._get_chat_history()},
-			version="v2",
-		):
-			# self.events.append(event) # debug
-			event_event = event["event"]
-			event_name = event["name"]
-	
-			try: event_data_chunk = event["data"]["chunk"]
-			except: pass
-			
-			if event_event == "on_chat_model_stream":
-				chunk = dict(event_data_chunk)["content"]
-		
-				if (event.get("metadata", {}).get("ls_stop") == ['\nSQLResult:']) \
-						or ("is_my_sql_chain_run" in event.get("metadata", {})) \
-						or ("is_my_rag_chain_run" in event.get("metadata", {})):
-					continue
 
-				result += chunk
-				yield chunk
+		while (not is_result_satisfied) and (current_retry <= max_retry):
+			async for event in self.agent_executor.astream_events(
+				input={"input": input_message, "chat_history": await history._get_chat_history()},
+				version="v2",
+			):
+				# self.events.append(event) # debug
+				event_event = event["event"]
+				event_name = event["name"]
 		
-			if show_tool_call and event_event == "on_chain_stream":
-				if event_name == "RunnableSequence":
-					try:
-						chunk: str = dict(event_data_chunk[0])["log"]
-						chunk = f"`[TOOL - CALLING]` {chunk}"
+				try: event_data_chunk = event["data"]["chunk"]
+				except: pass
+				
+				if event_event == "on_chat_model_stream":
+					chunk = dict(event_data_chunk)["content"]
 			
-						await self._add_messages_to_history(
-							history=history,
-							history_type=history_type,
-							msg_user=None,
-							msg_ai=chunk,
-						)
-						result += chunk
-						yield chunk
-					except:
-						pass
+					if (event.get("metadata", {}).get("ls_stop") == ['\nSQLResult:']) \
+							or ("is_my_sql_chain_run" in event.get("metadata", {})) \
+							or ("is_my_rag_chain_run" in event.get("metadata", {})):
+						continue
+
+					result += chunk
+					yield chunk
 			
-				elif event_name == "RunnableLambda":
-					try:
-						chunk = dict(event_data_chunk[1])["content"]
-						chunk = f"`[TOOL - RESULT]` {chunk}\n\n"
+				if show_tool_call and event_event == "on_chain_stream":
+					if event_name == "RunnableSequence":
+						try:
+							chunk: str = dict(event_data_chunk[0])["log"]
+							chunk = f"`[TOOL - CALLING]` {chunk}"
+				
+							await self._add_messages_to_history(
+								history=history,
+								history_type=history_type,
+								msg_user=None,
+								msg_ai=chunk,
+							)
+							result += chunk
+							yield chunk
+						except:
+							pass
+				
+					elif event_name == "RunnableLambda":
+						try:
+							chunk = dict(event_data_chunk[1])["content"]
+							chunk = f"`[TOOL - RESULT]` {chunk}\n\n"
+				
+							await self._add_messages_to_history(
+								history=history,
+								history_type=history_type,
+								msg_user=None,
+								msg_ai=chunk,
+							)
+				
+							result += chunk
+							yield chunk
+						except:
+							pass
 			
-						await self._add_messages_to_history(
-							history=history,
-							history_type=history_type,
-							msg_user=None,
-							msg_ai=chunk,
-						)
+			current_retry += 1
+
+			if check_ans(
+     		original_question=input_message, ai_answer=result, llm=self.llm,
+      ) != "ERROR":
+				is_result_satisfied = True
+				yield("\n")
+			else:
+				if current_retry <= max_retry:
+					for _ in range(1):
+						yield("\n\n")
 			
-						result += chunk
-						yield chunk
-					except:
-						pass
-						
+					for res in response_if_not_satisfied(
+						ai_answer=result,
+						current_retry=current_retry,
+						max_retry=max_retry,
+						llm=self.llm,
+					):
+						yield res
+					for _ in range(1):
+						yield("\n\n")
+					
+					history = self._create_chat_history(
+						history_type=history_type,
+						user_id=utils.generate_unique_id(thing="uuid_name"), 
+						session_id=utils.generate_unique_id(thing="uuid"), 
+						history_size=history_size,
+					)
+
+				result = ""
+    
 		await self._add_messages_to_history(
 			history=history,
 			history_type=history_type,
@@ -329,15 +498,5 @@ class MyStatelessAgent:
 			msg_ai=result,
 		)
 	
-	async def astream_events_basic_wrapper(
-		self,
-		input_message: str,
-	):
-		result = ""
-		async for chunk in self.astream_events_basic(input_message):
-			result += chunk
-			print(chunk, end="", flush=True)
-		return result
-
 def hello():
 	...
