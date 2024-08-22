@@ -4,7 +4,17 @@
 
 ## App Logic
 
-![Logic Flow](./diagrams/LogicFlow.jpg)
+### Unstructured Data Retrieval Algorithm
+
+![Unstructured Data Retrieval Algorithm](./diagrams/Flow_RAG.jpeg)
+
+### Structured Data Retrieval Algorithm
+
+![Structured Data Retrieval Algorithm](./diagrams/Flow_SQL.jpeg)
+
+### Agent System
+
+![Agent System](./diagrams/Agent.jpeg)
 
 ## System Architecture
 
