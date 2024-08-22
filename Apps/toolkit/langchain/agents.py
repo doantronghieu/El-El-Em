@@ -389,7 +389,7 @@ class MyStatelessAgent:
 
 		result = ""
 		is_result_satisfied = False
-		max_retry = 2
+		max_retry = 1
 		current_retry = 0
 
 		""" used for debugging
