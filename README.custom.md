@@ -6,19 +6,19 @@
 
 ### Unstructured Data Retrieval Algorithm
 
-![Unstructured Data Retrieval Algorithm](./diagrams/Flow_RAG.jpeg)
+![Unstructured Data Retrieval Algorithm](./Others/diagrams/Flow_RAG.jpeg)
 
 ### Structured Data Retrieval Algorithm
 
-![Structured Data Retrieval Algorithm](./diagrams/Flow_SQL.jpeg)
+![Structured Data Retrieval Algorithm](./Others/diagrams/Flow_SQL.jpeg)
 
 ### Agent System
 
-![Agent System](./diagrams/Agent.jpeg)
+![Agent System](./Others/diagrams/Agent.jpeg)
 
 ## System Architecture
 
-![System Architecture](./diagrams/SystemDesign.jpg)
+![System Architecture](./Others/diagrams/SystemDesign.jpg)
 
 ## System Setting
 
@@ -26,30 +26,30 @@
 
 ```bash
 # Models
-OPENAI_API_KEY = 
-COHERE_API_KEY = 
-ANTHROPIC_API_KEY = 
-GROQ_API_KEY = 
+OPENAI_API_KEY =
+COHERE_API_KEY =
+ANTHROPIC_API_KEY =
+GROQ_API_KEY =
 
-REPLICATE_API_TOKEN = 
+REPLICATE_API_TOKEN =
 
-LANGCHAIN_TRACING_V2 = 
-LANGCHAIN_API_KEY = 
+LANGCHAIN_TRACING_V2 =
+LANGCHAIN_API_KEY =
 USER_AGENT = MyUserAgent
 
-AWS_ACCESS_KEY_ID = 
-AWS_SECRET_ACCESS_KEY = 
-AWS_DEFAULT_REGION = 
+AWS_ACCESS_KEY_ID =
+AWS_SECRET_ACCESS_KEY =
+AWS_DEFAULT_REGION =
 
 # Tools
-TAVILY_API_KEY = 
-SERPER_API_KEY = 
+TAVILY_API_KEY =
+SERPER_API_KEY =
 
 # DBs
 MSG_STORAGE_PROVIDER = mongodb # mongodb, dynamodb !!!
 
-QDRANT_HOST = 
-QDRANT_API_KEY = 
+QDRANT_HOST =
+QDRANT_API_KEY =
 
 ## Postgres
 SQL_DB = mydatabase
@@ -58,15 +58,15 @@ SQL_PORT = 5432
 SQL_USER = myuser
 SQL_PASSWORD = mysecretpassword
 
-NEON_URI = 
+NEON_URI =
 SQL_DB_NEON = mydatabase
-SQL_HOST_NEON = 
+SQL_HOST_NEON =
 SQL_PORT_NEON = 5432
 SQL_USER_NEON = my-default-db_owner
-SQL_PASSWORD_NEON = 
+SQL_PASSWORD_NEON =
 
 ## MongoDb
-MONGODB_ATLAS_CLUSTER_URI = 
+MONGODB_ATLAS_CLUSTER_URI =
 MONGODB_DB_NAME = "db_langchain"
 MONGODB_COLLECTION_NAME_RAG = "coll_rag_langchain"
 MONGODB_COLLECTION_NAME_MSG = "coll_msg_langchain"
@@ -174,14 +174,14 @@ sudo docker-compose -f DevOps/Docker/custom/custom.docker-compose.yaml down
 
 ```bash
 # Export
-helm template DevOps/Helm/ --debug --dry-run > DevOps/Helm/helm-test.yaml 
+helm template DevOps/Helm/ --debug --dry-run > DevOps/Helm/helm-test.yaml
 ```
 
 ### Create/Update/Delete AWS K8s cluster
 
 ```bash
 # Test cluster config file
-eksctl create cluster -f DevOps/Infra/custom/custom.eks-cluster.yaml --dry-run 
+eksctl create cluster -f DevOps/Infra/custom/custom.eks-cluster.yaml --dry-run
 # Create cluster
 eksctl create cluster -f DevOps/Infra/custom/custom.eks-cluster.yaml
 
@@ -203,11 +203,11 @@ kubectl apply -f DevOps/K8s/hpa.yaml
 kubectl apply -f DevOps/K8s/service.yaml
 
 #*** Check ***#
-# Check if the TLS certificate has been generated 
+# Check if the TLS certificate has been generated
 kubectl get secret my-domain-tls
 kubectl get ingress my-ingress
 # Check if the Ingress resource is using the TLS certificate
-kubectl describe ingress my-ingress 
+kubectl describe ingress my-ingress
 # Check if the Ingress controller is using the TLS certificate (Volumes -> Secret -> tls.crt, tls.key)
 kubectl describe pod <ingress-controller-pod-name>
 
