@@ -6,19 +6,19 @@
 
 ### Unstructured Data Retrieval Algorithm
 
-![Unstructured Data Retrieval Algorithm](./diagrams/Flow_RAG.jpeg)
+![Unstructured Data Retrieval Algorithm](./Others/diagrams/Flow_RAG.jpeg)
 
 ### Structured Data Retrieval Algorithm
 
-![Structured Data Retrieval Algorithm](./diagrams/Flow_SQL.jpeg)
+![Structured Data Retrieval Algorithm](./Others/diagrams/Flow_SQL.jpeg)
 
 ### Agent System
 
-![Agent System](./diagrams/Agent.jpeg)
+![Agent System](./Others/diagrams/Agent.jpeg)
 
 ## System Architecture
 
-![System Architecture](./diagrams/SystemDesign.jpg)
+![System Architecture](./Others/diagrams/SystemDesign.jpg)
 
 ## System Setting
 
