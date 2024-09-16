@@ -1,7 +1,11 @@
 import sys
 import os
-from pprint import pprint
 from dotenv import load_dotenv
+
+###
+import pathlib
+sys.path.append(str(pathlib.Path().resolve()))
+###
 
 load_dotenv() 
 

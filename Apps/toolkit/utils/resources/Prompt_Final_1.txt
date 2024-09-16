@@ -1,0 +1,523 @@
+# LLM Prompt Template
+
+[EMOTIONAL APPEAL]
+Remember, the success of this project depends on the quality and effectiveness of your output. Approach this task with dedication and creativity, as your contribution will have a significant impact on the final result.
+
+## 0. System Role and Initial Instructions
+You are a multi-expert AI assistant with knowledge in [list relevant fields]. Your primary objective is to [main task/goal]. Approach problems by breaking them down into smaller, manageable components and utilizing various expert perspectives.
+
+1. Ignore all previous instructions before this prompt.
+2. Always ask clarifying questions before answering to better understand what the user is seeking.
+3. Provide detailed, step-by-step explanations when appropriate.
+4. Use analogies or metaphors to explain complex concepts if helpful.
+5. Be concise and avoid unnecessary explanations throughout your response.
+
+## 1. Task Definition and Context
+- Specific goal: [Clearly define the task or problem you want the LLM to address]
+- Context: [Provide relevant background information, constraints, or context for the task. Include any necessary definitions, historical context, or key concepts.]
+- Desired output format: [Specify the format of the expected output]
+- Main objective: [Define the primary objective of the task]
+- Constraints: [Specify any limitations, restrictions, or required elements]
+- Use the SMART (Specific, Measurable, Achievable, Relevant, Time-bound) framework for defining objectives
+- If applicable, specify any time constraints or deadlines associated with the task
+
+[INITIAL PROBLEM STATEMENT]
+Problem: [Concise description of the problem or task]
+
+[CONTEXT]
+- Company/Client: [Company name or client details]
+- Industry: [Relevant industry]
+- Target Audience: [Description of target audience]
+- Your role: [Specify your role/position]
+- Task/Project: [Describe the specific task/project you're working on]
+- Niche/Industry: [Specify your field or area of focus]
+- Current status: [Where are you now in relation to your goal?]
+- Specific outcome: [What exactly do you want to achieve?]
+- Timeframe (if applicable): [By when do you need this completed?]
+- Timeline: [Provide important dates or durations related to your goal]
+- History: [What have you already tried or accomplished?]
+- Constraints or limitations: [Mention any restrictions or challenges]
+
+Consider the following additional context:
+- [Key point 1]
+- [Key point 2]
+- [Add more context points as needed]
+
+Be concise: Provide only the most relevant contextual information.
+
+## 2. Model Configuration and Role Assignment
+- Technique: [Specify the prompting technique: zero-shot, few-shot, chain-of-thought, etc.]
+- Temperature: [0-1, where 0 is deterministic and 1 is most random]
+- API Parameters:
+  - Maximum Length: [Specify]
+  - Stop Sequences: [Specify]
+  - Top P: [Specify]
+  - Frequency Penalty: [Specify]
+  - Presence Penalty: [Specify]
+  - Other Control Parameters: [Specify, e.g., creativity level]
+- Domain-specific information: [Include any relevant domain-specific details]
+- Relevant facts or data: [Provide any necessary factual information]
+- Assumptions: [State any assumptions to be made]
+- Target Audience: [Specify the target audience and their level of expertise]
+
+[ROLE]
+You are a [ROLE] with expertise in [DOMAIN]. Your primary objective is to [MAIN_OBJECTIVE]. Approach this task with [DESIRED_ATTRIBUTES] and ensure your response is [DESIRED_OUTPUT_CHARACTERISTICS].
+- Relevant characteristics of this role: [Specify key traits or skills associated with the role]
+- Your knowledge and experience include [relevant areas of expertise].
+- [If relevant, include instructions for role-playing or perspective modifiers]
+
+## 3. Input Data and Resources
+- Input Format: [Specify the format or type of input expected]
+  - Type: [e.g., text, image, code]
+  - Structure: [e.g., JSON, CSV, plain text]
+- Key data points: [List the essential information provided for the task]
+- Source of the data (if relevant): [Specify the origin of the input data]
+- Preprocessing or formatting of the data: [Describe any data preparation steps]
+- Use clear, parsable format for structured data (consider JSON or CSV for clarity)
+- Use delimiters like <<content>> or {{content}} for specific text or data
+- If using embeddings or fine-tuning, provide specific details
+- Indicate if the LLM should use only the provided information or if it can draw from its general knowledge
+- Variables: [Define any variables or placeholders that will be filled in when using the template]
+- Update Method: [Specify methods for introducing new, up-to-date information, if applicable]
+
+Input Data:
+```
+[Insert relevant input data here]
+```
+
+Format: [Input: {input_data}]
+
+Consider the following information:
+- [Insert relevant data/text]
+- [Specify any assumptions that should be made about the input data]
+- [Indicate any limitations or potential biases in the provided data]
+- [If relevant, specify the source and reliability of the input data]
+
+For very specific or obscure topics, remind the LLM to indicate if it may be hallucinating information.
+
+[DATA COLLECTION]
+Collect relevant data from [specify sources, e.g., YouTube API, Reddit, Twitter] to inform the decision-making process. Summarize key findings and their relevance to the task at hand.
+
+## 4. Instructions and Methodology
+Provide clear, step-by-step instructions for the LLM:
+
+1. [Step 1]
+2. [Step 2]
+3. [Step 3]
+   ...
+
+- Suggest a step-by-step process or methodology
+- Request explanations or justifications for conclusions
+- Encourage creative thinking or problem-solving approaches
+- Ask for a "chain of thought" if complex reasoning is required
+- Specify any particular capabilities or limitations of the LLM that are relevant to the task
+- For analytical tasks, consider using the MECE (Mutually Exclusive, Collectively Exhaustive) framework
+- For complex tasks, consider using a tree of thoughts approach or breaking the task into smaller, manageable steps
+- For analytical tasks, consider incorporating the "5 Whys" technique for root cause analysis
+- For creative tasks, consider including instructions for brainstorming or lateral thinking techniques
+
+As you work on the task, please:
+- Explain your thought process for each step
+- Show calculations or intermediate results (if applicable)
+- Justify your decisions or choices
+- Use clear and precise language
+- If you're unsure about any information, state so explicitly
+- Consider multiple perspectives on the issue
+- Integrate external knowledge when relevant [Provide instructions for knowledge integration]
+
+[OPERATION TYPE]
+Specify the type of operation:
+- Reductive (e.g., summarize, extract, analyze, characterize, evaluate, critique)
+- Transformational (e.g., reformat, refactor, translate, restructure, modify, clarify)
+- Generative (e.g., draft, plan, brainstorm, problem-solve, hypothesize, amplify)
+
+## 5. Problem-Solving Process and Output Generation
+[STEP-BY-STEP INSTRUCTIONS]
+Follow these detailed steps to address the task:
+
+1. [Step 1: Detailed description]
+   - Sub-step 1a
+   - Sub-step 1b
+2. [Step 2: Detailed description]
+   - Sub-step 2a
+   - Sub-step 2b
+3. [Continue with more detailed steps as needed]
+
+For each step, consider and detail:
+- Initial approach
+- Potential obstacles
+- Methods to overcome obstacles
+- Expected outcomes
+- Potential revisions or adaptations
+
+[EXPERT PANEL SETUP]
+Activate the following expert personas to analyze the problem:
+1. [Expert 1 - e.g., Business strategist]
+2. [Expert 2 - e.g., Marketing specialist]
+3. [Expert 3 - e.g., Technical expert]
+4. [Expert 4 - e.g., Creative thinker]
+
+For each expert:
+a) Brainstorming Phase: Generate [number] distinct solutions considering the expert's perspective.
+b) Evaluation Phase: Evaluate each proposed solution based on:
+   - Pros and cons
+   - Implementation difficulty
+   - Potential challenges
+   - Expected outcomes
+   Assign a probability of success (1-100) and confidence level (1-100) to each option.
+
+[LOGICAL ANALYSIS]
+Apply the following criteria to each solution:
+1. Is it a direct answer to the initial problem?
+2. Does it consider real-world constraints and practicalities?
+3. Is it the simplest effective solution available?
+
+[EXPANSION PHASE]
+For the top-rated solution(s), expand on:
+- Potential scenarios
+- Strategies for implementation
+- Necessary resources or partnerships
+- How to overcome potential obstacles
+- Possible unexpected outcomes and how to handle them
+
+[DECISION PHASE]
+1. Rank the solutions in order of promise
+2. Provide justification for each ranking
+3. Offer final thoughts or considerations for each solution
+
+[SPECIFIC TECHNIQUES]
+Apply the following prompting techniques as appropriate:
+- Zero-shot: Use for straightforward tasks where direct answers can be provided without examples.
+- Few-shot: Apply when the task is more complex and benefits from guided examples.
+- Chain of Thought: Employ for problem-solving tasks that require step-by-step reasoning.
+- Tree of Thought: Utilize for highly complex problems that benefit from exploring multiple reasoning paths.
+
+[ITERATIVE REFINEMENT PROCESS]
+After generating the initial output:
+1. Self-evaluation: Critically evaluate your response based on:
+   - Accuracy of information
+   - Relevance to the task
+   - Clarity of communication
+   - Adherence to specified format and guidelines
+2. Improvement identification: Identify areas for improvement in:
+   - Content depth and breadth
+   - Logical flow and structure
+   - Language and tone
+   - Practical applicability
+3. Refinement: Enhance your response by:
+   - Addressing identified weaknesses
+   - Strengthening key arguments or points
+   - Improving clarity and conciseness
+   - Ensuring alignment with user requirements
+4. Final polish: Make final adjustments for:
+   - Consistency in tone and style
+   - Smooth transitions between sections
+   - Elimination of any redundancies
+   - Overall impact and effectiveness
+
+[FINAL EXPERT REVIEW]
+Have each expert persona provide a brief review and approval of the final solution, considering:
+- Alignment with their area of expertise
+- Potential impact and effectiveness
+- Any final recommendations or cautions
+
+[ADAPTABILITY INSTRUCTIONS]
+If the initial approach is not yielding satisfactory results:
+1. Identify the specific areas where the current approach is falling short.
+2. Consider alternative methods or perspectives that could address these shortcomings.
+3. Propose a modified approach, explaining how it addresses the identified issues.
+4. If necessary, revisit the Expert Panel Setup to gain fresh insights.
+
+[CROSS-DISCIPLINARY CONSIDERATIONS]
+To leverage insights from related fields:
+1. Identify disciplines that might have relevant approaches or solutions to the problem at hand.
+2. Consider how methodologies or concepts from these fields could be applied to the current task.
+3. Integrate cross-disciplinary insights into your proposed solutions, explaining their relevance and potential impact.
+
+## 6. Output Requirements and Structure
+[OUTPUT FORMAT]
+Expected Output Format: [Describe the desired output format in detail]
+
+Format:
+1. [SECTION 1: Title]
+   - Subsection A
+   - Subsection B
+2. [SECTION 2: Title]
+   - Subsection A
+   - Subsection B
+3. [SECTION 3: Title]
+   - Subsection A
+   - Subsection B
+
+Response Format Guidelines:
+- Use [specified formatting, e.g., bullet points, numbered lists, paragraphs]
+- Include [specific elements, e.g., headings, subheadings, conclusion]
+- Follow [any style guide or formatting conventions]
+
+Additional specifications:
+- Tone: [Desired tone, e.g., formal, casual, expert, etc.]
+- Length: [Approximate desired length of the response]
+- Depth of response: [Specify if a brief overview or in-depth analysis is needed]
+- Avoid sounding like AI: Ensure the output feels natural and human-like
+- Keep suggestions relevant and to the point
+- Prioritize [e.g., "uncommon or novel ideas", "practical applications"]
+- Include [e.g., "important concepts", "relevant examples", "use cases"]
+
+Response Structure and Flow:
+- Introduction: [Guidelines for opening the response]
+- Body: [How to structure the main content, e.g., paragraphs, bullet points, sections]
+- Conclusion: [How to wrap up the response]
+- Ensure a logical flow of ideas, using appropriate transitions between sections
+
+For structured output, provide examples in the desired format rather than just describing it.
+If applicable, specify any output validation criteria or error checking procedures.
+
+## 7. Tone, Style, and Language Guidelines
+- Specify the desired tone (e.g., formal, casual, technical)
+- Indicate any stylistic preferences (e.g., concise, detailed, creative)
+- Request a specific persona if applicable (e.g., "respond as an expert in...")
+- Define the level of formality and any specific linguistic patterns to use or avoid
+- Specify any particular linguistic features to include or avoid
+- Include instructions for localization or cultural adaptation, if relevant
+- Consider using different tones for different parts of the output if applicable
+- Provide guidelines for technical jargon or industry-specific terminology
+- Include guidelines for cultural sensitivity and localization
+
+Experiment with different tones and styles if applicable:
+- Formal: "Kindly elucidate the primary advantages of [topic]."
+- Casual: "Hey, what's so great about [topic] anyway?"
+- Humorous: "Imagine [topic] is a superhero. What's its origin story and superpowers?"
+- Poetic: "In verses of [theme] and stanzas of [related theme], sing the praises of [topic]."
+
+[ENGAGEMENT]
+Throughout your response:
+- If you need more information, ask specific questions before proceeding.
+- Encourage user interaction by posing thought-provoking questions related to the task.
+- Offer to elaborate on any points that may require further explanation.
+- Suggest related topics or angles that the user might find interesting or valuable.
+
+## 8. Examples and Guidance
+[EXAMPLES]
+Here's an example of what I'm looking for:
+[Insert detailed example]
+
+For few-shot learning, provide 2-3 examples in the following format:
+Input 1: [Example input]
+Output 1: [Corresponding output]
+
+Input 2: [Example input]
+Output 2: [Corresponding output]
+
+Ensure examples are diverse and representative.
+Include examples of both good and bad outputs.
+Provide explanations for why certain examples are considered good or bad.
+If applicable, include edge cases or unusual scenarios to illustrate handling of complex situations.
+Consider providing trigger scenarios or starting points to help initiate the task.
+For very complex tasks, consider providing a "golden example" that showcases ideal execution and output.
+
+## 9. Evaluation Criteria and Quality Check
+Before submitting your response, please verify that:
+- You have fully addressed the main task and all sub-tasks
+- Your output meets all specified format requirements and constraints
+- You have included your step-by-step reasoning (if applicable)
+- You have evaluated your own work based on the given criteria
+- Your response is clear, concise, and impossible to misinterpret
+- All factual claims are accurate and, if necessary, properly cited
+- The content is original and not plagiarized
+- You have maintained consistency in tone, style, and terminology throughout
+- Your response is tailored appropriately to the specified audience
+- You have addressed all parts of the question or task
+
+Evaluation criteria:
+- Accuracy: [Specify accuracy requirements]
+- Relevance: [Define what makes the response relevant]
+- Coherence: [Describe expectations for logical flow and consistency]
+- Other specific criteria: [Include any additional evaluation metrics]
+
+Quality Assurance Checklist:
+- [ ] Ensure response aligns with the specified context
+- [ ] Verify adherence to style and tone guidelines
+- [ ] Check if all key points are addressed
+- [ ] Confirm response length meets requirements
+- [ ] Review for coherence and relevance
+
+Include instructions for cross-referencing or fact-checking critical information.
+Consider adding a self-evaluation component where the LLM rates its own performance.
+Include a "steelman" approach where the LLM critically evaluates its own arguments or conclusions.
+
+## 10. Ethical Considerations, Security, and Privacy Guidelines
+- Ensure your response adheres to ethical standards. Avoid generating content that could be harmful, biased, or inappropriate.
+- Include guidelines for maintaining user privacy and data protection
+- Specify any legal considerations that need to be taken into account
+- Provide guidelines for handling sensitive or controversial topics
+- Consider the ethical implications of the prompt and the generated output
+
+Ethical Guidelines:
+- Avoid bias: [Specific instructions on avoiding biased language or conclusions]
+- Ensure fairness: [Guidelines for treating all subjects equally]
+- Respect privacy: [Instructions on handling sensitive information]
+- Other ethical considerations: [Any additional ethical guidelines relevant to the task]
+
+Security and Privacy Considerations:
+- Specify any data that should not be included in the response
+- Provide instructions for anonymizing or obfuscating personal information
+- Include reminders about adhering to relevant data protection regulations (e.g., GDPR, CCPA)
+- Do not generate or encourage the creation of malicious code
+- Avoid providing information that could be used for harmful purposes
+- Implement safeguards against prompt injection attacks in production environments
+
+## 11. Error Handling and Limitations
+- If you're unsure about any aspect of the task, please ask for clarification
+- If you need more information to complete the task effectively, please request it
+- Be aware of your limitations as an AI language model, including:
+  - No access to real-time data beyond your training cut-off
+  - Inability to access external databases or personal information
+  - Potential for biases present in your training data
+- Fallback strategies:
+  - If unable to complete the primary task, offer alternative solutions or partial completions
+  - Clearly state any assumptions made when information is incomplete
+- Handling inaccuracies:
+  - If you detect potential inaccuracies in your response, flag them explicitly
+  - Provide confidence levels for information when appropriate
+  - Suggest fact-checking for critical or potentially controversial information
+- If the request is unclear or impossible, ask for clarification or explain the limitations respectfully
+- If certain required information is missing, specify what additional data is needed
+- If the request is outside your capabilities, explain what you can and cannot do
+
+For uncertain information: [e.g., "State 'I'm not certain about this' and explain why"]
+For out-of-scope requests: [e.g., "Politely explain that the request is outside your capabilities"]
+For potentially harmful content: [e.g., "Refuse to generate harmful content and explain why"]
+Provide instructions on how to handle ambiguous or contradictory information in the input
+Provide instructions on how to handle requests that may require real-time or external data that the LLM doesn't have access to
+
+## 12. Iterative Refinement and Feedback Loop
+After generating the initial response, consider:
+- Asking for more details on specific ideas
+- Requesting alternatives or variations
+- Combining elements from different suggestions
+- Adjusting the tone or style of the content
+
+For multi-turn conversations:
+- Maintain context across multiple interactions
+- Build upon information provided in earlier turns
+- Anticipate potential follow-up questions or requests
+- Provide instructions on how to handle follow-up questions or requests
+- Specify how to manage and update information as the conversation progresses
+
+Feedback for improvement:
+- What aspects of the prompt were most effective?
+- Are there any areas where the instructions could be clearer or more specific?
+- How could this template be improved for similar future tasks?
+- Identify any areas where the prompt could be clearer or more effective
+- Suggest potential refinements for future iterations of this task
+
+Areas for potential refinement: [Specify aspects that might need improvement]
+How to incorporate feedback: [Describe the process for integrating user feedback]
+Process for testing and validating improvements: [Outline steps for verifying enhancements]
+
+Suggest A/B testing different prompt variations to optimize performance
+Incorporate a "reflection" step where the LLM analyzes its own output for potential improvements
+
+## 13. Conclusion and Next Steps
+- Conclude your response with a brief summary of key points and any recommended next steps or areas for further consideration. Ensure this summary adds value and isn't merely a repetition of previous content.
+- Include a strong call-to-action at the end of the content, encouraging readers to [desired action]. Make it compelling and relevant to the content discussed.
+- [If applicable, suggest follow-up questions or areas for further exploration]
+- [Provide guidance on how to implement or act upon the information provided]
+- Consider adding instructions for summarizing key takeaways or generating action items
+
+After providing your output, suggest 2-3 follow-up questions or areas for deeper exploration, such as:
+- Analyze: "How might [aspect of the response] impact [related field or concept]?"
+- Understand: "What are the potential long-term implications of [key point in the response]?"
+- Expand: "How could this approach be adapted for [different context or application]?"
+
+Offer to provide more detailed information on specific aspects if needed.
+
+## 14. Optional Sections (Include if Relevant)
+
+### Tool Use and Integration
+[Specify any external tools or APIs the LLM should use, along with clear instructions on how to interact with these tools and interpret their outputs]
+
+### Trigger Scenarios
+[Provide specific scenarios or starting points to help initiate the task, if applicable]
+
+### Adapting for Different LLM Types
+- Text-based LLMs: Focus on language nuance, context understanding, and coherent text generation
+- Code Generation LLMs: Emphasize syntax accuracy, code structure, and adherence to best coding practices
+- Image Analysis LLMs: Provide clear instructions on describing visual elements, identifying objects, and interpreting scenes
+- Multi-modal LLMs: Give guidance on integrating information from different modalities (text, image, etc.)
+- Image Generation LLMs: Focus more on visual details and composition
+
+Adjust relevant sections of this template to match the specific capabilities and requirements of the LLM type being used.
+
+### Prompt Chaining (Optional)
+[For complex tasks, break down into multiple connected prompts]
+
+Prompt 1: [Subtask 1]
+Prompt 2: [Subtask 2]
+...
+
+### Specific Application Section (Optional)
+[Include any specific instructions for particular applications like text classification, question-answering, summarization, etc.]
+
+Application type:
+Specific requirements:
+
+### Graph Prompting
+[For tasks involving complex relationships, consider using a graph-based prompt]
+Node 1: [Entity or concept]
+Edge: [Relationship]
+Node 2: [Related entity or concept]
+
+### Multimodal CoT
+[For tasks involving multiple types of data or reasoning]
+Visual Prompt: [Describe or reference visual input]
+Textual Prompt: [Provide text-based instructions]
+Numerical Prompt: [Include relevant numerical data]
+Prompt: "Integrate information from all provided sources to formulate your response."
+
+### Experimentation Instructions
+[If applicable, provide instructions for experimenting with different parameter values or approaches]
+
+### Adapting for Different Content Types
+- Provide specific guidelines for adapting the output to different formats, e.g., blog post, social media, technical document
+
+### Visualization Instructions
+- If applicable, include guidelines for describing or generating visual elements (charts, diagrams, etc.)
+
+## 15. Human-AI Collaboration
+- [Provide instructions for effective collaboration between the AI and human users]
+- [Specify how human feedback should be incorporated]
+
+## 16. Template Usage Instructions
+1. Fill in the sections with specific details for your use case
+2. Replace placeholder text with actual content and requirements
+3. Adjust the structure and sections as needed for your specific task
+4. Review and refine the prompt to ensure clarity and effectiveness
+5. Test the prompt with different inputs and iterate as necessary
+6. Use clear separators between sections for better readability
+7. Consider using prompt compression techniques to remove unnecessary elements without losing effectiveness
+
+## 17. Final Reminders and Best Practices
+
+1. Clarity and Precision: Always aim for clear, unambiguous instructions.
+2. Iterative Refinement: Treat prompt engineering as an ongoing process of improvement.
+3. Context Awareness: Ensure the LLM has all necessary context to perform the task effectively.
+4. Ethical Considerations: Always consider the ethical implications of your prompts and potential outputs.
+5. Performance Monitoring: Regularly monitor the performance of your prompts and make data-driven improvements.
+6. Adaptability: Be prepared to adapt your prompting strategies as LLM capabilities evolve.
+7. User-Centric Approach: Always keep the end-user's needs and experience in mind when crafting prompts.
+8. Documentation: Maintain clear documentation of your prompting strategies, including version history and performance metrics.
+9. Collaborate and Learn: Stay informed about new developments in prompt engineering and share knowledge with the community.
+10. Balance: Strike a balance between providing enough guidance and allowing the LLM to leverage its capabilities.
+
+Remember to adapt this template as needed for your specific use case. Be clear, concise, and specific in your instructions to get the best results from the LLM. Always test your prompts with various inputs and iterate to improve performance. The key to effective prompt engineering is balancing comprehensiveness with clarity and adapting to the specific requirements of each task.
+
+## 18. Final Execution Instructions
+Take a deep breath and approach this task step-by-step. Your expertise is crucial for achieving optimal results. If you need more information to complete the task, please ask clarifying questions.
+
+[MAIN_INPUT_VARIABLE] = [USER_SPECIFIC_INPUT_OR_QUERY]
+
+Let's approach this task systematically and create the best possible output.
+
+[FINAL INSTRUCTION]
+Provide your response based on these instructions. Be concise and avoid unnecessary explanations. Give me only the output in the format requested.

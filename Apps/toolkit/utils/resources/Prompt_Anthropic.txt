@@ -1,0 +1,270 @@
+# Comprehensive Adaptable Prompt Template for Large Language Models (LLMs)
+
+## System Role Prompt
+<system_role_prompt>
+You are [specific role, e.g., a seasoned data scientist at a Fortune 500 company, the General Counsel of a major tech corporation, the CFO of a high-growth B2B SaaS company, etc.].
+
+Note: Role prompting can significantly enhance the LLM's performance, especially for complex tasks requiring domain expertise. It can improve accuracy, tailor the communication style, and help the LLM stay focused on task-specific requirements. Experiment with different roles to find the most effective one for your task. Role prompting not only affects the LLM's knowledge base but also its tone and communication style. For example, a CFO role might lead to more concise, numbers-focused responses, while a copywriter role might produce more creative, persuasive language.
+
+Role prompting can be effectively combined with other techniques. For example, you can use role prompting with Chain of Thought to get expert-level step-by-step reasoning on complex problems.
+
+Role prompting can be particularly effective for specialized tasks or tasks requiring domain-specific knowledge. For example, assigning a "patent lawyer" role for intellectual property analysis or a "data privacy expert" role for GDPR compliance tasks.
+</system_role_prompt>
+
+## Long-form Documents
+<documents>
+<document index="1">
+<source>[Document 1 source]</source>
+<document_content>
+[Long-form content of Document 1]
+</document_content>
+</document>
+<document index="2">
+<source>[Document 2 source]</source>
+<document_content>
+[Long-form content of Document 2]
+</document_content>
+</document>
+<!-- Add more documents as needed -->
+</documents>
+
+Note: Place important, long-form documents (~20K+ tokens) near the top of the prompt, above queries and instructions. This can significantly improve Claude's performance across all models. For complex, multi-document inputs, placing your query at the end of the prompt can improve response quality by up to 30% in tests. 
+
+When working with long documents, ask Claude to quote relevant parts before analysis. This helps Claude focus on the most pertinent information and improves accuracy. For tasks involving long documents, ask the LLM to quote relevant parts of the documents first before carrying out its task. This helps the LLM focus on the most pertinent information and can improve the accuracy of its analysis.
+
+Structure document content and metadata with XML tags as shown above. This improves clarity and helps Claude parse the information more effectively.
+
+The impact of long-context techniques may vary between different Claude models. Claude 3 models (Haiku, Opus, and 3.5 Sonnet) have a 200K token context window, allowing for handling of more complex, data-rich tasks compared to earlier versions.
+
+When working with multiple documents, ensure each document is clearly structured and labeled. This helps the LLM understand the relationships between different pieces of information and use them effectively in its analysis or response.
+</documents>
+
+## Context
+<context>
+- Task description: [Clearly describe the task or problem to be solved]
+- Intended use of output: [Explain how the results will be used]
+- Target audience: [Specify who the output is meant for]
+- Workflow context: [Describe where this task fits in the larger workflow]
+- Success criteria: [Define what a successful task completion looks like]
+
+Note: The more precise and detailed your prompt, the better the LLM's response will be. Treat the LLM as a highly capable but new employee who needs explicit instructions and context. Providing comprehensive context, including task purpose, audience, and success criteria, is crucial for optimal performance.
+
+Golden Rule of Clear Prompting: Show your prompt to a colleague, ideally someone who has minimal context on the task, and ask them to follow the instructions. If they're confused, the LLM will likely be too.
+
+Important contextual information to include:
+- What the task results will be used for
+- What audience the output is meant for
+- What workflow the task is a part of, and where this task belongs in that workflow
+- The end goal of the task, or what a successful task completion looks like
+
+Be specific about what you want the LLM to do. For example, if you want the LLM to output only code and nothing else, say so explicitly.
+
+For complex instructions, provide them as sequential steps. Use numbered lists or bullet points to better ensure that the LLM carries out the task in the exact way you want it to.
+
+Provide contextual information even for seemingly simple tasks. This can help the LLM understand the broader implications and produce more relevant and accurate responses.
+
+Set clear boundaries and constraints for the task. Specify what the LLM should not do as well as what it should do. This helps prevent the LLM from making assumptions or going beyond the intended scope of the task.
+</context>
+
+## Task Breakdown
+<subtasks>
+1. [First subtask description]
+2. [Second subtask description]
+3. [Additional subtasks as needed]
+4. [Final subtask description]
+
+Note: For complex tasks, break them down into manageable subtasks. Each subtask should have a clear, single objective. Use XML tags to structure inputs and outputs between chained prompts for clear handoffs. 
+
+Prompt chaining is particularly useful for:
+- Multi-step analyses (e.g., data processing → analysis → visualization)
+- Content creation pipelines (e.g., research → outline → draft → edit)
+- Decision-making processes (e.g., gather info → list options → analyze each → recommend)
+- Verification loops (e.g., generate content → review → refine → re-review)
+
+Debugging tip: If the LLM misses a step or performs poorly in a complex chain, isolate that step in its own prompt. This allows you to fine-tune problematic steps without redoing the entire task.
+
+Optimization tip: For tasks with independent subtasks, create separate prompts and run them in parallel for improved efficiency.
+
+When chaining prompts, ensure clear handoffs between steps. Each step should have well-defined inputs and outputs, using consistent XML tags to structure this information.
+
+Consider implementing self-correction chains for high-stakes tasks. This involves having the LLM review and refine its own work, potentially catching errors and improving the quality of the final output.
+</subtasks>
+
+## Instructions
+<instructions>
+[Provide specific instructions for the current subtask]
+1. [Break down the subtask into clear, sequential steps]
+2. [Use numbered lists or bullet points for clarity]
+3. [Be as specific and detailed as possible about what you want the LLM to do]
+4. [Include any constraints or limitations]
+5. [Specify the desired output format or structure]
+
+Note: Use XML tags to clearly structure inputs and outputs for each subtask in the chain. For tasks involving long documents, ask Claude to quote relevant parts before analysis to improve focus and accuracy.
+</instructions>
+
+## Examples (Multishot Prompting)
+<examples>
+<example>
+<input>[Provide a sample input]</input>
+<output>[Show the corresponding desired output]</output>
+<explanation>[Briefly explain why this is a good example]</explanation>
+</example>
+<example>
+<input>[Provide another sample input, ideally covering a different case]</input>
+<output>[Show the corresponding desired output]</output>
+<explanation>[Briefly explain why this example is different or important]</explanation>
+</example>
+<example>
+<input>[Provide a third sample input, potentially an edge case]</input>
+<output>[Show the corresponding desired output]</output>
+<explanation>[Explain why this edge case is important to include]</explanation>
+</example>
+
+Note: Using 3-5 diverse, relevant examples can significantly improve accuracy, consistency, and performance, especially for complex tasks or structured outputs. Ensure your examples are relevant, diverse, and clear. You can ask Claude to generate additional examples based on your initial set if needed.
+
+Ensure your examples cover:
+- Different aspects of the task
+- Potential edge cases
+- Variations in input format or content
+This diversity helps Claude understand the full scope of the task and handle a wide range of inputs effectively.
+
+More examples generally lead to better performance, especially for complex tasks. While 3-5 examples are often sufficient, for particularly complex or nuanced tasks, providing more examples can further improve accuracy and consistency.
+
+Include examples that demonstrate potential edge cases or challenging scenarios. This helps the LLM understand the full scope of the task and how to handle unusual inputs or situations.
+
+When applicable, include examples that demonstrate both correct and incorrect outputs. This can help the LLM understand what to avoid as well as what to aim for.
+</examples>
+
+## Chain of Thought Prompting
+<chain_of_thought>
+[Choose the appropriate CoT method based on task complexity and specific needs]
+
+### Basic CoT:
+Think step-by-step about [task description]. Show your reasoning before providing the final answer.
+
+### Guided CoT:
+Follow these steps in your thinking process:
+1. [First step of analysis or problem-solving]
+2. [Second step of analysis or problem-solving]
+3. [Additional steps as needed]
+4. [Final step: formulate the answer based on your analysis]
+
+Show your thinking for each step before providing the final answer.
+
+### Structured CoT:
+Use the following structure for your response:
+<thinking>
+[Detail your step-by-step thought process here]
+</thinking>
+
+<answer>
+[Provide your final answer or output here, based on your thinking]
+</answer>
+
+Note: Chain of Thought prompting can dramatically improve performance for complex tasks like research, analysis, or problem-solving. Always have the LLM output its thinking process when using CoT prompting. Use CoT judiciously to balance performance and response length/latency. Consider nesting XML tags for hierarchical thought processes.
+
+- Use Basic CoT for relatively simple tasks that still benefit from step-by-step thinking.
+- Use Guided CoT for more complex tasks where you can outline specific steps.
+- Use Structured CoT for the most complex tasks, or when you need to clearly separate the thinking process from the final answer.
+
+Be aware that while CoT can improve accuracy, it may also increase output length and potentially impact latency. Use it when the benefits of improved reasoning outweigh the cost of longer responses.
+
+When not to use CoT:
+- For very simple, straightforward tasks
+- When you need extremely concise responses
+- For tasks that don't require complex reasoning or multi-step problem-solving
+
+It's crucial to always have the LLM output its thinking process when using CoT prompting. Without outputting its thought process, no actual "thinking" occurs, and you lose the benefits of the CoT technique.
+
+CoT is particularly effective for math problems, logic puzzles, or other tasks benefiting from systematic thinking. For these types of problems, always encourage the LLM to think through the problem step-by-step before giving its final answer.
+
+CoT can be particularly useful for tasks that involve explaining complex concepts or decisions. It allows the LLM to break down its reasoning process, making it easier for users to understand and verify the logic behind the output.
+
+CoT can be used to enhance the transparency of the LLM's decision-making process. By asking the LLM to explain its reasoning, users can better understand and validate the logic behind its responses, which is particularly valuable in high-stakes or sensitive scenarios.
+</chain_of_thought>
+
+## Input Data
+<input_data>
+- [Provide any necessary input data, datasets, or examples]
+- [Use clear formatting and labeling for data]
+
+Note: Consistent use of XML tags makes it easier to extract specific parts of the LLM's response through post-processing.
+</input_data>
+
+## Output Requirements
+<output_requirements>
+- Format: [Specify the desired output format (e.g., JSON, markdown, plain text)]
+- Length: [Indicate any length restrictions or preferences]
+- Style: [Describe the tone, style, or voice to be used]
+- Specific elements to include: [List any must-have components in the output]
+
+Note: XML tags help structure your prompt, improving clarity, accuracy, and flexibility. Consistent use of XML tags makes it easier to extract specific parts of the LLM's response through post-processing, enhancing parseability of the output.
+
+Be consistent in your XML tag naming throughout your prompts. This consistency helps the LLM understand the structure of your prompt and respond more accurately.
+
+Consider using specific tags like <thinking> for the LLM's reasoning process and <answer> for its final response. This clear separation can make it easier to parse and utilize different parts of the LLM's output.
+</output_requirements>
+
+## Prefill
+<prefill>
+[Prefill Claude's response here to guide output format, skip preambles, or maintain character consistency]
+
+Note: Prefilling Claude's responses can provide greater control over output format, help skip unnecessary preambles, and maintain character consistency in role-play scenarios. A little prefilling goes a long way - often just a few characters or words are sufficient to guide Claude's response effectively.
+
+For structured data extraction, consider prefilling with opening brackets or tags (e.g., "{" or "<result>").
+For role-play scenarios, consider prefilling with a bracketed role name (e.g., "[Sherlock Holmes]").
+
+Power user tip: Prefilling "{" forces Claude to skip the preamble and directly output a JSON object. This is cleaner, more concise, and easier for programs to parse without additional processing.
+
+Example of character consistency in role-play:
+User: You are Sherlock Holmes. Analyze this crime scene.
+Assistant (prefill): [Sherlock Holmes] Upon my initial observation of the crime scene, I notice several peculiar details that the ordinary eye might overlook...
+
+Use prefilling to enforce specific output formats. For example, prefilling with "Step 1:" can force the LLM to structure its response as a series of steps.
+
+Prefilling can be used to maintain consistent formatting across multiple interactions. This is particularly useful for generating reports, logs, or any other output where consistency is key.
+</prefill>
+
+## Evaluation Criteria
+<evaluation_criteria>
+- [List the criteria by which the output will be judged]
+- [Include any specific metrics or benchmarks]
+
+Note: Consider implementing self-correction chains for high-stakes tasks to catch errors and refine outputs.
+</evaluation_criteria>
+
+## Additional Guidance
+<additional_guidance>
+- [Provide any extra tips, tricks, or best practices]
+- [Mention any common pitfalls to avoid]
+
+Note: For tasks with independent subtasks, consider creating separate prompts and running them in parallel for improved efficiency.
+</additional_guidance>
+
+## Feedback and Iteration
+<feedback_and_iteration>
+- [Explain how the LLM should handle uncertainty or ambiguity]
+- [Specify how to request clarification if needed]
+
+Note: Iterate and refine your prompts based on the LLM's performance to achieve optimal results. Pay attention to areas where the LLM consistently underperforms or misunderstands, and adjust your prompts accordingly. This iterative process can significantly improve the quality and reliability of the LLM's outputs over time.
+
+Regularly monitor the LLM's performance over time. As you refine your prompts and the LLM potentially receives updates, the optimal prompting strategies may evolve.
+
+Consider asking the LLM to evaluate the quality of examples you provide or to generate additional examples based on your initial set. This can help ensure your examples are diverse and effective.
+</feedback_and_iteration>
+
+## Ethical Considerations
+<ethical_considerations>
+- [Highlight any ethical guidelines or constraints]
+- [Mention data privacy concerns, if applicable]
+
+Note: Always consider ethical implications and include relevant guidelines in your prompts.
+
+Be aware of potential biases in your prompts or the LLM's responses. Regularly review outputs for fairness and inclusivity, and adjust your prompts as necessary to mitigate any identified biases.
+
+When dealing with sensitive or controversial topics, instruct the LLM to present information carefully and objectively, without claiming to present absolute facts. Encourage it to provide balanced viewpoints and to acknowledge the complexity of such issues.
+
+Respect copyright and intellectual property rights when using or generating content. Instruct the LLM to avoid reproducing copyrighted material verbatim without proper attribution, and to generate original content when required.
+
+Consider the potential real-world impacts of the LLM's outputs. For tasks that could influence decisions affecting people's lives, extra care should be taken to ensure fairness, accuracy, and robustness of the LLM's responses. Consider implementing additional verification steps or human oversight for such tasks.
+</ethical_considerations>

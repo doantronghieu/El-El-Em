@@ -1,0 +1,28 @@
+# Dataset configurations
+train_dataset_size: 500
+val_dataset_size: 100
+img_size: 224
+batch_size: 32
+
+# Model configurations
+model_type: 'resnet18'
+num_classes: 10
+weights: 'IMAGENET1K_V1'
+
+# Quantization configurations
+quantization_backend: 'qnnpack'
+static_quantization_calibration_batches: 50 
+qat_num_epochs: 1
+qat_learning_rate: 0.0001
+
+# Benchmark configurations
+benchmark_num_runs: 100
+
+# Paths
+static_quantized_model_path: 'static_quantized_model.pt'
+dynamic_quantized_model_path: 'dynamic_quantized_model.pt'
+qat_model_path: 'qat_model.pt'
+
+# Logging
+log_file: 'quantization.log'
+log_rotation: '500 MB'
